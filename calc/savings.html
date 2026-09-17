@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>적금 이자 계산 - 단리 복리 매월 적립 이자 및 세후 수령액 비교</title>
+    <meta name="description" content="매월 일정 금액을 저축할 때 단리 및 연복리 방식에 따른 세전·세후 이자와 실수령액을 정확히 계산합니다. 정기적금 계산 공식과 이자소득세 과세 가이드를 확인하세요.">
+    <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #7c3aed;
+            --primary-light: #f3e8ff;
+            --primary-hover: #6d28d9;
+            --bg-main: #faf5ff;
+            --bg-card: #ffffff;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --border: #e9d5ff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.6;
+        }
+
+        /* 헤더 기본 레이아웃 */
+        .site-header {
+            background-color: #ffffff;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 8px rgba(124, 58, 237, 0.05);
+        }
+
+        .header-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        /* 로고 영역 */
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-decoration: none;
+            flex-shrink: 0;
+        }
+
+        .brand-icon {
+            width: 36px;
+            height: 36px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.95rem;
+            box-shadow: 0 2px 6px rgba(124, 58, 237, 0.3);
+        }
+
+        /* 네비게이션 그룹 */
+        .nav-right-group {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .main-nav {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .nav-item {
+            font-size: 0.92rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 0.2s;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .nav-item:hover, 
+        .nav-item.active {
+            color: var(--primary);
+            background-color: var(--primary-light);
+            font-weight: 700;
+        }
+
+        /* 드롭다운 스타일 */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+        }
+
+        .dropdown-btn .chevron {
+            width: 14px;
+            height: 14px;
+            transition: transform 0.2s ease;
+        }
+
+        .dropdown.is-open .chevron {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            width: 260px;
+            background-color: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            padding: 8px;
+            display: none;
+            flex-direction: column;
+            gap: 2px;
+            z-index: 1100;
+        }
+
+        .dropdown.is-open .dropdown-menu {
+            display: flex;
+        }
+
+        .dropdown-item {
+            display: flex;
+            flex-direction: column;
+            padding: 10px 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background-color 0.2s;
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--primary-light);
+        }
+
+        .dropdown-item .title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .dropdown-item:hover .title {
+            color: var(--primary);
+        }
+
+        .dropdown-item .desc {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* 전체 목록 우측 버튼 */
+        .btn-list-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: var(--primary);
+            background-color: var(--primary-light);
+            border: 1px solid var(--border);
+            padding: 8px 14px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .btn-list-back:hover {
+            background-color: var(--primary);
+            color: #ffffff;
+            border-color: var(--primary);
+        }
+
+        /* 햄버거 버튼 (모바일용) */
+        .btn-hamburger {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 24px;
+            height: 18px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .hamburger-bar {
+            width: 100%;
+            height: 2px;
+            background-color: var(--text-dark);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-hamburger.active .hamburger-bar:nth-child(1) {
+            transform: translateY(8px) rotate(45deg);
+        }
+        .btn-hamburger.active .hamburger-bar:nth-child(2) {
+            opacity: 0;
+        }
+        .btn-hamburger.active .hamburger-bar:nth-child(3) {
+            transform: translateY(-8px) rotate(-45deg);
+        }
+
+        main {
+            max-width: 1000px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 32px 24px;
+            flex: 1;
+        }
+
+        .category-badge {
+            display: inline-block;
+            background-color: var(--primary-light);
+            color: var(--primary);
+            font-size: 0.82rem;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-bottom: 8px;
+        }
+
+        .page-header {
+            margin-bottom: 24px;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--text-dark);
+        }
+
+        .page-desc {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+
+        .calc-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-control {
+            width: 100%;
+            padding: 12px 40px 12px 14px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            outline: none;
+            transition: all 0.2s;
+            background-color: #ffffff;
+        }
+
+        .input-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+        }
+
+        .input-unit {
+            position: absolute;
+            right: 14px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-option {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid var(--border);
+            background-color: #ffffff;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .btn-option.active {
+            background-color: var(--primary-light);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .calc-btn {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 10px;
+        }
+
+        .calc-btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .result-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--bg-main);
+        }
+
+        .result-summary {
+            background-color: var(--bg-main);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .summary-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .summary-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-top: 4px;
+        }
+
+        .result-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.92rem;
+        }
+
+        .result-item .item-label {
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .result-item .item-value {
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        /* 상세 금융 정보 컨텐츠 영역 */
+        .content-section {
+            background-color: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px;
+            margin-top: 8px;
+        }
+
+        .content-section h2 {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-top: 28px;
+            margin-bottom: 12px;
+            border-left: 4px solid var(--primary);
+            padding-left: 12px;
+        }
+
+        .content-section h2:first-child {
+            margin-top: 0;
+        }
+
+        .content-section p {
+            font-size: 0.98rem;
+            color: #334155;
+            margin-bottom: 16px;
+            word-break: keep-all;
+        }
+
+        .content-section ul {
+            margin-left: 20px;
+            margin-bottom: 20px;
+            color: #334155;
+        }
+
+        .content-section li {
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.9rem;
+        }
+
+        .info-table th, .info-table td {
+            border: 1px solid #e2e8f0;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .info-table th {
+            background-color: var(--primary-light);
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        /* 아코디언 FAQ 스타일 */
+        .faq-accordion {
+            margin-top: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .faq-item {
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background-color: var(--bg-main);
+            overflow: hidden;
+            transition: border-color 0.2s;
+        }
+
+        .faq-item[open] {
+            border-color: var(--primary);
+            background-color: #ffffff;
+        }
+
+        .faq-summary {
+            padding: 16px 20px;
+            font-size: 0.98rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            cursor: pointer;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+        }
+
+        .faq-summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .faq-summary::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            border-right: 2px solid var(--text-muted);
+            border-bottom: 2px solid var(--text-muted);
+            transform: rotate(45deg);
+            transition: transform 0.2s ease;
+            margin-left: 12px;
+            flex-shrink: 0;
+        }
+
+        .faq-item[open] .faq-summary::after {
+            transform: rotate(-135deg);
+            border-color: var(--primary);
+        }
+
+        .faq-content {
+            padding: 0 20px 16px 20px;
+            font-size: 0.95rem;
+            color: #334155;
+            line-height: 1.6;
+            border-top: 1px dashed var(--border);
+            margin-top: 8px;
+            padding-top: 12px;
+        }
+
+        footer {
+            background-color: #ffffff;
+            border-top: 1px solid var(--border);
+            padding: 24px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 40px;
+        }
+
+        /* 모바일 반응형 (1024px 이하) */
+        @media (max-width: 1024px) {
+            .btn-hamburger { 
+                display: flex; 
+            }
+
+            .nav-right-group {
+                display: none;
+                position: absolute;
+                top: 61px;
+                left: 0;
+                width: 100%;
+                background-color: #ffffff;
+                flex-direction: column;
+                align-items: stretch;
+                padding: 1rem 1.25rem;
+                gap: 1rem;
+                border-bottom: 1px solid var(--border);
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+            }
+
+            .nav-right-group.is-open { 
+                display: flex; 
+            }
+
+            .main-nav { 
+                flex-direction: column; 
+                align-items: stretch; 
+                gap: 4px; 
+            }
+
+            .dropdown-menu { 
+                position: static; 
+                width: 100%; 
+                box-shadow: none; 
+                border: none; 
+                background: var(--bg-main); 
+                padding: 4px; 
+                margin-top: 4px; 
+            }
+        }
+
+        @media (max-width: 768px) {
+            .calc-wrapper {
+                grid-template-columns: 1fr;
+            }
+            .content-section {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="site-header">
+        <div class="header-inner">
+            <!-- 브랜드 로고 -->
+            <a href="../index.html" class="brand">
+                <div class="brand-icon" aria-hidden="true">MC</div>
+                <span>Miso Calculator</span>
+            </a>
+
+            <!-- 모바일 전용 햄버거 버튼 -->
+            <button type="button" class="btn-hamburger" id="hamburgerBtn" aria-label="메뉴 열기" aria-expanded="false">
+                <span class="hamburger-bar"></span>
+                <span class="hamburger-bar"></span>
+                <span class="hamburger-bar"></span>
+            </button>
+
+            <!-- 네비게이션 & 전체 목록 그룹 -->
+            <div class="nav-right-group" id="navGroup">
+                <nav class="main-nav" aria-label="주요 계산기 메뉴">
+                    <!-- 상단 노출 주요 메뉴 (4개) -->
+                    <a href="./target-amount.html" class="nav-item">목표금액 달성</a>
+                    <a href="./compound-interest.html" class="nav-item">복리 이자</a>
+                    <a href="./deposit.html" class="nav-item">예금 이자</a>
+                    <a href="./savings.html" class="nav-item active">적금 이자</a>
+
+                    <!-- 기타 계산기 드롭다운 메뉴 -->
+                    <div class="dropdown" id="moreCalcDropdown">
+                        <button type="button" class="nav-item dropdown-btn" id="dropdownToggleBtn" aria-expanded="false">
+                            <span>기타 계산기</span>
+                            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <path d="M6 9l6 6 6-6"/>
+                            </svg>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a href="./compare-savings.html" class="dropdown-item">
+                                <span class="title">예적금 비교</span>
+                                <span class="desc">예금과 적금의 수익률 직접 비교</span>
+                            </a>
+                            <a href="./pinwheel-savings.html" class="dropdown-item">
+                                <span class="title">풍차 돌리기</span>
+                                <span class="desc">매월 예적금 가입 수익 시뮬레이션</span>
+                            </a>
+                            <a href="./youth-savings.html" class="dropdown-item">
+                                <span class="title">청년미래적금</span>
+                                <span class="desc">정부 지원금 포함 혜택 계산</span>
+                            </a>
+                            <a href="./parking-cma.html" class="dropdown-item">
+                                <span class="title">파킹통장 / CMA</span>
+                                <span class="desc">일할 이자 계산 및 수령액 비교</span>
+                            </a>
+                        </div>
+                    </div>
+                </nav>
+
+                <!-- 전체 목록 버튼 -->
+                <a href="../index.html" class="btn-list-back">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="8" y1="6" x2="21" y2="6"></line>
+                        <line x1="8" y1="12" x2="21" y2="12"></line>
+                        <line x1="8" y1="18" x2="21" y2="18"></line>
+                        <circle cx="3" cy="6" r="1"></circle>
+                        <circle cx="3" cy="12" r="1"></circle>
+                        <circle cx="3" cy="18" r="1"></circle>
+                    </svg>
+                    <span>전체 목록</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="page-header">
+            <span class="category-badge">예금·적금</span>
+            <h1 class="page-title">적금 이자 계산</h1>
+            <p class="page-desc">매월 일정 금액을 넣으면 단리, 복리에 따라 이자를 정확히 계산합니다.</p>
+        </div>
+
+        <div class="calc-wrapper">
+            <!-- 입력 폼 -->
+            <div class="card">
+                <div class="form-group">
+                    <label class="form-label" for="monthlyAmount">월 적립액</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="monthlyAmount" class="input-control" value="500,000" oninput="formatNumberInput(this)">
+                        <span class="input-unit">원</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="depositTerm">적립 기간</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="depositTerm" class="input-control" value="12">
+                        <span class="input-unit">개월</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="interestRate">연 이자율</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="interestRate" class="input-control" step="0.1" value="4.0">
+                        <span class="input-unit">%</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">이자 계산 방식</label>
+                    <div class="btn-group" id="interestTypeGroup">
+                        <button type="button" class="btn-option active" data-value="simple">단리</button>
+                        <button type="button" class="btn-option" data-value="compound">연복리</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">과세 구분</label>
+                    <div class="btn-group" id="taxTypeGroup">
+                        <button type="button" class="btn-option active" data-value="0.154">일반과세 (15.4%)</button>
+                        <button type="button" class="btn-option" data-value="0.014">세금우대 (1.4%)</button>
+                        <button type="button" class="btn-option" data-value="0">비과세 (0%)</button>
+                    </div>
+                </div>
+
+                <button type="button" class="calc-btn" onclick="calculate()">계산하기</button>
+            </div>
+
+            <!-- 결과 영역 -->
+            <div class="card">
+                <h2 class="result-title">계산 결과</h2>
+                
+                <div class="result-summary">
+                    <div class="summary-label">최종 세후 수령액</div>
+                    <div class="summary-value" id="resTotal">0 원</div>
+                </div>
+
+                <div class="result-list">
+                    <div class="result-item">
+                        <span class="item-label">총 적립 원금</span>
+                        <span class="item-value" id="resPrincipal">0 원</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="item-label">세전 이자</span>
+                        <span class="item-value" id="resGrossInterest">0 원</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="item-label">이자 과세 공제액</span>
+                        <span class="item-value" id="resTax" style="color: #ef4444;">-0 원</span>
+                    </div>
+                    <div class="result-item" style="border-top: 1px dashed var(--border); padding-top: 12px; margin-top: 4px;">
+                        <span class="item-label" style="font-weight: 700; color: var(--text-dark);">세후 이자</span>
+                        <span class="item-value" id="resNetInterest" style="color: var(--primary);">0 원</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 금융 가이드 컨텐츠 -->
+        <article class="content-section">
+            <h2>정기적금 이자 계산 구조 상세 이해하기</h2>
+            <p>정기적금은 매월 일정한 금액을 납입하여 목돈을 만드는 대표적인 저축 상품입니다. 정기예금과 달리 매월 들어가는 금액마다 거치 기간이 다르기 때문에, 동일한 연 이율이라도 이자 산출 방식이 다릅니다.</p>
+
+            <h2>1. 적금의 단리 vs 연복리 계산 방법</h2>
+            <p>적금 단리 이자는 매월 불입되는 원금에 대해 만기까지 남은 개월 수만큼 계산하여 합산하는 방식입니다.</p>
+            
+            <table class="info-table">
+                <thead>
+                    <tr>
+                        <th>구분</th>
+                        <th>정기적금 단리 공식</th>
+                        <th>설명</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>1회차 (첫째 달)</strong></td>
+                        <td><code>월적립액 × 연이율 × (n / 12)</code></td>
+                        <td>전체 기간(n개월) 동안 이자가 붙습니다.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>2회차 (둘째 달)</strong></td>
+                        <td><code>월적립액 × 연이율 × ((n-1) / 12)</code></td>
+                        <td>n-1 개월 동안 이자가 붙습니다.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>총 단리 이자 공식</strong></td>
+                        <td><code>월적립액 × 연이율 × [n × (n + 1) / 2] / 12</code></td>
+                        <td>등차수열 합 공식을 활용한 단리 이자 산출법입니다.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>2. 이자소득세 과세 체계 및 세율</h2>
+            <p>만기 시 받게 되는 세전 이자에서 관계 법령에 따라 아래와 같은 과세율이 적용됩니다.</p>
+            <ul>
+                <li><strong>일반과세 (15.4%):</strong> 이자소득세 14%와 지방소득세 1.4%가 차감됩니다. 일반 금융기관에서 가입하는 대부분의 적금 상품에 적용됩니다.</li>
+                <li><strong>세금우대 / 농특세 (1.4%):</strong> 새마을금고, 신협, 수협 등 상호금융권 조합원/준조합원 대상 상품으로, 이자소득세는 면제되고 농어촌특별세 1.4%만 부과됩니다.</li>
+                <li><strong>비과세 (0%):</strong> 비과세종합저축 가입 자격 대상자(만 65세 이상, 장애인 등) 및 비과세 계좌 한도 내 수령 시 세금이 원천징수되지 않습니다.</li>
+            </ul>
+
+            <h2>3. 자주 묻는 질문 (FAQ)</h2>
+            <div class="faq-accordion">
+                <details class="faq-item" open>
+                    <summary class="faq-summary">Q1. 예금 금리와 적금 금리가 같은 4%일 때 왜 적금 이자가 더 적은가요?</summary>
+                    <div class="faq-content">
+                        A. 예금은 원금 전체가 1년(12개월) 동안 거치되어 full 이자를 받지만, 적금은 첫째 달에 낸 돈만 12개월 이자가 붙고, 마지막 달에 낸 돈은 1개월 치 이자만 붙기 때문입니다.
+                    </div>
+                </details>
+
+                <details class="faq-item" open>
+                    <summary class="faq-summary">Q2. 원단위 절사는 어떻게 처리되나요?</summary>
+                    <div class="faq-content">
+                        A. 이자 산출 및 과세액 책정 시 원 미만 소수점 단위는 버림(절사) 처리되며, 세후 이자 책정 방식에 따라 금융사별로 1~10원 단위 차이가 있을 수 있습니다.
+                    </div>
+                </details>
+            </div>
+        </article>
+    </main>
+
+    <footer>
+        <p>© 2026 Miso Calculator. All rights reserved.</p>
+        <p>본 계산기는 참고용 시뮬레이션 결과이며, 실제 금융기관의 계산 방식에 따라 원단위 오차가 발생할 수 있습니다.</p>
+        <p style="margin-top: 8px;"><a href="../privacy.html" style="color: var(--text-muted); text-decoration: underline;">개인정보처리방침</a></p>
+    </footer>
+
+    <script>
+        let selectedInterestType = 'simple';
+        let selectedTaxRate = 0.154;
+
+        function formatNumberInput(input) {
+            let value = input.value.replace(/,/g, '');
+            if (!isNaN(value) && value.length > 0) {
+                input.value = parseInt(value, 10).toLocaleString('ko-KR');
+            } else {
+                input.value = '';
+            }
+        }
+
+        document.querySelectorAll('#interestTypeGroup .btn-option').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('#interestTypeGroup .btn-option').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                selectedInterestType = this.dataset.value;
+            });
+        });
+
+        document.querySelectorAll('#taxTypeGroup .btn-option').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('#taxTypeGroup .btn-option').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                selectedTaxRate = parseFloat(this.dataset.value);
+            });
+        });
+
+        function calculate() {
+            const rawAmount = document.getElementById('monthlyAmount').value.replace(/,/g, '');
+            const monthlyPayment = parseFloat(rawAmount) || 0;
+            const months = parseInt(document.getElementById('depositTerm').value, 10) || 0;
+            const rate = (parseFloat(document.getElementById('interestRate').value) || 0) / 100;
+
+            if (monthlyPayment <= 0 || months <= 0 || rate <= 0) {
+                alert('올바른 월 적립액, 기간, 이자율을 입력해 주세요.');
+                return;
+            }
+
+            const totalPrincipal = monthlyPayment * months;
+            let grossInterest = 0;
+
+            if (selectedInterestType === 'simple') {
+                grossInterest = monthlyPayment * rate * (months * (months + 1) / 2) / 12;
+            } else {
+                const monthlyRate = rate / 12;
+                for (let i = 1; i <= months; i++) {
+                    const monthInterest = monthlyPayment * (Math.pow(1 + monthlyRate, months - i + 1) - 1);
+                    grossInterest += monthInterest;
+                }
+            }
+
+            grossInterest = Math.floor(grossInterest);
+            const tax = Math.floor(grossInterest * selectedTaxRate);
+            const netInterest = grossInterest - tax;
+            const total = totalPrincipal + netInterest;
+
+            document.getElementById('resTotal').innerText = total.toLocaleString('ko-KR') + ' 원';
+            document.getElementById('resPrincipal').innerText = totalPrincipal.toLocaleString('ko-KR') + ' 원';
+            document.getElementById('resGrossInterest').innerText = grossInterest.toLocaleString('ko-KR') + ' 원';
+            document.getElementById('resTax').innerText = '-' + tax.toLocaleString('ko-KR') + ' 원';
+            document.getElementById('resNetInterest').innerText = netInterest.toLocaleString('ko-KR') + ' 원';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // 헤더 모바일 햄버거 메뉴 토글
+            const hamburgerBtn = document.getElementById('hamburgerBtn');
+            const navGroup = document.getElementById('navGroup');
+
+            if (hamburgerBtn && navGroup) {
+                hamburgerBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const isOpen = hamburgerBtn.classList.toggle('active');
+                    navGroup.classList.toggle('is-open');
+                    hamburgerBtn.setAttribute('aria-expanded', isOpen);
+                });
+            }
+
+            // 기타 계산기 드롭다운 토글
+            const dropdown = document.getElementById('moreCalcDropdown');
+            const dropdownToggleBtn = document.getElementById('dropdownToggleBtn');
+
+            if (dropdownToggleBtn && dropdown) {
+                dropdownToggleBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const isOpen = dropdown.classList.toggle('is-open');
+                    dropdownToggleBtn.setAttribute('aria-expanded', isOpen);
+                });
+
+                document.addEventListener('click', (e) => {
+                    if (!dropdown.contains(e.target)) {
+                        dropdown.classList.remove('is-open');
+                        dropdownToggleBtn.setAttribute('aria-expanded', 'false');
+                    }
+                });
+
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        dropdown.classList.remove('is-open');
+                        dropdownToggleBtn.setAttribute('aria-expanded', 'false');
+                    }
+                });
+            }
+
+            // 초기 계산 실행
+            calculate();
+        });
+    </script>
+</body>
+</html>

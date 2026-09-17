@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Miso Life - 할인율 계산기</title>
+  <style>
+    :root {
+      --primary: #0ea5e9;         /* 하늘색 (Sky-500) */
+      --primary-hover: #0284c7;   /* 진한 하늘색 (Sky-600) */
+      --primary-light: #f0f9ff;   /* 연한 하늘색 배경 (Sky-50) */
+      --text-dark: #1f2937;       /* 텍스트 (Gray-800) */
+      --text-muted: #6b7280;      /* 보조 텍스트 (Gray-500) */
+      --border: #e5e7eb;         /* 테두리 (Gray-200) */
+      --bg-gray: #f9fafb;        /* 전체 메인 배경 (Gray-50) */
+      --bg-white: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      color: var(--text-dark);
+      background-color: var(--bg-gray);
+      line-height: 1.6;
+    }
+
+    /* 반응형 헤더 및 내비게이션 영역 */
+    .site-header {
+      background-color: var(--bg-white);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .header-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      background-color: var(--primary);
+      color: white;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.95rem;
+    }
+
+    .main-nav {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .nav-item {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 6px 10px;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .nav-item:hover,
+    .nav-item.active {
+      color: var(--primary-hover);
+      background-color: var(--primary-light);
+      font-weight: 700;
+    }
+
+    /* 홈 버튼 (가장 오른쪽 배치) */
+    .btn-home {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--primary);
+      background-color: var(--primary-light);
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: all 0.2s;
+      margin-left: 4px;
+    }
+
+    .btn-home:hover {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    /* 메인 Card 컨테이너 */
+    .container {
+      max-width: 720px;
+      margin: 40px auto;
+      padding: 30px;
+      background-color: var(--bg-white);
+      border-radius: 16px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+      border: 1px solid var(--border);
+    }
+
+    .category-tag {
+      font-size: 13px;
+      color: var(--primary);
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+
+    h1 {
+      font-size: 26px;
+      margin-top: 0;
+      margin-bottom: 16px;
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 10px;
+      color: var(--text-dark);
+    }
+
+    h2 {
+      font-size: 19px;
+      margin-top: 36px;
+      margin-bottom: 14px;
+      color: var(--text-dark);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 6px;
+    }
+
+    /* 계산기 입력 폼 스타일 */
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+      font-weight: bold;
+      color: var(--text-dark);
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 15px;
+      color: var(--text-dark);
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px #e0f2fe;
+    }
+
+    button.btn-calc {
+      width: 100%;
+      padding: 14px;
+      background-color: var(--primary);
+      color: var(--bg-white);
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background-color 0.2s;
+    }
+
+    button.btn-calc:hover {
+      background-color: var(--primary-hover);
+    }
+
+    /* 계산 결과 출력 영역 */
+    .result-container {
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 2px solid var(--primary);
+    }
+
+    .result-section {
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .result-subtitle {
+      font-size: 16px;
+      font-weight: bold;
+      color: var(--text-dark);
+      margin-bottom: 10px;
+    }
+
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 15px;
+      color: var(--text-muted);
+    }
+
+    .result-row.total {
+      font-size: 18px;
+      font-weight: bold;
+      color: var(--primary-hover);
+      margin-top: 8px;
+      border-top: 1px dashed var(--border);
+      padding-top: 8px;
+    }
+
+    /* 애드센스 광고 슬롯 */
+    .ad-slot {
+      margin: 24px 0;
+      text-align: center;
+      background: #fafafa;
+      border: 1px dashed var(--border);
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    /* 백과사전 상세 설명 (계산기 하단 배치) */
+    .wiki-box {
+      background-color: var(--primary-light);
+      border-left: 4px solid var(--primary);
+      padding: 18px;
+      border-radius: 0 8px 8px 0;
+      margin-top: 30px;
+      margin-bottom: 24px;
+      font-size: 14.5px;
+      line-height: 1.7;
+    }
+
+    .wiki-box p {
+      margin: 0 0 12px 0;
+      color: var(--text-dark);
+    }
+
+    .wiki-box p:last-child {
+      margin-bottom: 0;
+    }
+
+    .wiki-source {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: bold;
+      display: inline-block;
+      margin-top: 6px;
+    }
+
+    /* FAQ 아코디언 스타일 (모두 펼쳐짐) */
+    .faq-list {
+      margin-top: 12px;
+    }
+
+    .faq-item {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+
+    .faq-question {
+      width: 100%;
+      text-align: left;
+      padding: 14px 16px;
+      background-color: var(--bg-gray);
+      border: none;
+      font-size: 15px;
+      font-weight: bold;
+      color: var(--text-dark);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background-color 0.2s;
+    }
+
+    .faq-question:hover {
+      background-color: var(--primary-light);
+    }
+
+    .faq-icon {
+      font-size: 18px;
+      color: var(--primary);
+      font-weight: bold;
+    }
+
+    .faq-item.open .faq-icon::before {
+      content: "-";
+    }
+
+    .faq-item:not(.open) .faq-icon::before {
+      content: "+";
+    }
+
+    .faq-answer {
+      display: none;
+      padding: 14px 16px;
+      font-size: 14px;
+      color: var(--text-muted);
+      background-color: var(--bg-white);
+      border-top: 1px solid var(--border);
+      line-height: 1.6;
+    }
+
+    .faq-item.open .faq-answer {
+      display: block;
+    }
+
+    /* 반응형 푸터 영역 */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 30px 20px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      background-color: var(--bg-gray);
+      margin-top: 60px;
+    }
+
+    footer p {
+      margin: 4px 0;
+    }
+
+    footer a {
+      color: var(--text-muted);
+      text-decoration: underline;
+    }
+
+    @media (max-width: 900px) {
+      .header-inner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .main-nav {
+        width: 100%;
+        overflow-x: auto;
+        padding-bottom: 4px;
+      }
+      .container {
+        margin: 16px;
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 하늘색 테마 반응형 헤더 및 네비게이션 -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="../index.html" class="brand">
+        <div class="brand-icon">LF</div>
+        <span>Miso Life</span>
+      </a>
+
+      <nav class="main-nav">
+        <a href="./car-installment.html" class="nav-item">자동차 할부</a>
+        <a href="./exchange-rate.html" class="nav-item">환율</a>
+        <a href="./discount-rate.html" class="nav-item active">할인율</a>
+        <a href="./fire.html" class="nav-item">FIRE</a>
+        <a href="./emergency-fund.html" class="nav-item">비상금</a>
+        <a href="./card-picking-rate.html" class="nav-item">카드 피킹률</a>
+        <a href="./health-insurance.html" class="nav-item">건강보험료</a>
+        <a href="../index.html" class="btn-home">전체목록</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- 메인 컨텐츠 Card -->
+  <main class="container">
+    <div class="category-tag">생활 계산기</div>
+    <h1>할인율 계산기</h1>
+
+    <!-- 1. 최상단 배치: 계산 입력 폼 -->
+    <form id="calcForm">
+      <div class="form-group">
+        <label for="originalPrice">정가 (원)</label>
+        <input type="number" id="originalPrice" placeholder="예: 50000 (5만 원)" min="0" step="100" required>
+      </div>
+
+      <div class="form-group">
+        <label for="discountRateInput">할인율 (%) 또는 할인가 선택</label>
+        <select id="calcMode">
+          <option value="rate">할인율(%) 입력하기</option>
+          <option value="price">할인가(원) 직접 입력하기</option>
+        </select>
+      </div>
+
+      <div class="form-group" id="inputGroupRate">
+        <label for="discountRate">할인율 (%)</label>
+        <input type="number" id="discountRate" placeholder="예: 20 (20% 할인)" min="0" max="100" step="0.1" value="20">
+      </div>
+
+      <div class="form-group" id="inputGroupPrice" style="display: none;">
+        <label for="discountPrice">할인 적용된 최종 판매가 (원)</label>
+        <input type="number" id="discountPrice" placeholder="예: 40000" min="0" step="100">
+      </div>
+
+      <button type="submit" class="btn-calc">할인 금액 및 최종가 계산하기</button>
+    </form>
+
+    <!-- 계산 결과 출력 영역 -->
+    <div class="result-container" id="resultContainer" style="display: none;">
+      <div class="result-section">
+        <div class="result-subtitle">할인 산출 명세</div>
+        <div class="result-row">
+          <span>적용된 할인율</span>
+          <span id="resultRate">0%</span>
+        </div>
+        <div class="result-row">
+          <span>절약한 할인 금액</span>
+          <span id="resultDiscountAmount">0원</span>
+        </div>
+        <div class="result-row total">
+          <span>최종 결제 금액 (할인가)</span>
+          <span id="resultFinalPrice">0원</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 상단 애드센스 광고 영역 -->
+    <div class="ad-slot">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+           data-ad-slot="1234567890"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <!-- 2. 백과사전 상세 설명 영역 (계산기 하단) -->
+    <section class="wiki-box">
+      <p>
+        <strong>할인(Discount) 및 할인율의 정의</strong><br>
+        <strong>위키백과 및 네이버 지식백과 참조:</strong> **할인**이란 상품이나 서비스의 원래 가격(정가)에서 일정 금액이나 비율을 깎아주는 상거래 행위입니다. **할인율**은 정가 대비 얼마나 저렴하게 구매할 수 있는지를 백분율(%)로 환산한 수치로, 소비자가 가격 경쟁력을 비교하고 경제적인 소비를 하는 데 필수적인 지표입니다.
+      </p>
+      <p>
+        <strong>할인 산정 방식의 주요 특징</strong><br>
+        1) **정률 할인:** 정가에 일정한 비율(예: 10%, 30%)을 곱하여 할인액을 산출하는 방식으로 유통업계와 쇼핑몰에서 가장 보편적으로 사용됩니다.<br>
+        2) **체감 효과:** 동일한 할인 금액이라 하더라도 물품의 정가 규모에 따라 체감하는 할인율이 다르기 때문에, 정확한 비율 계산을 통해 합리적인 소비 결정을 내릴 수 있습니다.
+      </p>
+      <span class="wiki-source">※ 출처: 위키백과(할인), 네이버 지식백과(시사경제용어사전, 마케팅용어사전)</span>
+    </section>
+
+    <!-- 하단 애드센스 광고 영역 -->
+    <div class="ad-slot">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+           data-ad-slot="0987654321"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <!-- 3. 자주 묻는 질문 (FAQ) - 기본적으로 open 클래스로 전부 열림 -->
+    <h2>자주 묻는 질문 (FAQ)</h2>
+    <div class="faq-list">
+      <div class="faq-item open">
+        <button type="button" class="faq-question">
+          <span>할인율을 계산하는 공식은 어떻게 되나요?</span>
+          <span class="faq-icon"></span>
+        </button>
+        <div class="faq-answer">
+          할인율은 '(정가 - 할인가) ÷ 정가 × 100' 공식으로 산출됩니다. 예를 들어 5만 원짜리 상품을 4만 원에 구매했다면, (50,000 - 40,000) ÷ 50,000 × 100을 통해 20%의 할인율을 얻게 됩니다.
+        </div>
+      </div>
+
+      <div class="faq-item open">
+        <button type="button" class="faq-question">
+          <span>중복 할인이 적용될 때는 할인율이 어떻게 계산되나요?</span>
+          <span class="faq-icon"></span>
+        </button>
+        <div class="faq-answer">
+          일반적으로 다중(중복) 할인은 합산되어 적용되지 않고 순차적으로 적용됩니다. 예를 들어 10% 쿠폰 할인 후 20% 추가 할인이 붙는 경우, 정가에서 10%가 깎인 금액을 기준으로 다시 20%가 차감되는 복합 계산 방식을 따릅니다.
+        </div>
+      </div>
+
+      <div class="faq-item open">
+        <button type="button" class="faq-question">
+          <span>오프라인 매장과 온라인 쇼핑몰의 할인 체계가 다른가요?</span>
+          <span class="faq-icon"></span>
+        </button>
+        <div class="faq-answer">
+          온라인 쇼핑몰은 플랫폼 쿠폰, 카드 즉시 할인, 포인트 적립 등 세분화된 할인 혜택이 결합되는 경우가 많아 체감 할인율이 더 높을 수 있으나, 배송비나 조건부 최저가 제한 등을 함께 고려해야 합니다.
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- 푸터 영역 -->
+  <footer>
+    <p>© 2026 Miso Life. All rights reserved.</p>
+    <p>본 계산기는 입력된 정가와 비율을 바탕으로 산출된 추정치이며, 상점별 절사 정책이나 부가세 포함 여부에 따라 실제 결제 금액과 미세한 차이가 발생할 수 있습니다.</p>
+    <p style="margin-top: 8px;"><a href="../privacy.html">개인정보처리방침</a></p>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // FAQ 아코디언 토글 이벤트 (기본 open 상태 유지)
+      const faqQuestions = document.querySelectorAll('.faq-question');
+      faqQuestions.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const item = btn.parentElement;
+          item.classList.toggle('open');
+        });
+      });
+
+      // 계산 모드 전환 (할인율 입력 vs 할인가 직접 입력)
+      const calcMode = document.getElementById('calcMode');
+      const inputGroupRate = document.getElementById('inputGroupRate');
+      const inputGroupPrice = document.getElementById('inputGroupPrice');
+
+      calcMode.addEventListener('change', () => {
+        if (calcMode.value === 'rate') {
+          inputGroupRate.style.display = 'block';
+          inputGroupPrice.style.display = 'none';
+        } else {
+          inputGroupRate.style.display = 'none';
+          inputGroupPrice.style.display = 'block';
+        }
+      });
+
+      // 할인율 계산 로직
+      const calcForm = document.getElementById('calcForm');
+      const resultContainer = document.getElementById('resultContainer');
+
+      calcForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const originalPrice = parseFloat(document.getElementById('originalPrice').value) || 0;
+        let rate = 0;
+        let discountAmount = 0;
+        let finalPrice = 0;
+
+        if (calcMode.value === 'rate') {
+          rate = parseFloat(document.getElementById('discountRate').value) || 0;
+          discountAmount = originalPrice * (rate / 100);
+          finalPrice = Math.max(0, originalPrice - discountAmount);
+        } else {
+          finalPrice = parseFloat(document.getElementById('discountPrice').value) || 0;
+          discountAmount = Math.max(0, originalPrice - finalPrice);
+          rate = originalPrice > 0 ? (discountAmount / originalPrice) * 100 : 0;
+        }
+
+        // UI 결과 바인딩
+        document.getElementById('resultRate').textContent = rate.toFixed(1) + '%';
+        document.getElementById('resultDiscountAmount').textContent = Math.round(discountAmount).toLocaleString() + ' 원';
+        document.getElementById('resultFinalPrice').textContent = Math.round(finalPrice).toLocaleString() + ' 원';
+
+        resultContainer.style.display = 'block';
+      });
+    });
+  </script>
+</body>
+</html>

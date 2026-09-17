@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>예적금 비교 계산기 - Miso Calculator</title>
+    <meta name="description" content="정기예금과 정기적금, 복리/단리 상품의 이자 수익을 한눈에 비교하고 세후 실수령액 및 자산 형성 효과를 시뮬레이션해 보세요.">
+    <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #7c3aed;
+            --primary-light: #f3e8ff;
+            --primary-hover: #6d28d9;
+            --bg-main: #faf5ff;
+            --bg-card: #ffffff;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --border: #e9d5ff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 헤더 기본 레이아웃 */
+        .site-header {
+            background-color: #ffffff;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 8px rgba(124, 58, 237, 0.05);
+        }
+
+        .header-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        /* 로고 영역 */
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-decoration: none;
+            flex-shrink: 0;
+        }
+
+        .brand-icon {
+            width: 36px;
+            height: 36px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.95rem;
+            box-shadow: 0 2px 6px rgba(124, 58, 237, 0.3);
+        }
+
+        /* 네비게이션 그룹 */
+        .nav-right-group {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .main-nav {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .nav-item {
+            font-size: 0.92rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 0.2s;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .nav-item:hover, 
+        .nav-item.active {
+            color: var(--primary);
+            background-color: var(--primary-light);
+            font-weight: 700;
+        }
+
+        /* 드롭다운 스타일 */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+        }
+
+        .dropdown-btn .chevron {
+            width: 14px;
+            height: 14px;
+            transition: transform 0.2s ease;
+        }
+
+        .dropdown.is-open .chevron {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            width: 260px;
+            background-color: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            padding: 8px;
+            display: none;
+            flex-direction: column;
+            gap: 2px;
+            z-index: 1100;
+        }
+
+        .dropdown.is-open .dropdown-menu {
+            display: flex;
+        }
+
+        .dropdown-item {
+            display: flex;
+            flex-direction: column;
+            padding: 10px 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background-color 0.2s;
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--primary-light);
+        }
+
+        .dropdown-item .title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .dropdown-item:hover .title {
+            color: var(--primary);
+        }
+
+        .dropdown-item .desc {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* 전체 목록 우측 버튼 */
+        .btn-list-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: var(--primary);
+            background-color: var(--primary-light);
+            border: 1px solid var(--border);
+            padding: 8px 14px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .btn-list-back:hover {
+            background-color: var(--primary);
+            color: #ffffff;
+            border-color: var(--primary);
+        }
+
+        /* 햄버거 버튼 (모바일용) */
+        .btn-hamburger {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 24px;
+            height: 18px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .hamburger-bar {
+            width: 100%;
+            height: 2px;
+            background-color: var(--text-dark);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-hamburger.active .hamburger-bar:nth-child(1) {
+            transform: translateY(8px) rotate(45deg);
+        }
+        .btn-hamburger.active .hamburger-bar:nth-child(2) {
+            opacity: 0;
+        }
+        .btn-hamburger.active .hamburger-bar:nth-child(3) {
+            transform: translateY(-8px) rotate(-45deg);
+        }
+
+        /* 2. 메인 컨테이너 */
+        main {
+            max-width: 1100px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 32px 24px;
+            flex: 1;
+        }
+
+        .page-header {
+            margin-bottom: 28px;
+        }
+
+        .page-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            letter-spacing: -0.02em;
+        }
+
+        .page-desc {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+
+        /* 계산기 영역 Grid */
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .calc-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+        }
+
+        .card-header-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .badge-a {
+            background-color: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .badge-b {
+            background-color: #e0f2fe;
+            color: #0284c7;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.88rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: var(--text-dark);
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-wrapper input, .input-wrapper select {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.2s;
+            background-color: #ffffff;
+        }
+
+        .input-wrapper input:focus, .input-wrapper select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+        }
+
+        .unit {
+            position: absolute;
+            right: 14px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 4px;
+        }
+
+        .radio-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.88rem;
+            cursor: pointer;
+        }
+
+        .calc-btn-container {
+            margin-bottom: 32px;
+            text-align: center;
+        }
+
+        .calc-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px 48px;
+            border-radius: 30px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
+        }
+
+        .calc-btn:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        /* 결과 비교 테이블/카드 */
+        .result-section {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 48px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+        }
+
+        .result-header {
+            font-size: 1.2rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+        }
+
+        .comparison-table th, .comparison-table td {
+            padding: 14px 16px;
+            text-align: center;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 0.92rem;
+        }
+
+        .comparison-table th {
+            background-color: #f8fafc;
+            color: var(--text-muted);
+            font-weight: 700;
+        }
+
+        .comparison-table td {
+            font-weight: 600;
+        }
+
+        .highlight-winner {
+            color: var(--primary);
+            font-weight: 800;
+        }
+
+        /* 3. 고품질 SEO 콘텐츠 가이드 섹션 */
+        .guide-section {
+            background-color: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px;
+            line-height: 1.6;
+        }
+
+        .guide-section h2 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+            color: var(--text-dark);
+            border-left: 4px solid var(--primary);
+            padding-left: 10px;
+        }
+
+        .guide-section h3 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin: 20px 0 8px 0;
+            color: var(--primary-hover);
+        }
+
+        .guide-section p, .guide-section li {
+            font-size: 0.9rem;
+            color: #475569;
+            margin-bottom: 8px;
+        }
+
+        .guide-section ul {
+            padding-left: 20px;
+        }
+
+        .faq-box {
+            margin-top: 24px;
+            background-color: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .faq-item {
+            margin-bottom: 16px;
+        }
+
+        .faq-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .faq-q {
+            font-weight: 700;
+            color: var(--text-dark);
+            font-size: 0.92rem;
+        }
+
+        .faq-a {
+            font-size: 0.88rem;
+            color: #64748b;
+            margin-top: 4px;
+        }
+
+        /* 푸터 */
+        footer {
+            background-color: #ffffff;
+            border-top: 1px solid var(--border);
+            padding: 24px 0;
+            margin-top: auto;
+        }
+
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            text-align: center;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* 반응형 스타일 */
+        @media (max-width: 1024px) {
+            .btn-hamburger { 
+                display: flex; 
+            }
+
+            .nav-right-group {
+                display: none;
+                position: absolute;
+                top: 61px;
+                left: 0;
+                width: 100%;
+                background-color: #ffffff;
+                flex-direction: column;
+                align-items: stretch;
+                padding: 1rem 1.25rem;
+                gap: 1rem;
+                border-bottom: 1px solid var(--border);
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+            }
+
+            .nav-right-group.is-open { 
+                display: flex; 
+            }
+
+            .main-nav { 
+                flex-direction: column; 
+                align-items: stretch; 
+                gap: 4px; 
+            }
+
+            .dropdown-menu { 
+                position: static; 
+                width: 100%; 
+                box-shadow: none; 
+                border: none; 
+                background: var(--bg-main); 
+                padding: 4px; 
+                margin-top: 4px; 
+            }
+        }
+
+        @media (max-width: 768px) {
+            .calculator-grid {
+                grid-template-columns: 1fr;
+            }
+            .comparison-table th, .comparison-table td {
+                padding: 10px 8px;
+                font-size: 0.82rem;
+            }
+            .guide-section {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 고도화된 상단 헤더 -->
+    <header class="site-header">
+        <div class="header-inner">
+            <!-- 브랜드 로고 -->
+            <a href="../index.html" class="brand">
+                <div class="brand-icon" aria-hidden="true">MC</div>
+                <span>Miso Calculator</span>
+            </a>
+
+            <!-- 모바일 전용 햄버거 버튼 -->
+            <button type="button" class="btn-hamburger" id="hamburgerBtn" aria-label="메뉴 열기" aria-expanded="false">
+                <span class="hamburger-bar"></span>
+                <span class="hamburger-bar"></span>
+                <span class="hamburger-bar"></span>
+            </button>
+
+            <!-- 네비게이션 & 전체 목록 그룹 -->
+            <div class="nav-right-group" id="navGroup">
+                <nav class="main-nav" aria-label="주요 계산기 메뉴">
+                    <a href="./target-amount.html" class="nav-item">목표금액 달성</a>
+                    <a href="./compound-interest.html" class="nav-item">복리 이자</a>
+                    <a href="./deposit.html" class="nav-item">예금 이자</a>
+                    <a href="./savings.html" class="nav-item">적금 이자</a>
+                    <a href="./compare-savings.html " class="nav-item active" >예적금 비교</a>
+
+                    <!-- 기타 계산기 드롭다운 메뉴 -->
+                    <div class="dropdown" id="moreCalcDropdown">
+                        <button type="button" class="nav-item dropdown-btn" id="dropdownToggleBtn" aria-expanded="false">
+                            <span>기타 계산기</span>
+                            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <path d="M6 9l6 6 6-6"/>
+                            </svg>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a href="./compare-savings.html" class="dropdown-item">
+                                <span class="title">예적금 비교</span>
+                                <span class="desc">예금과 적금의 수익률 직접 비교</span>
+                            </a>
+                            <a href="./pinwheel-savings.html" class="dropdown-item">
+                                <span class="title">풍차 돌리기</span>
+                                <span class="desc">매월 예적금 가입 수익 시뮬레이션</span>
+                            </a>
+                            <a href="./youth-savings.html" class="dropdown-item">
+                                <span class="title">청년미래적금</span>
+                                <span class="desc">정부 지원금 포함 혜택 계산</span>
+                            </a>
+                            <a href="./parking-cma.html" class="dropdown-item">
+                                <span class="title">파킹통장 / CMA</span>
+                                <span class="desc">일할 이자 계산 및 수령액 비교</span>
+                            </a>
+                        </div>
+                    </div>
+                </nav>
+
+                <!-- 전체 목록 버튼 -->
+                <a href="../index.html" class="btn-list-back">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M3 12h18M3 6h18M3 18h18"/>
+                    </svg>
+                    전체 목록
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 메인 콘텐츠 -->
+    <main>
+        <div class="page-header">
+            <h1 class="page-title">예적금 비교 계산기</h1>
+            <p class="page-desc">서로 다른 금융 상품(예금 vs 적금, 단리 vs 복리, 이자율 차이)의 세후 실수령액을 한눈에 비교해 보세요.</p>
+        </div>
+
+        <form id="compareForm" onsubmit="event.preventDefault(); calculateComparison();">
+            <div class="calculator-grid">
+                <!-- 상품 A -->
+                <div class="calc-card">
+                    <span class="card-header-badge badge-a">상품 A</span>
+                    
+                    <div class="form-group">
+                        <label>상품 유형</label>
+                        <div class="input-wrapper">
+                            <select id="typeA" onchange="toggleInputLabels()">
+                                <option value="deposit">정기예금 (목돈 굴리기)</option>
+                                <option value="savings">정기적금 (매월 적립)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label id="amountLabelA">예치금액 (원)</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="amountA" value="10000000" placeholder="예: 10000000" required>
+                            <span class="unit">원</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>저축 기간</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="monthsA" value="12" placeholder="예: 12" required>
+                            <span class="unit">개월</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>연 이자율 (%)</label>
+                        <div class="input-wrapper">
+                            <input type="number" step="0.01" id="rateA" value="3.5" placeholder="예: 3.5" required>
+                            <span class="unit">%</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>이자 계산 방식</label>
+                        <div class="radio-group">
+                            <label class="radio-label"><input type="radio" name="interestTypeA" value="simple" checked> 단리</label>
+                            <label class="radio-label"><input type="radio" name="interestTypeA" value="compound"> 월복리</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 상품 B -->
+                <div class="calc-card">
+                    <span class="card-header-badge badge-b">상품 B</span>
+                    
+                    <div class="form-group">
+                        <label>상품 유형</label>
+                        <div class="input-wrapper">
+                            <select id="typeB" onchange="toggleInputLabels()">
+                                <option value="deposit">정기예금 (목돈 굴리기)</option>
+                                <option value="savings" selected>정기적금 (매월 적립)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label id="amountLabelB">매월 적립액 (원)</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="amountB" value="830000" placeholder="예: 830000" required>
+                            <span class="unit">원</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>저축 기간</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="monthsB" value="12" placeholder="예: 12" required>
+                            <span class="unit">개월</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>연 이자율 (%)</label>
+                        <div class="input-wrapper">
+                            <input type="number" step="0.01" id="rateB" value="5.0" placeholder="예: 5.0" required>
+                            <span class="unit">%</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>이자 계산 방식</label>
+                        <div class="radio-group">
+                            <label class="radio-label"><input type="radio" name="interestTypeB" value="simple" checked> 단리</label>
+                            <label class="radio-label"><input type="radio" name="interestTypeB" value="compound"> 월복리</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="calc-btn-container">
+                <button type="submit" class="calc-btn">두 상품 수익률 비교하기</button>
+            </div>
+        </form>
+
+        <!-- 결과 영역 -->
+        <section class="result-section" id="resultSection">
+            <h2 class="result-header">🔍 수익성 비교 결과</h2>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>구분</th>
+                        <th>상품 A</th>
+                        <th>상품 B</th>
+                        <th>차액 (A - B)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>총 납입 원금</td>
+                        <td id="resPrincipalA">-</td>
+                        <td id="resPrincipalB">-</td>
+                        <td id="diffPrincipal">-</td>
+                    </tr>
+                    <tr>
+                        <td>세전 이자</td>
+                        <td id="resGrossInterestA">-</td>
+                        <td id="resGrossInterestB">-</td>
+                        <td id="diffGrossInterest">-</td>
+                    </tr>
+                    <tr>
+                        <td>이자소득세 (15.4%)</td>
+                        <td id="resTaxA">-</td>
+                        <td id="resTaxB">-</td>
+                        <td id="diffTax">-</td>
+                    </tr>
+                    <tr>
+                        <td>세후 이자</td>
+                        <td id="resNetInterestA">-</td>
+                        <td id="resNetInterestB">-</td>
+                        <td id="diffNetInterest">-</td>
+                    </tr>
+                    <tr style="background-color: #faf5ff;">
+                        <td><strong>최종 만기 수령액</strong></td>
+                        <td id="resTotalA" class="highlight-winner">-</td>
+                        <td id="resTotalB" class="highlight-winner">-</td>
+                        <td id="diffTotal" style="font-weight: 800;">-</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- 정보 가이드 섹션 -->
+        <section class="guide-section">
+            <h2>💡 예금과 적금, 올바른 비교 산정 가이드</h2>
+            
+            <h3>1. 예금 이자와 적금 이자의 착시 현상</h3>
+            <p>많은 분들이 표면상 금리(이자율)만 보고 적금이 예금보다 유리하다고 오해하곤 합니다. 예를 들어 <strong>5% 금리의 적금</strong>과 <strong>3.5% 금리의 예금</strong>이 있을 때, 실제 지급되는 세후 이자는 예금이 더 많은 경우가 많습니다.</p>
+            <ul>
+                <li><strong>정기예금:</strong> 만기 때까지 전체 원금에 대해 1년 내내 약정 금리가 적용됩니다.</li>
+                <li><strong>정기적금:</strong> 첫 달 입금액만 12개월 치 이자를 받고, 마지막 달 입금액은 단 1개월 치 이자만 받게 되므로 실질 평균 적용 금리는 표시 금리의 약 절반 수준(단리 기준 약 55%)에 불과합니다.</li>
+            </ul>
+
+            <h3>2. 단리와 복리의 차이점</h3>
+            <p><strong>단리</strong>는 최초 맡긴 원금에 대해서만 이자가 계산되는 방식입니다. 반면 <strong>월복리</strong>는 매월 발생한 이자가 다시 원금에 합산되어 다음 달 이자를 산정하므로, 장기 상품일수록 이자 수익 증가 폭이 점차 커지게 됩니다.</p>
+
+            <h3>3. 이자소득세 산정 법칙</h3>
+            <p>대한민국 금융 법령에 따라 모든 예적금 이자 수익에는 <strong>15.4%의 세금</strong>이 원천징수됩니다.</p>
+            <ul>
+                <li>이자소득세: 발생 이자의 14.0%</li>
+                <li>지방소득세: 이자소득세의 10% (전체 이자의 1.4%)</li>
+                <li>비과세 종합저축 또는 세액공제 계좌(ISA 등) 활용 시 세금 절감 효과를 기대할 수 있습니다.</li>
+            </ul>
+
+            <div class="faq-box">
+                <div class="faq-item">
+                    <div class="faq-q">Q. 예금과 적금 중 어떤 것을 선택해야 하나요?</div>
+                    <div class="faq-a">이미 목돈이 모여 있는 상태라면 정기예금에 한 번에 묶어두는 것이 이자 수익면에서 가장 유리합니다. 반면, 매월 급여에서 소액씩 자산을 모아가는 단계라면 정기적금을 활용하는 것이 좋습니다.</div>
+                </div>
+                <div class="faq-item" style="margin-top: 12px;">
+                    <div class="faq-q">Q. 예적금 풍차돌리기란 무엇인가요?</div>
+                    <div class="faq-a">매월 새로운 1년 만기 적금 또는 예금 계좌를 하나씩 개설하여 12개월 후부터는 매달 만기 이자를 수령하고 이를 재투자하는 파이프라인 형성 저축 전략입니다.</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 푸터 -->
+    <footer>
+        <div class="footer-inner">
+            <p>© 2026 Miso Calculator. All rights reserved.</p>
+            <p>본 사이트에서 제공하는 시뮬레이션 결과는 참고용이며, 실제 금융기관의 계산 방식 및 세법 개정에 따라 미세한 차이가 발생할 수 있습니다.</p>
+            <p style="margin-top: 8px;"><a href="../privacy.html" style="color: var(--text-muted); text-decoration: underline;">개인정보처리방침</a></p>
+        </div>
+    </footer>
+
+    <!-- 자바스크립트 -->
+    <script>
+        // --- Header UI 연동 스크립트 ---
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const navGroup = document.getElementById('navGroup');
+        const dropdown = document.getElementById('moreCalcDropdown');
+        const dropdownToggleBtn = document.getElementById('dropdownToggleBtn');
+
+        // 모바일 햄버거 토글
+        if (hamburgerBtn && navGroup) {
+            hamburgerBtn.addEventListener('click', () => {
+                const isOpen = navGroup.classList.toggle('is-open');
+                hamburgerBtn.classList.toggle('active');
+                hamburgerBtn.setAttribute('aria-expanded', isOpen);
+            });
+        }
+
+        // 드롭다운 토글
+        if (dropdownToggleBtn && dropdown) {
+            dropdownToggleBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isOpen = dropdown.classList.toggle('is-open');
+                dropdownToggleBtn.setAttribute('aria-expanded', isOpen);
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!dropdown.contains(e.target)) {
+                    dropdown.classList.remove('is-open');
+                    dropdownToggleBtn.setAttribute('aria-expanded', 'false');
+                }
+            });
+        }
+
+        // --- 계산기 비즈니스 로직 ---
+        function toggleInputLabels() {
+            const typeA = document.getElementById('typeA').value;
+            const typeB = document.getElementById('typeB').value;
+
+            document.getElementById('amountLabelA').innerText = typeA === 'deposit' ? '예치금액 (원)' : '매월 적립액 (원)';
+            document.getElementById('amountLabelB').innerText = typeB === 'deposit' ? '예치금액 (원)' : '매월 적립액 (원)';
+        }
+
+        function calculateSingleProduct(type, amount, months, ratePercent, isCompound) {
+            const r = ratePercent / 100;
+            let principal = 0;
+            let grossInterest = 0;
+
+            if (type === 'deposit') {
+                principal = amount;
+                if (!isCompound) {
+                    grossInterest = principal * r * (months / 12);
+                } else {
+                    grossInterest = principal * (Math.pow(1 + r / 12, months) - 1);
+                }
+            } else {
+                principal = amount * months;
+                if (!isCompound) {
+                    grossInterest = amount * r * (months * (months + 1)) / (2 * 12);
+                } else {
+                    let current = 0;
+                    const monthlyRate = r / 12;
+                    for (let i = 0; i < months; i++) {
+                        current = (current + amount) * (1 + monthlyRate);
+                    }
+                    grossInterest = current - principal;
+                }
+            }
+
+            const tax = Math.floor(grossInterest * 0.154);
+            const netInterest = Math.floor(grossInterest - tax);
+            const total = principal + netInterest;
+
+            return {
+                principal: Math.floor(principal),
+                grossInterest: Math.floor(grossInterest),
+                tax: tax,
+                netInterest: netInterest,
+                total: total
+            };
+        }
+
+        function formatNum(num) {
+            return new Intl.NumberFormat('ko-KR').format(num) + ' 원';
+        }
+
+        function calculateComparison() {
+            const typeA = document.getElementById('typeA').value;
+            const amountA = parseFloat(document.getElementById('amountA').value) || 0;
+            const monthsA = parseInt(document.getElementById('monthsA').value) || 0;
+            const rateA = parseFloat(document.getElementById('rateA').value) || 0;
+            const compoundA = document.querySelector('input[name="interestTypeA"]:checked').value === 'compound';
+
+            const typeB = document.getElementById('typeB').value;
+            const amountB = parseFloat(document.getElementById('amountB').value) || 0;
+            const monthsB = parseInt(document.getElementById('monthsB').value) || 0;
+            const rateB = parseFloat(document.getElementById('rateB').value) || 0;
+            const compoundB = document.querySelector('input[name="interestTypeB"]:checked').value === 'compound';
+
+            const resA = calculateSingleProduct(typeA, amountA, monthsA, rateA, compoundA);
+            const resB = calculateSingleProduct(typeB, amountB, monthsB, rateB, compoundB);
+
+            // 상품 A 채우기
+            document.getElementById('resPrincipalA').innerText = formatNum(resA.principal);
+            document.getElementById('resGrossInterestA').innerText = formatNum(resA.grossInterest);
+            document.getElementById('resTaxA').innerText = formatNum(resA.tax);
+            document.getElementById('resNetInterestA').innerText = formatNum(resA.netInterest);
+            document.getElementById('resTotalA').innerText = formatNum(resA.total);
+
+            // 상품 B 채우기
+            document.getElementById('resPrincipalB').innerText = formatNum(resB.principal);
+            document.getElementById('resGrossInterestB').innerText = formatNum(resB.grossInterest);
+            document.getElementById('resTaxB').innerText = formatNum(resB.tax);
+            document.getElementById('resNetInterestB').innerText = formatNum(resB.netInterest);
+            document.getElementById('resTotalB').innerText = formatNum(resB.total);
+
+            // 차액 채우기
+            document.getElementById('diffPrincipal').innerText = formatNum(resA.principal - resB.principal);
+            document.getElementById('diffGrossInterest').innerText = formatNum(resA.grossInterest - resB.grossInterest);
+            document.getElementById('diffTax').innerText = formatNum(resA.tax - resB.tax);
+            document.getElementById('diffNetInterest').innerText = formatNum(resA.netInterest - resB.netInterest);
+            
+            const diffTot = resA.total - resB.total;
+            const diffTotElem = document.getElementById('diffTotal');
+            if (diffTot > 0) {
+                diffTotElem.innerText = '+ ' + formatNum(diffTot) + ' (A 우세)';
+                diffTotElem.style.color = 'var(--primary)';
+            } else if (diffTot < 0) {
+                diffTotElem.innerText = formatNum(diffTot) + ' (B 우세)';
+                diffTotElem.style.color = '#0284c7';
+            } else {
+                diffTotElem.innerText = '0 원 (동일)';
+                diffTotElem.style.color = 'var(--text-dark)';
+            }
+        }
+
+        // 초기 실행
+        toggleInputLabels();
+        calculateComparison();
+    </script>
+</body>
+</html>

@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Miso Calculator - 임금 계산기</title>
+  <style>
+  :root {
+      --primary: #dc2626;         /* 대표 빨강 색상 */
+      --primary-hover: #b91c1c;   /* 버튼/링크 호버 색상 */
+      --primary-light: #fef2f2;   /* 연한 빨강 배경 */
+      --text-dark: #7f1d1d;       /* 진한 붉은 텍스트 */
+      --text-muted: #6b7280;     /* 보조 텍스트 색상 */
+      --border: #fca5a5;         /* 테두리 빨강 */
+      --bg-red: #fff5f5;         /* 바디 전체 배경 */
+      --bg-main: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      color: var(--text-dark);
+      background-color: var(--bg-purple);
+      line-height: 1.6;
+    }
+
+    /* 헤더 레이아웃 */
+    .site-header {
+      background-color: #ffffff;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 8px rgba(124, 58, 237, 0.05);
+    }
+
+    .header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    /* 브랜드 로고 */
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--primary);
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      background-color: var(--primary);
+      color: white;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.95rem;
+      box-shadow: 0 2px 6px rgba(124, 58, 237, 0.3);
+    }
+
+    /* 네비게이션 그룹 */
+    .nav-right-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .main-nav {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .nav-item {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      transition: all 0.2s;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .nav-item:hover,
+    .nav-item.active {
+      color: var(--primary);
+      background-color: var(--primary-light);
+      font-weight: 700;
+    }
+
+    /* 드롭다운 스타일 */
+    .dropdown {
+      position: relative;
+    }
+
+    .dropdown-btn {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+    }
+
+    .dropdown-btn .chevron {
+      width: 14px;
+      height: 14px;
+      transition: transform 0.2s ease;
+    }
+
+    .dropdown.is-open .chevron {
+      transform: rotate(180deg);
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      width: 320px;
+      max-height: 480px;
+      overflow-y: auto;
+      background-color: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+      padding: 8px;
+      display: none;
+      flex-direction: column;
+      gap: 2px;
+      z-index: 1100;
+    }
+
+    .dropdown.is-open .dropdown-menu {
+      display: flex;
+    }
+
+    /* 스크롤바 디자인 */
+    .dropdown-menu::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    .dropdown-menu::-webkit-scrollbar-thumb {
+      background-color: var(--border);
+      border-radius: 4px;
+    }
+
+    .dropdown-item {
+      display: flex;
+      flex-direction: column;
+      padding: 10px 12px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background-color 0.2s;
+    }
+
+    .dropdown-item:hover {
+      background-color: var(--primary-light);
+    }
+
+    .title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dropdown-item .title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+
+    .dropdown-item:hover .title {
+      color: var(--primary);
+    }
+
+    .dropdown-item .desc {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* 뱃지 스타일 */
+    .badge {
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 5px;
+      border-radius: 4px;
+      line-height: 1;
+    }
+
+    .badge.popular {
+      background-color: #fef3c7;
+      color: #d97706;
+    }
+
+    .badge.new {
+      background-color: #dbeafe;
+      color: #2563eb;
+    }
+
+    /* 목록 돌아가기 버튼 */
+    .btn-list-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--primary);
+      background-color: var(--primary-light);
+      border: 1px solid var(--border);
+      padding: 8px 14px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .btn-list-back:hover {
+      background-color: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+
+    /* 햄버거 버튼 (모바일용) */
+    .btn-hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 24px;
+      height: 18px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .hamburger-bar {
+      width: 100%;
+      height: 2px;
+      background-color: var(--text-dark);
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+
+    /* 반응형 레이아웃 */
+    @media (max-width: 768px) {
+      .btn-hamburger {
+        display: flex;
+      }
+
+      .nav-right-group {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background-color: #ffffff;
+        border-bottom: 1px solid var(--border);
+        padding: 16px 24px;
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .nav-right-group.is-open {
+        display: flex;
+      }
+
+      .main-nav {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 4px;
+      }
+
+      .dropdown-menu {
+        position: static;
+        width: 100%;
+        max-height: none;
+        box-shadow: none;
+        border: none;
+        background: var(--bg-purple);
+        padding: 4px;
+        margin-top: 4px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <!-- 브랜드 로고 -->
+      <a href="../index.html" class="brand">
+        <div class="brand-icon" aria-hidden="true">MC</div>
+        <span>Miso Calculator</span>
+      </a>
+
+      <!-- 모바일 전용 햄버거 버튼 -->
+      <button type="button" class="btn-hamburger" id="hamburgerBtn" aria-label="메뉴 열기" aria-expanded="false">
+        <span class="hamburger-bar"></span>
+        <span class="hamburger-bar"></span>
+        <span class="hamburger-bar"></span>
+      </button>
+
+      <!-- 네비게이션 & 전체 목록 그룹 -->
+      <div class="nav-right-group" id="navGroup">
+        <nav class="main-nav" aria-label="주요 계산기 메뉴">
+          <a href="./target-amount.html" class="nav-item">목표금액 달성</a>
+          <a href="./compound-interest.html" class="nav-item">복리 이자</a>
+          <a href="./deposit.html" class="nav-item">예금 이자</a>
+          <a href="./savings.html" class="nav-item">적금 이자</a>
+
+          <!-- 임금 계산기 드롭다운 -->
+          <div class="dropdown" id="salaryCalcDropdown">
+            <button type="button" class="nav-item dropdown-btn" id="salaryDropdownToggleBtn" aria-expanded="false">
+              <span>임금 계산기</span>
+              <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M6 9l6 6 6-6"/>
+              </svg>
+            </button>
+
+            <div class="dropdown-menu">
+              <a href="./pay/salary-increase.html" class="dropdown-item">
+                <div class="title-wrap">
+                  <span class="title">연봉 인상률 계산</span>
+                  <span class="badge popular">POP</span>
+                </div>
+                <span class="desc">전년도 vs 올해 연봉 비교, 인상률/인상액 계산</span>
+              </a>
+
+              <a href="./pay/tenure.html" class="dropdown-item">
+                <div class="title-wrap">
+                  <span class="title">근속기간 계산</span>
+                  <span class="badge popular">POP</span>
+                </div>
+                <span class="desc">입사일과 퇴사일을 입력하여 근속기간(년/월/일)을 계산합니다.</span>
+              </a>
+
+              <a href="./pay/freelancer-tax.html" class="dropdown-item">
+                <div class="title-wrap">
+                  <span class="title">프리랜서 3.3% 실수령 계산</span>
+                  <span class="badge popular">POP</span>
+                  <span class="badge new">NEW</span>
+                </div>
+                <span class="desc">사업소득(3.3%) 원천징수를 적용한 프리랜서 세후 실수령액 및 연말정산 환급 예상액을 계산합니다.</span>
+              </a>
+
+              <a href="./pay/take-home-pay.html" class="dropdown-item">
+                <div class="title-wrap">
+                  <span class="title">급여 실수령액 계산</span>
+                </div>
+                <span class="desc">세전 급여에서 세금을 제외한 실수령액을 계산합니다.</span>
+              </a>
+
+              <a href="./pay/weekly-holiday-pay.html" class="dropdown-item">
+                <div class="title-wrap">
+                  <span class="title">주휴수당 계산</span>
+                </div>
+                <span class="desc">주당 근무한 시간을 기준으로 주휴수당을 계산합니다.</span>
+              </a>
+
+              <a href="./pay/severance-pay.html" class="dropdown-item">
+                <div class="title-wrap">
+                  <span class="title">퇴직금 계산</span>
+                </div>
+                <span class="desc">근무했던 기간에 따라 퇴직금을 계산합니다.</span>
+              </a>
+
+              <a href="./pay/unemployment-benefit.html" class="dropdown-item">
+                <div class="title-wrap">
+                  <span class="title">실업급여 계산</span>
+                </div>
+                <span class="desc">퇴직 후 실업급여를 받을 수 있는지 계산합니다.</span>
+              </a>
+
+              <a href="./pay/hourly-wage.html" class="dropdown-item">
+                <div class="title-wrap">
+                  <span class="title">시급 계산</span>
+                </div>
+                <span class="desc">시급을 통해 주급과 월급을 계산합니다.</span>
+              </a>
+
+              <a href="./pay/work-hours.html" class="dropdown-item">
+                <div class="title-wrap">
+                  <span class="title">근무시간 계산</span>
+                </div>
+                <span class="desc">근무시간을 통해 주급과 월급을 계산합니다.</span>
+              </a>
+
+              <a href="./pay/maternity-leave-pay.html" class="dropdown-item">
+                <div class="title-wrap">
+                  <span class="title">출산전후휴가 급여 계산</span>
+                </div>
+                <span class="desc">출산전후휴가 기간 동안 받을 수 있는 급여를 계산합니다.</span>
+              </a>
+
+              <a href="./pay/annual-leave-pay.html" class="dropdown-item">
+                <div class="title-wrap">
+                  <span class="title">연차수당 계산</span>
+                </div>
+                <span class="desc">미사용 연차에 대한 연차수당을 계산합니다.</span>
+              </a>
+
+              <a href="./pay/night-shift-pay.html" class="dropdown-item">
+                <div class="title-wrap">
+                  <span class="title">야근수당 계산</span>
+                </div>
+                <span class="desc">야간근로(22시~06시) 가산수당을 계산합니다.</span>
+              </a>
+
+              <a href="./pay/holiday-work-pay.html" class="dropdown-item">
+                <div class="title-wrap">
+                  <span class="title">휴일근무수당 계산</span>
+                </div>
+                <span class="desc">휴일근로 가산수당을 계산합니다.</span>
+              </a>
+
+              <a href="./pay/parental-leave-pay.html" class="dropdown-item">
+                <div class="title-wrap">
+                  <span class="title">육아휴직급여 계산</span>
+                </div>
+                <span class="desc">육아휴직 기간 동안 받을 수 있는 급여와 6+6 부모 육아휴직제 혜택을 계산합니다.</span>
+              </a>
+            </div>
+          </div>
+        </nav>
+
+        <a href="../index.html" class="btn-list-back">전체 목록</a>
+      </div>
+    </div>
+  </header>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 드롭다운 토글
+      const salaryDropdown = document.getElementById('salaryCalcDropdown');
+      const salaryToggleBtn = document.getElementById('salaryDropdownToggleBtn');
+
+      if (salaryToggleBtn && salaryDropdown) {
+        salaryToggleBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const isOpen = salaryDropdown.classList.toggle('is-open');
+          salaryToggleBtn.setAttribute('aria-expanded', isOpen);
+        });
+
+        // 외부 영역 클릭 시 드롭다운 닫기
+        document.addEventListener('click', (e) => {
+          if (!salaryDropdown.contains(e.target)) {
+            salaryDropdown.classList.remove('is-open');
+            salaryToggleBtn.setAttribute('aria-expanded', 'false');
+          }
+        });
+
+        // ESC 키 입력 시 닫기
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') {
+            salaryDropdown.classList.remove('is-open');
+            salaryToggleBtn.setAttribute('aria-expanded', 'false');
+          }
+        });
+      }
+
+      // 모바일 햄버거 메뉴 토글
+      const hamburgerBtn = document.getElementById('hamburgerBtn');
+      const navGroup = document.getElementById('navGroup');
+
+      if (hamburgerBtn && navGroup) {
+        hamburgerBtn.addEventListener('click', () => {
+          const isOpen = navGroup.classList.toggle('is-open');
+          hamburgerBtn.setAttribute('aria-expanded', isOpen);
+        });
+      }
+    });
+  </script>
+</body>
+</html>

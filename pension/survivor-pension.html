@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Miso Life - 유족연금 예상 수령액 계산기</title>
+  <style>
+    :root {
+      --primary: #eab308;         /* 노란색 (Yellow-500) */
+      --primary-hover: #ca8a04;   /* 진한 노란색 (Yellow-600) */
+      --primary-light: #fef9c3;   /* 연한 노란색 배경 (Yellow-50) */
+      --text-dark: #1f2937;       /* 텍스트 (Gray-800) */
+      --text-muted: #6b7280;      /* 보조 텍스트 (Gray-500) */
+      --border: #e5e7eb;         /* 테두리 (Gray-200) */
+      --bg-gray: #f9fafb;        /* 전체 메인 배경 (Gray-50) */
+      --bg-white: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      color: var(--text-dark);
+      background-color: var(--bg-gray);
+      line-height: 1.6;
+    }
+
+    /* 반응형 헤더 및 내비게이션 영역 */
+    .site-header {
+      background-color: var(--bg-white);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .header-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--primary-hover);
+      text-decoration: none;
+    }
+
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      background-color: var(--primary);
+      color: var(--text-dark);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.95rem;
+    }
+
+    .main-nav {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .nav-item {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 6px 10px;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .nav-item:hover,
+    .nav-item.active {
+      color: var(--primary-hover);
+      background-color: var(--primary-light);
+      font-weight: 700;
+    }
+
+    /* 홈 버튼 (가장 오른쪽 배치) */
+    .btn-home {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      background-color: var(--primary-light);
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: all 0.2s;
+      margin-left: 4px;
+    }
+
+    .btn-home:hover {
+      background-color: var(--primary);
+      color: var(--text-dark);
+    }
+
+    /* 메인 Card 컨테이너 */
+    .container {
+      max-width: 720px;
+      margin: 40px auto;
+      padding: 30px;
+      background-color: var(--bg-white);
+      border-radius: 16px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+      border: 1px solid var(--border);
+    }
+
+    .category-tag {
+      font-size: 13px;
+      color: var(--primary-hover);
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+
+    h1 {
+      font-size: 26px;
+      margin-top: 0;
+      margin-bottom: 16px;
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 10px;
+      color: var(--text-dark);
+    }
+
+    h2 {
+      font-size: 19px;
+      margin-top: 36px;
+      margin-bottom: 14px;
+      color: var(--text-dark);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 6px;
+    }
+
+    /* 계산기 입력 폼 스타일 */
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+      font-weight: bold;
+      color: var(--text-dark);
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 15px;
+      color: var(--text-dark);
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px #fef08a;
+    }
+
+    button.btn-calc {
+      width: 100%;
+      padding: 14px;
+      background-color: var(--primary);
+      color: var(--text-dark);
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background-color 0.2s;
+    }
+
+    button.btn-calc:hover {
+      background-color: var(--primary-hover);
+    }
+
+    /* 계산 결과 출력 영역 */
+    .result-container {
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 2px solid var(--primary);
+    }
+
+    .result-section {
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .result-subtitle {
+      font-size: 16px;
+      font-weight: bold;
+      color: var(--text-dark);
+      margin-bottom: 10px;
+    }
+
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 15px;
+      color: var(--text-muted);
+    }
+
+    .result-row.total {
+      font-size: 18px;
+      font-weight: bold;
+      color: var(--primary-hover);
+      margin-top: 8px;
+      border-top: 1px dashed var(--border);
+      padding-top: 8px;
+    }
+
+    /* 애드센스 광고 슬롯 */
+    .ad-slot {
+      margin: 24px 0;
+      text-align: center;
+      background: #fafafa;
+      border: 1px dashed var(--border);
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    /* 백과사전 상세 설명 (계산기 하단 배치) */
+    .wiki-box {
+      background-color: var(--primary-light);
+      border-left: 4px solid var(--primary);
+      padding: 18px;
+      border-radius: 0 8px 8px 0;
+      margin-top: 30px;
+      margin-bottom: 24px;
+      font-size: 14.5px;
+      line-height: 1.7;
+    }
+
+    .wiki-box p {
+      margin: 0 0 12px 0;
+      color: var(--text-dark);
+    }
+
+    .wiki-box p:last-child {
+      margin-bottom: 0;
+    }
+
+    .wiki-source {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: bold;
+      display: inline-block;
+      margin-top: 6px;
+    }
+
+    /* FAQ 아코디언 스타일 (모두 펼쳐짐) */
+    .faq-list {
+      margin-top: 12px;
+    }
+
+    .faq-item {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+
+    .faq-question {
+      width: 100%;
+      text-align: left;
+      padding: 14px 16px;
+      background-color: var(--bg-gray);
+      border: none;
+      font-size: 15px;
+      font-weight: bold;
+      color: var(--text-dark);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background-color 0.2s;
+    }
+
+    .faq-question:hover {
+      background-color: var(--primary-light);
+    }
+
+    .faq-icon {
+      font-size: 18px;
+      color: var(--primary-hover);
+      font-weight: bold;
+    }
+
+    .faq-item.open .faq-icon::before {
+      content: "-";
+    }
+
+    .faq-item:not(.open) .faq-icon::before {
+      content: "+";
+    }
+
+    .faq-answer {
+      display: none;
+      padding: 14px 16px;
+      font-size: 14.5px;
+      color: var(--text-muted);
+      background-color: var(--bg-white);
+      border-top: 1px solid var(--border);
+      line-height: 1.6;
+    }
+
+    .faq-item.open .faq-answer {
+      display: block;
+    }
+
+    /* 반응형 푸터 영역 */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 30px 20px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      background-color: var(--bg-gray);
+      margin-top: 60px;
+    }
+
+    footer p {
+      margin: 4px 0;
+    }
+
+    footer a {
+      color: var(--text-muted);
+      text-decoration: underline;
+    }
+
+    @media (max-width: 900px) {
+      .header-inner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .main-nav {
+        width: 100%;
+        overflow-x: auto;
+        padding-bottom: 4px;
+      }
+      .container {
+        margin: 16px;
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 노란색 테마 반응형 헤더 및 내비게이션 -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="../index.html" class="brand">
+        <div class="brand-icon">PN</div>
+        <span>Miso Pension</span>
+      </a>
+
+        <nav class="main-nav">
+        <a href="./retirement-pension.html" class="nav-item ">퇴직연금(IRP)</a>
+        <a href="./survivor-pension.html" class="nav-item  active">유족연금 </a>
+        <a href="./national-pension.html" class="nav-item">국민연금 </a>
+        <a href="./personal-pension.html" class="nav-item ">개인연금</a>
+        <a href="../index.html" class="btn-home">전체 목록</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- 메인 컨텐츠 Card -->
+  <main class="container">
+    <div class="category-tag">연금 계산기</div>
+    <h1>유족연금 예상 수령액 계산기</h1>
+
+    <!-- 1. 최상단 배치: 계산 입력 폼 -->
+    <form id="calcForm">
+      <div class="form-group">
+        <label for="avgIncome">고인의 가입 기간 중 월평균 소득월액 (원)</label>
+        <input type="number" id="avgIncome" placeholder="예: 3000000 (300만 원)" min="0" step="50000" required>
+      </div>
+
+      <div class="form-group">
+        <label for="totalYears">고인의 총 국민연금 가입 기간 (년)</label>
+        <input type="number" id="totalYears" placeholder="예: 20 (20년 가입)" min="1" max="45" value="20" required>
+      </div>
+
+      <div class="form-group">
+        <label for="familyCount">생계를 유지하던 유족 수 (순위별 산정)</label>
+        <select id="familyCount">
+          <option value="1">1인 (기본 지급률 적용)</option>
+          <option value="2">2인 (+5% 가산)</option>
+          <option value="3">3인 이상 (+10% 가산)</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn-calc">유족연금 예상 수령액 계산하기</button>
+    </form>
+
+    <!-- 계산 결과 출력 영역 -->
+    <div class="result-container" id="resultContainer" style="display: none;">
+      <div class="result-section">
+        <div class="result-subtitle">유족연금 예상 수령액 산출 명세</div>
+        <div class="result-row">
+          <span>기본 노령연금 산출 기준액</span>
+          <span id="basePensionResult">0원</span>
+        </div>
+        <div class="result-row">
+          <span>가입 기간별 유족연금 지급률</span>
+          <span id="rateResult">40%</span>
+        </div>
+        <div class="result-row">
+          <span>유족 인원 가산율 반영액</span>
+          <span id="bonusResult">0원</span>
+        </div>
+        <div class="result-row total">
+          <span>월 예상 유족연금 수령액</span>
+          <span id="monthlySurvivorResult">0원</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 상단 애드센스 광고 영역 -->
+    <div class="ad-slot">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+           data-ad-slot="1234567890"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <!-- 2. 백과사전 상세 설명 영역 (계산기 하단) -->
+    <section class="wiki-box">
+      <p>
+        <strong>유족연금의 정의 및 제도 목적</strong><br>
+        <strong>위키백과 및 네이버 지식백과 참조:</strong> **유족연금**은 국민연금 가입자 또는 노령연금·장해연금(등급 1~2급) 수급권자가 사망하였을 때, 그에 의해 생계를 유지하던 유족에게 안정적인 생계를 보장하고 생활복리 향상을 도모하기 위해 지급되는 공적 연금 급여입니다. 남겨진 유가족의 최소한의 경제적 안전망 역할을 수행하는 핵심 사회보장 제도입니다.
+      </p>
+      <p>
+        <strong>지급 기준 및 산정 방식</strong><br>
+        1) **가입 기간별 지급률:** 고인의 가입 기간에 따라 기본연금액의 일정 비율(20년 미만은 40%, 20년 이상 29년 이하는 50%, 30년 이상은 60%)이 기본 유족연금으로 산정됩니다.<br>
+        2) **유족 가산 제도:** 유족연금을 받을 수 있는 수급 자격을 가진 유족이 2인 이상인 경우, 인원수에 따라 일정 비율(1인당 5%씩, 최대 10%)의 금액이 가산되어 지급됩니다.
+      </p>
+      <span class="wiki-source">※ 출처: 위키백과(국민연금), 네이버 지식백과(시사상식사전 / 법령용어사전)</span>
+    </section>
+
+    <!-- 하단 애드센스 광고 영역 -->
+    <div class="ad-slot">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+           data-ad-slot="0987654321"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <!-- 3. 자주 묻는 질문 (FAQ) - 기본적으로 open 클래스로 전부 열림 -->
+    <h2>자주 묻는 질문 (FAQ)</h2>
+    <div class="faq-list">
+      <div class="faq-item open">
+        <button type="button" class="faq-question">
+          <span>유족연금을 받을 수 있는 유족의 순위는 어떻게 되나요?</span>
+          <span class="faq-icon"></span>
+        </button>
+        <div class="faq-answer">
+          유족연금 수급 자격은 민법상 상속 순위와는 다소 다르며, 사망 당시 생계를 유지하던 자 중 1순위(배우자, 자녀, 부모, 손자녀, 조부모 순)에게 우선 지급됩니다. 자녀는 25세 미만 또는 장애인이여야 하고, 부모는 60세 이상 또는 장애인이어야 합니다.
+        </div>
+      </div>
+
+      <div class="faq-item open">
+        <button type="button" class="faq-question">
+          <span>본인이 노령연금을 받으면서 배우자의 유족연금을 동시에 받을 수 있나요?</span>
+          <span class="faq-icon"></span>
+        </button>
+        <div class="faq-answer">
+          중복 수급 방지 원칙에 따라, 본인의 노령연금과 타인의 사망으로 인한 유족연금이 동시에 발생할 경우 하나를 선택해야 합니다. 다만 2021년 이후 법 개정에 따라 본인 노령연금을 받으면서 유족연금의 일부(약 30%)를 중복해서 함께 받을 수 있는 선택지가 확대되었습니다.
+        </div>
+      </div>
+
+      <div class="faq-item open">
+        <button type="button" class="faq-question">
+          <span>가입 기간이 짧아 유족연금 대상이 안 되면 어떻게 되나요?</span>
+          <span class="faq-icon"></span>
+        </button>
+        <div class="faq-answer">
+          고인의 가입 기간이 부족하거나 요건을 충족하지 못해 유족연금이 발생하지 않는 경우, 그동안 납부한 보험료에 일정한 이자를 합산하여 유족에게 '반환일시금' 형태로 일시에 지급됩니다.
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- 푸터 영역 -->
+  <footer>
+    <p>© 2026 Miso Life. All rights reserved.</p>
+    <p>본 계산기는 입력하신 소득 및 가입 기간을 기반으로 산출된 개략적인 추정치이며, 국민연금법상 세부 규정 및 고인의 정확한 가입 이력에 따라 실제 지급액과 차이가 발생할 수 있습니다.</p>
+    <p style="margin-top: 8px;"><a href="../privacy.html">개인정보처리방침</a></p>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // FAQ 아코디언 토글 이벤트 (기본 open 상태 유지)
+      const faqQuestions = document.querySelectorAll('.faq-question');
+      faqQuestions.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const item = btn.parentElement;
+          item.classList.toggle('open');
+        });
+      });
+
+      // 유족연금 예상 수령액 계산 로직
+      const calcForm = document.getElementById('calcForm');
+      const resultContainer = document.getElementById('resultContainer');
+
+      calcForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const avgIncome = parseFloat(document.getElementById('avgIncome').value) || 0;
+        const totalYears = parseFloat(document.getElementById('totalYears').value) || 20;
+        const familyCount = parseInt(document.getElementById('familyCount').value) || 1;
+
+        // 1. 기본 노령연금 산출 간이 모형 (소득대체율 반영)
+        const basePension = avgIncome * 0.015 * totalYears * 0.8;
+
+        // 2. 가입 기간별 유족연금 지급률 결정
+        // 20년 미만: 40%, 20년~29년: 50%, 30년 이상: 60%
+        let survivorRate = 0.40;
+        let rateText = "40% (가입기간 20년 미만)";
+        if (totalYears >= 30) {
+          survivorRate = 0.60;
+          rateText = "60% (가입기간 30년 이상)";
+        } else if (totalYears >= 20) {
+          survivorRate = 0.50;
+          rateText = "50% (가입기간 20년 이상~30년 미만)";
+        }
+
+        let subTotal = basePension * survivorRate;
+
+        // 3. 유족 인원 가산율 반영 (2인: +5%, 3인 이상: +10%)
+        let bonusRate = 0;
+        let bonusText = "0원 (1인 기준)";
+        if (familyCount === 2) {
+          bonusRate = 0.05;
+          bonusText = "+5% 가산 적용";
+        } else if (familyCount >= 3) {
+          bonusRate = 0.10;
+          bonusText = "+10% 가산 적용";
+        }
+
+        const finalMonthly = subTotal * (1 + bonusRate);
+
+        // UI 결과 바인딩
+        document.getElementById('basePensionResult').textContent = Math.round(basePension).toLocaleString() + ' 원';
+        document.getElementById('rateResult').textContent = rateText;
+        document.getElementById('bonusResult').textContent = bonusText;
+        document.getElementById('monthlySurvivorResult').textContent = Math.round(finalMonthly).toLocaleString() + ' 원';
+
+        resultContainer.style.display = 'block';
+      });
+    });
+  </script>
+</body>
+</html>

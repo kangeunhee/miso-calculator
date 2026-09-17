@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>파킹통장/CMA 이자 계산기</title>
+  <!-- 구글 애드센스 스크립트 (발급받은 pub-ID로 변경하세요) -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_PUBLISHER_ID" crossorigin="anonymous"></script>
+  <style>
+    /* 글로벌 CSS 변수 */
+    :root {
+      --primary: #7c3aed;
+      --primary-light: #f3e8ff;
+      --primary-hover: #6d28d9;
+      --bg-purple: #f3e8ff;
+      --text-dark: #0f172a;
+      --text-muted: #64748b;
+      --border: #e9d5ff;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #2e1065;
+      background-color: var(--bg-purple);
+      line-height: 1.6;
+    }
+
+    /* 헤더 레이아웃 */
+    .site-header {
+      background-color: #ffffff;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 8px rgba(124, 58, 237, 0.05);
+    }
+
+    .header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--primary);
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      background-color: var(--primary);
+      color: white;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.95rem;
+      box-shadow: 0 2px 6px rgba(124, 58, 237, 0.3);
+    }
+
+    .nav-right-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .main-nav {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .nav-item {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      transition: all 0.2s;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .nav-item:hover, 
+    .nav-item.active {
+      color: var(--primary);
+      background-color: var(--primary-light);
+      font-weight: 700;
+    }
+
+    .dropdown {
+      position: relative;
+    }
+
+    .dropdown-btn {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+    }
+
+    .dropdown-btn .chevron {
+      width: 14px;
+      height: 14px;
+      transition: transform 0.2s ease;
+    }
+
+    .dropdown.is-open .chevron {
+      transform: rotate(180deg);
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      width: 260px;
+      background-color: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+      padding: 8px;
+      display: none;
+      flex-direction: column;
+      gap: 2px;
+      z-index: 1100;
+    }
+
+    .dropdown.is-open .dropdown-menu {
+      display: flex;
+    }
+
+    .dropdown-item {
+      display: flex;
+      flex-direction: column;
+      padding: 10px 12px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background-color 0.2s;
+    }
+
+    .dropdown-item:hover {
+      background-color: var(--primary-light);
+    }
+
+    .dropdown-item .title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+
+    .dropdown-item:hover .title {
+      color: var(--primary);
+    }
+
+    .dropdown-item .desc {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .btn-list-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--primary);
+      background-color: var(--primary-light);
+      border: 1px solid var(--border);
+      padding: 8px 14px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .btn-list-back:hover {
+      background-color: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+
+    .btn-hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 24px;
+      height: 18px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .hamburger-bar {
+      width: 100%;
+      height: 2px;
+      background-color: var(--text-dark);
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+
+    .btn-hamburger.active .hamburger-bar:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+    .btn-hamburger.active .hamburger-bar:nth-child(2) { opacity: 0; }
+    .btn-hamburger.active .hamburger-bar:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+    /* 메인 컨테이너 */
+    .container {
+      max-width: 650px;
+      margin: 40px auto;
+      padding: 30px;
+      background-color: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px -5px rgba(124, 58, 237, 0.1);
+    }
+
+    .category-tag {
+      font-size: 13px;
+      color: #7c3aed;
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+
+    h1 {
+      font-size: 26px;
+      margin-top: 0;
+      margin-bottom: 16px;
+      border-bottom: 2px solid #6b21a8;
+      padding-bottom: 10px;
+      color: #581c87;
+    }
+
+    h2 {
+      font-size: 18px;
+      margin-top: 32px;
+      margin-bottom: 12px;
+      color: #6b21a8;
+      border-bottom: 1px solid #ddd6fe;
+      padding-bottom: 6px;
+    }
+
+    p, ul {
+      font-size: 14px;
+      color: #4c1d95;
+      margin-bottom: 12px;
+    }
+
+    .wiki-source {
+      font-size: 12px;
+      color: #a78bfa;
+      margin-top: -6px;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+      font-weight: bold;
+      color: #581c87;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #c084fc;
+      border-radius: 6px;
+      box-sizing: border-box;
+      font-size: 15px;
+      color: #3b0764;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: #7c3aed;
+      box-shadow: 0 0 0 3px #e9d5ff;
+    }
+
+    button.btn-calc {
+      width: 100%;
+      padding: 14px;
+      background-color: #7c3aed;
+      color: #ffffff;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background-color 0.2s;
+    }
+
+    button.btn-calc:hover {
+      background-color: #6d28d9;
+    }
+
+    .result-container {
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 2px solid #7c3aed;
+      display: none;
+    }
+
+    .result-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 16px;
+      color: #581c87;
+    }
+
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 15px;
+      color: #4c1d95;
+    }
+
+    .result-row.total {
+      font-size: 18px;
+      font-weight: bold;
+      color: #7c3aed;
+      margin-top: 12px;
+      border-top: 1px dashed #c084fc;
+      padding-top: 12px;
+    }
+
+    /* FAQ 아코디언 스타일 (open 클래스로 시작부터 열린 상태 유지) */
+    .faq-item {
+      border: 1px solid #ddd6fe;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+
+    .faq-question {
+      width: 100%;
+      text-align: left;
+      background: #f3e8ff;
+      border: none;
+      padding: 12px 16px;
+      font-size: 15px;
+      font-weight: bold;
+      color: #581c87;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .faq-answer {
+      padding: 14px 16px;
+      font-size: 14px;
+      color: #4c1d95;
+      display: none;
+      background-color: #ffffff;
+      border-top: 1px solid #ddd6fe;
+    }
+
+    .faq-item.open .faq-answer {
+      display: block;
+    }
+
+    .ad-slot {
+      margin: 24px 0;
+      text-align: center;
+    }
+
+    footer {
+      background-color: #ffffff;
+      border-top: 1px solid var(--border);
+      padding: 30px 20px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    footer p {
+      margin: 4px 0;
+      color: var(--text-muted);
+    }
+
+    @media (max-width: 1024px) {
+      .container { margin: 20px; padding: 20px; }
+      .btn-hamburger { display: flex; }
+      .nav-right-group {
+        display: none;
+        position: absolute;
+        top: 61px;
+        left: 0;
+        width: 100%;
+        background-color: #ffffff;
+        flex-direction: column;
+        align-items: stretch;
+        padding: 1rem 1.25rem;
+        gap: 1rem;
+        border-bottom: 1px solid var(--border);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+      }
+      .nav-right-group.is-open { display: flex; }
+      .main-nav { flex-direction: column; align-items: stretch; gap: 4px; }
+      .dropdown-menu {
+        position: static;
+        width: 100%;
+        box-shadow: none;
+        border: none;
+        background: var(--primary-light);
+        padding: 4px;
+        margin-top: 4px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- 헤더 영역 -->
+<header class="site-header">
+  <div class="header-inner">
+    <a href="../index.html" class="brand">
+      <div class="brand-icon" aria-hidden="true">MC</div>
+      <span>Miso Calculator</span>
+    </a>
+
+    <button type="button" class="btn-hamburger" id="hamburgerBtn" aria-label="메뉴 열기" aria-expanded="false">
+      <span class="hamburger-bar"></span>
+      <span class="hamburger-bar"></span>
+      <span class="hamburger-bar"></span>
+    </button>
+
+    <div class="nav-right-group" id="navGroup">
+      <nav class="main-nav" aria-label="주요 계산기 메뉴">
+        <a href="./target-amount.html" class="nav-item">목표금액 달성</a>
+        <a href="./compound-interest.html" class="nav-item">복리 이자</a>
+        <a href="./deposit.html" class="nav-item">예금 이자</a>
+        <a href="./savings.html" class="nav-item">적금 이자</a>
+        <a href="./parking-cma.html" class="nav-item active">파킹통장 / CMA </a>
+
+
+        <div class="dropdown" id="moreCalcDropdown">
+          <button type="button" class="nav-item dropdown-btn " id="dropdownToggleBtn" aria-expanded="false">
+            <span>기타 계산기</span>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+          </button>
+          <div class="dropdown-menu">
+            <a href="./compare-savings.html" class="dropdown-item">
+              <span class="title">예적금 비교</span>
+              <span class="desc">예금과 적금의 수익률 직접 비교</span>
+            </a>
+            <a href="./pinwheel-savings.html" class="dropdown-item">
+              <span class="title">풍차 돌리기</span>
+              <span class="desc">매월 예적금 가입 수익 시뮬레이션</span>
+            </a>
+            <a href="./youth-savings.html" class="dropdown-item">
+              <span class="title">청년미래적금</span>
+              <span class="desc">정부 지원금 포함 혜택 계산</span>
+            </a>
+            <a href="./parking-cma.html" class="dropdown-item">
+              <span class="title">파킹통장 / CMA</span>
+              <span class="desc">일할 이자 계산 및 수령액 비교</span>
+            </a>
+          </div>
+        </div>
+      </nav>
+
+      <a href="../index.html" class="btn-list-back">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="8" y1="6" x2="21" y2="6"></line>
+          <line x1="8" y1="12" x2="21" y2="12"></line>
+          <line x1="8" y1="18" x2="21" y2="18"></line>
+          <circle cx="3" cy="6" r="1"></circle>
+          <circle cx="3" cy="12" r="1"></circle>
+          <circle cx="3" cy="18" r="1"></circle>
+        </svg>
+        <span>전체 목록</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- 메인 콘텐츠 영역 -->
+<div class="container">
+  <div class="category-tag">예금·적금</div>
+  <h1>파킹통장/CMA 이자 계산기</h1>
+  
+  <p>
+    <strong>파킹통장(Parking Account)</strong>은 차를 잠시 주차(Parking)하듯 목돈을 단기간 안전하게 맡겨두는 수시입출금식 수신 상품을 의미합니다. 일반 입출금 통장보다 훨씬 높은 금리를 제공하며 언제든지 입출금이 자유로운 것이 특징입니다.
+  </p>
+  <p>
+    위키백과 및 네이버 지식백과에 따르면, **CMA(Cash Management Account, 자산관리계좌)**는 증권사가 고객의 예치금을 RP(환매조건부채권), MMF(자산운용사 펀드), MMT 등에 투자하여 발생한 수익을 일할(일일) 이자로 지급하는 금융 계좌입니다. 파킹통장과 CMA 모두 하루만 맡겨도 일할 계산된 이자가 붙기 때문에 비상금이나 단기 유동자금 운용에 매우 유리합니다.
+  </p>
+
+  <div class="ad-slot">
+    <!-- 구글 애드센스 디스플레이 광고 코드 -->
+    <!-- <ins class="adsbygoogle" ...></ins> -->
+  </div>
+
+  <h2>1. 예치 조건 입력</h2>
+  <div class="form-group">
+    <label for="depositAmount">예치 금액 (원)</label>
+    <input type="number" id="depositAmount" placeholder="예: 10000000" value="10000000">
+  </div>
+
+  <div class="form-group">
+    <label for="interestRate">약정 연이율 (%)</label>
+    <input type="number" id="interestRate" step="0.01" placeholder="예: 3.5" value="3.5">
+  </div>
+
+  <div class="form-group">
+    <label for="keepDays">예치 기간 (일수)</label>
+    <input type="number" id="keepDays" placeholder="예: 30 (한 달 예치 시)" value="30">
+  </div>
+
+  <div class="form-group">
+    <label for="taxType">과세 구분</label>
+    <select id="taxType">
+      <option value="15.4">일반과세 (15.4%)</option>
+      <option value="1.4">세금우대 (1.4%)</option>
+      <option value="0">비과세 (0%)</option>
+    </select>
+  </div>
+
+  <button class="btn-calc" onclick="calculateParkingCMA()">이자 수익 계산하기</button>
+
+  <!-- 계산 결과 영역 -->
+  <div class="result-container" id="result">
+    <div class="result-title">계산 결과</div>
+    
+    <div class="result-row total">
+      <span>총 세후 수령액 (원금+이자)</span>
+      <span id="finalPayout">0 원</span>
+    </div>
+    <div class="result-row">
+      <span>1일 세후 이자 (일할 수령액)</span>
+      <span id="dailyNetInterest">0 원</span>
+    </div>
+    <div class="result-row">
+      <span>지정 기간 동안의 총 세후 이자</span>
+      <span id="totalNetInterest">0 원</span>
+    </div>
+    <div class="result-row">
+      <span>지정 기간 총 세전 이자</span>
+      <span id="grossInterest">0 원</span>
+    </div>
+    <div class="result-row">
+      <span>이자소득세 (세금)</span>
+      <span id="taxAmount">0 원</span>
+    </div>
+  </div>
+
+  <div class="ad-slot">
+    <!-- 구글 애드센스 광고 코드 -->
+  </div>
+
+  <h2>2. 자주 묻는 질문 (FAQ)</h2>
+  
+  <!-- open 클래스로 초기 오픈 상태 제공 -->
+  <div class="faq-item open">
+    <button class="faq-question" onclick="toggleFaq(this)">
+      Q. 파킹통장과 CMA의 가장 큰 차이점은 무엇인가요?
+      <span class="faq-icon">▲</span>
+    </button>
+    <div class="faq-answer">
+      가장 큰 차이는 <strong>예금자보호 여부</strong>입니다. 은행 및 저축은행의 파킹통장은 예금보험공사를 통해 1인당 최고 5,000만 원까지 원리금이 보호됩니다. 반면 증권사의 CMA(RP형, MMF형 등)는 예금자보호 대상이 아닙니다(단, 종금사형 CMA 제외). 그러나 국공채 등 안전한 채권에 투자되므로 원선손실 가능성은 극히 낮습니다.
+    </div>
+  </div>
+
+  <div class="faq-item open">
+    <button class="faq-question" onclick="toggleFaq(this)">
+      Q. 이자는 매일 통장으로 지급되나요?
+      <span class="faq-icon">▲</span>
+    </button>
+    <div class="faq-answer">
+      CMA는 매일 일할 이자가 계산되어 계좌 원금에 반영(일복리 효과)되는 경우가 많습니다. 파킹통장의 경우 은행 정책에 따라 매월 특정 정산일(예: 매월 셋째 주 토요일 등)에 일괄 지급되거나, 최근에는 앱에서 '지금 이자 받기' 버튼을 눌러 매일 이자를 수령할 수 있는 금융사도 많아졌습니다.
+    </div>
+  </div>
+
+  <div class="faq-item open">
+    <button class="faq-question" onclick="toggleFaq(this)">
+      Q. 파킹통장 최고 금리 적용에 한도가 있나요?
+      <span class="faq-icon">▲</span>
+    </button>
+    <div class="faq-answer">
+      네, 대부분의 파킹통장은 우대 금리가 적용되는 금액 한도가 지정되어 있습니다. (예: 300만 원 이하, 5,000만 원 이하 등). 한도를 초과하는 금액에 대해서는 기본 입출금 금리(0.1% 등)가 적용될 수 있으므로 한도 조건을 확인하고 분산 예치하는 것이 좋습니다.
+    </div>
+  </div>
+
+  <div class="wiki-source" style="margin-top: 20px;">참조/출처: 위키백과 및 네이버 지식백과 (파킹통장, CMA, 일할 계산 공식, 이자소득세)</div>
+
+  <div class="ad-slot">
+    <!-- 구글 애드센스 광고 코드 -->
+  </div>
+</div>
+
+<!-- 푸터 영역 -->
+<footer>
+  <p>© 2026 Miso Calculator. All rights reserved.</p>
+  <p>본 계산기는 연 365일 기준 일할 계산 방식을 적용한 시뮬레이션입니다.</p>
+  <p style="margin-top: 8px;"><a href="../privacy.html" style="color: var(--text-muted); text-decoration: underline;">개인정보처리방침</a></p>
+</footer>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // 햄버거 메뉴 토글
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const navGroup = document.getElementById('navGroup');
+
+    if (hamburgerBtn && navGroup) {
+      hamburgerBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = hamburgerBtn.classList.toggle('active');
+        navGroup.classList.toggle('is-open');
+        hamburgerBtn.setAttribute('aria-expanded', isOpen);
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!navGroup.contains(e.target) && !hamburgerBtn.contains(e.target)) {
+          hamburgerBtn.classList.remove('active');
+          navGroup.classList.remove('is-open');
+          hamburgerBtn.setAttribute('aria-expanded', 'false');
+        }
+      });
+    }
+
+    // 드롭다운 토글
+    const dropdown = document.getElementById('moreCalcDropdown');
+    const dropdownToggleBtn = document.getElementById('dropdownToggleBtn');
+
+    if (dropdownToggleBtn && dropdown) {
+      dropdownToggleBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = dropdown.classList.toggle('is-open');
+        dropdownToggleBtn.setAttribute('aria-expanded', isOpen);
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!dropdown.contains(e.target)) {
+          dropdown.classList.remove('is-open');
+          dropdownToggleBtn.setAttribute('aria-expanded', 'false');
+        }
+      });
+    }
+  });
+
+  // FAQ 아코디언 토글 함수
+  function toggleFaq(button) {
+    const item = button.parentElement;
+    const isOpen = item.classList.toggle('open');
+    const icon = button.querySelector('.faq-icon');
+    if (icon) {
+      icon.textContent = isOpen ? '▲' : '▼';
+    }
+  }
+
+  // 파킹통장/CMA 일할 이자 계산 로직
+  function calculateParkingCMA() {
+    const principal = parseFloat(document.getElementById('depositAmount').value);
+    const rate = parseFloat(document.getElementById('interestRate').value) / 100;
+    const days = parseInt(document.getElementById('keepDays').value);
+    const taxRate = parseFloat(document.getElementById('taxType').value) / 100;
+
+    if (isNaN(principal) || isNaN(rate) || isNaN(days) || principal <= 0 || days <= 0 || rate < 0) {
+      alert("모든 입력값을 올바르게 입력해주세요.");
+      return;
+    }
+
+    // 1일 세전 이자 = 원금 * (연이율 / 365)
+    const dailyGrossInterest = principal * (rate / 365);
+    const dailyTax = dailyGrossInterest * taxRate;
+    const dailyNetInterest = dailyGrossInterest - dailyTax;
+
+    // 지정 일수 전체 세전/세후 이자
+    const grossInterest = dailyGrossInterest * days;
+    const taxAmount = grossInterest * taxRate;
+    const totalNetInterest = grossInterest - taxAmount;
+    const finalPayout = principal + totalNetInterest;
+
+    document.getElementById('dailyNetInterest').innerText = Math.round(dailyNetInterest).toLocaleString() + ' 원';
+    document.getElementById('totalNetInterest').innerText = Math.round(totalNetInterest).toLocaleString() + ' 원';
+    document.getElementById('grossInterest').innerText = Math.round(grossInterest).toLocaleString() + ' 원';
+    document.getElementById('taxAmount').innerText = Math.round(taxAmount).toLocaleString() + ' 원';
+    document.getElementById('finalPayout').innerText = Math.round(finalPayout).toLocaleString() + ' 원';
+
+    document.getElementById('result').style.display = 'block';
+  }
+</script>
+
+</body>
+</html>

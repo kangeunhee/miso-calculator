@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Miso Life - 건강보험료 예상 계산기</title>
+  <style>
+    :root {
+      --primary: #0ea5e9;         /* 하늘색 (Sky-500) */
+      --primary-hover: #0284c7;   /* 진한 하늘색 (Sky-600) */
+      --primary-light: #f0f9ff;   /* 연한 하늘색 배경 (Sky-50) */
+      --text-dark: #1f2937;       /* 텍스트 (Gray-800) */
+      --text-muted: #6b7280;      /* 보조 텍스트 (Gray-500) */
+      --border: #e5e7eb;         /* 테두리 (Gray-200) */
+      --bg-gray: #f9fafb;        /* 전체 메인 배경 (Gray-50) */
+      --bg-white: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      color: var(--text-dark);
+      background-color: var(--bg-gray);
+      line-height: 1.6;
+    }
+
+    /* 헤더 및 내비게이션 영역 (생활 카테고리 타이틀 전체 포함) */
+    .site-header {
+      background-color: var(--bg-white);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .header-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      background-color: var(--primary);
+      color: white;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.95rem;
+    }
+
+    .main-nav {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .nav-item {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 6px 10px;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .nav-item:hover,
+    .nav-item.active {
+      color: var(--primary-hover);
+      background-color: var(--primary-light);
+      font-weight: 700;
+    }
+
+    /* 메인 Card 컨테이너 */
+    .container {
+      max-width: 720px;
+      margin: 40px auto;
+      padding: 30px;
+      background-color: var(--bg-white);
+      border-radius: 16px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+      border: 1px solid var(--border);
+    }
+
+    .category-tag {
+      font-size: 13px;
+      color: var(--primary);
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+
+    h1 {
+      font-size: 26px;
+      margin-top: 0;
+      margin-bottom: 16px;
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 10px;
+      color: var(--text-dark);
+    }
+
+    h2 {
+      font-size: 19px;
+      margin-top: 36px;
+      margin-bottom: 14px;
+      color: var(--text-dark);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 6px;
+    }
+
+    /* 계산기 입력 폼 스타일 */
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+      font-weight: bold;
+      color: var(--text-dark);
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 15px;
+      color: var(--text-dark);
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px #e0f2fe;
+    }
+
+    button.btn-calc {
+      width: 100%;
+      padding: 14px;
+      background-color: var(--primary);
+      color: var(--bg-white);
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background-color 0.2s;
+    }
+
+    button.btn-calc:hover {
+      background-color: var(--primary-hover);
+    }
+
+    /* 계산 결과 출력 영역 */
+    .result-container {
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 2px solid var(--primary);
+    }
+
+    .result-section {
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .result-subtitle {
+      font-size: 16px;
+      font-weight: bold;
+      color: var(--text-dark);
+      margin-bottom: 10px;
+    }
+
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 15px;
+      color: var(--text-muted);
+    }
+
+    .result-row.total {
+      font-size: 18px;
+      font-weight: bold;
+      color: var(--primary-hover);
+      margin-top: 8px;
+      border-top: 1px dashed var(--border);
+      padding-top: 8px;
+    }
+
+    /* 애드센스 광고 슬롯 */
+    .ad-slot {
+      margin: 24px 0;
+      text-align: center;
+      background: #fafafa;
+      border: 1px dashed var(--border);
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    /* 백과사전 상세 설명 (계산기 하단 배치) */
+    .wiki-box {
+      background-color: var(--primary-light);
+      border-left: 4px solid var(--primary);
+      padding: 18px;
+      border-radius: 0 8px 8px 0;
+      margin-top: 30px;
+      margin-bottom: 24px;
+      font-size: 14.5px;
+      line-height: 1.7;
+    }
+
+    .wiki-box p {
+      margin: 0 0 12px 0;
+      color: var(--text-dark);
+    }
+
+    .wiki-box p:last-child {
+      margin-bottom: 0;
+    }
+
+    .wiki-source {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: bold;
+      display: inline-block;
+      margin-top: 6px;
+    }
+
+    /* FAQ 아코디언 스타일 (모두 펼쳐짐) */
+    .faq-list {
+      margin-top: 12px;
+    }
+
+    .faq-item {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+
+    .faq-question {
+      width: 100%;
+      text-align: left;
+      padding: 14px 16px;
+      background-color: var(--bg-gray);
+      border: none;
+      font-size: 15px;
+      font-weight: bold;
+      color: var(--text-dark);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background-color 0.2s;
+    }
+
+    .faq-question:hover {
+      background-color: var(--primary-light);
+    }
+
+    .faq-icon {
+      font-size: 18px;
+      color: var(--primary);
+      font-weight: bold;
+    }
+
+    .faq-item.open .faq-icon::before {
+      content: "-";
+    }
+
+    .faq-item:not(.open) .faq-icon::before {
+      content: "+";
+    }
+
+    .faq-answer {
+      display: none;
+      padding: 14px 16px;
+      font-size: 14px;
+      color: var(--text-muted);
+      background-color: var(--bg-white);
+      border-top: 1px solid var(--border);
+      line-height: 1.6;
+    }
+
+    .faq-item.open .faq-answer {
+      display: block;
+    }
+
+    /* 푸터 영역 */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 30px 20px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      background-color: var(--bg-gray);
+      margin-top: 60px;
+    }
+
+    footer p {
+      margin: 4px 0;
+    }
+
+    footer a {
+      color: var(--text-muted);
+      text-decoration: underline;
+    }
+
+    @media (max-width: 1024px) {
+      .header-inner {
+        flex-direction: column;
+        gap: 12px;
+      }
+      .main-nav {
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 하늘색 테마 헤더 및 생활 카테고리 네비게이션 -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="../index.html" class="brand">
+        <div class="brand-icon">LF</div>
+        <span>Miso Life</span>
+      </a>
+
+      <nav class="main-nav">
+        <a href="./car-installment.html" class="nav-item">자동차 할부</a>
+        <a href="./exchange-rate.html" class="nav-item">환율</a>
+        <a href="./discount-rate.html" class="nav-item">할인율</a>
+        <a href="./fire.html" class="nav-item">FIRE</a>
+        <a href="./emergency-fund.html" class="nav-item">비상금</a>
+        <a href="./card-picking-rate.html" class="nav-item">카드 피킹률</a>
+        <a href="./health-insurance.html" class="nav-item active">건강보험료</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- 메인 컨텐츠 Card -->
+ 
+
+  <!-- 푸터 영역 -->
+  <footer>
+    <p>© 2026 Miso Life. All rights reserved.</p>
+    <p>본 계산기는 일반적인 법정 보험료율을 바탕으로 산출된 추정치이며, 상한액·하한액 적용 및 개인별 추가 소득·재산 세부 내역에 따라 실제 국민건강보험공단 고지 금액과 다를 수 있습니다.</p>
+    <p style="margin-top: 8px;"><a href="../privacy.html">개인정보처리방침</a></p>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // FAQ 아코디언 토글 이벤트 (기본 open 상태 유지)
+      const faqQuestions = document.querySelectorAll('.faq-question');
+      faqQuestions.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const item = btn.parentElement;
+          item.classList.toggle('open');
+        });
+      });
+
+      // 계산 로직 (간이 추정)
+      const calcForm = document.getElementById('calcForm');
+      const resultContainer = document.getElementById('resultContainer');
+
+      calcForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const subscriberType = document.getElementById('subscriberType').value;
+        const monthlyIncome = parseFloat(document.getElementById('monthlyIncome').value) || 0;
+
+        // 건강보험료율 약 7.09% (본인부담 절반인 약 3.545% 또는 지역 환산 간이 적용)
+        let healthFee = 0;
+        if (subscriberType === 'employee') {
+          healthFee = monthlyIncome * 0.03545; // 직장 본인부담분 대략치
+        } else {
+          healthFee = monthlyIncome * 0.045;   // 지역 가입자 간이 추정
+        }
+
+        const longTermFee = healthFee * 0.1295; // 장기요양보험료
+        const totalFee = healthFee + longTermFee;
+
+        // UI 결과 바인딩
+        document.getElementById('healthFeeResult').textContent = Math.round(healthFee).toLocaleString() + ' 원';
+        document.getElementById('longTermFeeResult').textContent = Math.round(longTermFee).toLocaleString() + ' 원';
+        document.getElementById('totalFeeResult').textContent = Math.round(totalFee).toLocaleString() + ' 원';
+
+        resultContainer.style.display = 'block';
+      });
+    });
+  </script>
+</body>
+</html>

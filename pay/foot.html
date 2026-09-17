@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Miso Calculator - Footer Component</title>
+  <style>
+    /* 푸터 독립 테마 변수 */
+    :root {
+      --primary: #dc2626;         /* 대표 메인 레드 */
+      --text-muted: #991b1b;     /* 보조 텍스트 색상 */
+      --border: #fca5a5;         /* 레드 톤 테두리 선 */
+      --bg-red: #fff5f5;         /* 푸터 배경색 */
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: var(--bg-red);
+    }
+
+    /* 푸터 스타일 */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 30px 20px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      background-color: var(--bg-red);
+    }
+
+    footer p {
+      margin: 4px 0;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    footer a {
+      color: var(--text-muted);
+      text-decoration: underline;
+      transition: color 0.2s ease;
+    }
+
+    footer a:hover {
+      color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 푸터 영역 -->
+  <footer>
+    <p>© 2026 Miso Calculator. All rights reserved.</p>
+    <p>본 계산기는 참고용 시뮬레이션 결과이며, 실제 금융기관의 계산 방식에 따라 원단위 오차가 발생할 수 있습니다.</p>
+    <p style="margin-top: 8px;"><a href="../privacy.html">개인정보처리방침</a></p>
+  </footer>
+
+</body>
+</html>

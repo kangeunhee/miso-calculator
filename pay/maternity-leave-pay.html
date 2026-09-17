@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Miso Calculator - 출산전후휴가 급여 계산기</title>
+  <style>
+    :root {
+      --primary: #dc2626;         /* 대표 메인 레드 */
+      --primary-hover: #b91c1c;   /* 버튼/링크 호버 색상 */
+      --primary-light: #fef2f2;   /* 연한 레드 배경/하이라이트 */
+      --text-dark: #7f1d1d;       /* 진한 레드 텍스트 */
+      --text-muted: #991b1b;      /* 보조 텍스트 색상 */
+      --border: #fca5a5;         /* 레드 톤 테두리 선 */
+      --bg-red: #fff5f5;         /* 페이지 전체 메인 배경색 */
+      --bg-white: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      color: var(--text-dark);
+      background-color: var(--bg-red);
+      line-height: 1.6;
+    }
+
+    /* 1. 헤더 영역 */
+    .site-header {
+      background-color: var(--bg-white);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 8px rgba(220, 38, 38, 0.08);
+    }
+
+    .header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--primary);
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+
+    .brand-logo-img {
+      height: 36px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      background-color: var(--primary);
+      color: white;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.95rem;
+      box-shadow: 0 2px 6px rgba(220, 38, 38, 0.3);
+    }
+
+    .nav-right-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .main-nav {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .nav-item {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      transition: all 0.2s;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .nav-item:hover,
+    .nav-item.active {
+      color: var(--primary);
+      background-color: var(--primary-light);
+      font-weight: 700;
+    }
+
+    .dropdown {
+      position: relative;
+    }
+
+    .dropdown-btn {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+    }
+
+    .dropdown-btn .chevron {
+      width: 14px;
+      height: 14px;
+      transition: transform 0.2s ease;
+    }
+
+    .dropdown.is-open .chevron {
+      transform: rotate(180deg);
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      width: 320px;
+      max-height: 480px;
+      overflow-y: auto;
+      background-color: var(--bg-white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 10px 25px -5px rgba(220, 38, 38, 0.12);
+      padding: 8px;
+      display: none;
+      flex-direction: column;
+      gap: 2px;
+      z-index: 1100;
+    }
+
+    .dropdown.is-open .dropdown-menu {
+      display: flex;
+    }
+
+    .dropdown-item {
+      display: flex;
+      flex-direction: column;
+      padding: 10px 12px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background-color 0.2s;
+    }
+
+    .dropdown-item:hover {
+      background-color: var(--primary-light);
+    }
+
+    .title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dropdown-item .title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+
+    .dropdown-item:hover .title {
+      color: var(--primary);
+    }
+
+    .dropdown-item .desc {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .btn-list-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--primary);
+      background-color: var(--primary-light);
+      border: 1px solid var(--border);
+      padding: 8px 14px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .btn-list-back:hover {
+      background-color: var(--primary);
+      color: var(--bg-white);
+      border-color: var(--primary);
+    }
+
+    .btn-hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 24px;
+      height: 18px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .hamburger-bar {
+      width: 100%;
+      height: 2px;
+      background-color: var(--text-dark);
+      border-radius: 2px;
+    }
+
+    /* 2. 메인 컨텐츠 영역 */
+    .container {
+      max-width: 720px;
+      margin: 40px auto;
+      padding: 30px;
+      background-color: var(--bg-white);
+      border-radius: 16px;
+      box-shadow: 0 10px 25px -5px rgba(220, 38, 38, 0.1);
+    }
+
+    .category-tag {
+      font-size: 13px;
+      color: var(--primary);
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+
+    h1 {
+      font-size: 26px;
+      margin-top: 0;
+      margin-bottom: 16px;
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 10px;
+      color: var(--text-dark);
+    }
+
+    h2 {
+      font-size: 19px;
+      margin-top: 36px;
+      margin-bottom: 14px;
+      color: var(--text-dark);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 6px;
+    }
+
+    .wiki-box {
+      background-color: var(--primary-light);
+      border-left: 4px solid var(--primary);
+      padding: 16px;
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 24px;
+      font-size: 14.5px;
+      line-height: 1.7;
+    }
+
+    .wiki-box p {
+      margin: 0 0 10px 0;
+      color: var(--text-dark);
+    }
+
+    .wiki-box p:last-child {
+      margin-bottom: 0;
+    }
+
+    .wiki-source {
+      font-size: 12px;
+      color: #b91c1c;
+      font-weight: bold;
+      display: inline-block;
+      margin-top: 6px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+      font-weight: bold;
+      color: var(--text-dark);
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      box-sizing: border-box;
+      font-size: 15px;
+      color: #450a0a;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px #fecaca;
+    }
+
+    button.btn-calc {
+      width: 100%;
+      padding: 14px;
+      background-color: var(--primary);
+      color: var(--bg-white);
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background-color 0.2s;
+    }
+
+    button.btn-calc:hover {
+      background-color: var(--primary-hover);
+    }
+
+    .result-container {
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 2px solid var(--primary);
+    }
+
+    .result-section {
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .result-subtitle {
+      font-size: 16px;
+      font-weight: bold;
+      color: var(--text-dark);
+      margin-bottom: 10px;
+    }
+
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 15px;
+      color: var(--text-muted);
+    }
+
+    .result-row.total {
+      font-size: 17px;
+      font-weight: bold;
+      color: var(--primary);
+      margin-top: 8px;
+      border-top: 1px dashed var(--border);
+      padding-top: 8px;
+    }
+
+    /* FAQ 아코디언 스타일 (기본 Open 상태) */
+    .faq-list {
+      margin-top: 12px;
+    }
+
+    .faq-item {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+
+    .faq-question {
+      width: 100%;
+      text-align: left;
+      padding: 14px 16px;
+      background-color: var(--bg-red);
+      border: none;
+      font-size: 15px;
+      font-weight: bold;
+      color: var(--text-dark);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background-color 0.2s;
+    }
+
+    .faq-question:hover {
+      background-color: var(--primary-light);
+    }
+
+    .faq-icon {
+      font-size: 18px;
+      color: var(--primary);
+      transition: transform 0.2s;
+      font-weight: bold;
+    }
+
+    /* open 클래스가 있을 때 아이콘 형태 (- 마이너스) */
+    .faq-item.open .faq-icon::before {
+      content: "-";
+    }
+
+    /* open 클래스가 없을 때 아이콘 형태 (+ 플러스) */
+    .faq-item:not(.open) .faq-icon::before {
+      content: "+";
+    }
+
+    .faq-answer {
+      display: none;
+      padding: 14px 16px;
+      font-size: 14px;
+      color: var(--text-muted);
+      background-color: var(--bg-white);
+      border-top: 1px solid var(--border);
+      line-height: 1.6;
+    }
+
+    /* open 클래스가 있을 때 답변 노출 */
+    .faq-item.open .faq-answer {
+      display: block;
+    }
+
+    /* 애드센스 광고 영역 */
+    .ad-slot {
+      margin: 24px 0;
+      text-align: center;
+      background: #fafafa;
+      border: 1px dashed #fca5a5;
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 30px 20px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      background-color: var(--bg-red);
+    }
+
+    footer p {
+      margin: 4px 0;
+      color: var(--text-muted);
+    }
+
+    footer a {
+      color: var(--text-muted);
+      text-decoration: underline;
+    }
+
+    @media (max-width: 1024px) {
+      .container {
+        margin: 20px;
+        padding: 20px;
+      }
+
+      .btn-hamburger {
+        display: flex;
+      }
+
+      .nav-right-group {
+        display: none;
+        position: absolute;
+        top: 61px;
+        left: 0;
+        width: 100%;
+        background-color: var(--bg-white);
+        flex-direction: column;
+        align-items: stretch;
+        padding: 1rem 1.25rem;
+        gap: 1rem;
+        border-bottom: 1px solid var(--border);
+        box-shadow: 0 10px 15px -3px rgba(220, 38, 38, 0.08);
+      }
+
+      .nav-right-group.is-open {
+        display: flex;
+      }
+
+      .main-nav {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 4px;
+      }
+
+      .dropdown-menu {
+        position: static;
+        width: 100%;
+        box-shadow: none;
+        border: none;
+        background: var(--primary-light);
+        padding: 4px;
+        margin-top: 4px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+    <div class="header-inner">
+      <a href="../index.html" class="brand">
+        <img src="../logo.png" alt="Miso Calculator Logo" class="brand-logo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="brand-icon" style="display: none;" aria-hidden="true">MP</div>
+        <span>Miso pay</span>
+      </a>
+
+      <button type="button" class="btn-hamburger" id="hamburgerBtn" aria-label="메뉴 열기" aria-expanded="false">
+        <span class="hamburger-bar"></span>
+        <span class="hamburger-bar"></span>
+        <span class="hamburger-bar"></span>
+      </button>
+
+      <div class="nav-right-group" id="navGroup">
+        <nav class="main-nav" aria-label="주요 계산기 메뉴">
+          <a href="./annual-leave-pay.html" class="nav-item ">연차수당 계산</a>
+          <a href="./work-hours.html" class="nav-item">근무시간 계산</a>
+          <a href="./tenure.html" class="nav-item">근속기간 계산</a>
+          <a href="./maternity-leave-pay.html" class="nav-item active">출산전후휴가 급여 계산</a>
+          
+
+          <div class="dropdown" id="salaryCalcDropdown">
+            <button type="button" class="nav-item dropdown-btn" id="salaryDropdownToggleBtn" aria-expanded="false">
+              <span>기타 계산기</span>
+              <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M6 9l6 6 6-6"/>
+              </svg>
+            </button>
+
+            <div class="dropdown-menu">
+              <a href="./take-home-pay.html" class="dropdown-item">
+                <div class="title-wrap">
+                  <span class="title">급여 실수령액 계산기</span>
+                </div>
+                <span class="desc">급여 실수령액 계산합니다.</span>
+              </a>
+
+                 <a href="./salary-increase.html" class="dropdown-item">
+                <div class="title-wrap">
+                  <span class="title">연봉 인상률 계산기</span>
+                </div>
+                <span class="desc">연봉 인상률 계산합니다.</span>
+              </a>
+
+               <a href="./parental-leave-pay.html" class="dropdown-item">
+                <div class="title-wrap">
+                  <span class="title">육아휴직급여 계산기</span>
+                </div>
+                <span class="desc">육아휴직급여 실수령 계산합니다.</span>
+              </a>
+
+              <a href="./freelancer-tax.html" class="dropdown-item">
+                <div class="title-wrap">
+                  <span class="title">프리랜서 3.3% 실수령 계산기</span>
+                </div>
+                <span class="desc">프리랜서 3.3% 실수령 계산합니다.</span>
+              </a>
+
+                <a href="./weekly-holiday-pay.html" class="dropdown-item">
+                <div class="title-wrap">
+                  <span class="title">주휴수당 계산기</span>
+                </div>
+                <span class="desc">유급휴일에 지급되는 주휴수당을 계산합니다.</span>
+              </a>
+
+              <a href="./holiday-work-pay.html" class="dropdown-item">
+                <div class="title-wrap">
+                  <span class="title">휴일근무수당 계산기</span>
+                </div>
+                <span class="desc">휴일근로 가산수당을 계산합니다.</span>
+              </a>
+              
+              <a href="./night-shift-pay.html" class="dropdown-item">
+                <div class="title-wrap">
+                  <span class="title">야근수당 계산</span>
+                </div>
+                <span class="desc">야간근로(22시-06시 가산수당을 계산합니다.</span>
+              </a>
+
+              <a href="./hourly-wage.html" class="dropdown-item">
+                <div class="title-wrap">
+                  <span class="title">시급 계산</span>
+                </div>
+                <span class="desc">시급을 통해 주급과 월급을 계산합니다.</span>
+              </a>
+              
+              <a href="./maternity-leave-pay.html" class="dropdown-item">
+                <div class="title-wrap">
+                  <span class="title">출산전후휴가 급여 계산</span>
+                </div>
+                <span class="desc">출산전후휴가 기간 동안 받을 수 있는 급여를 계산합니다.</span>
+              </a>
+              <a href="./annual-leave-pay.html" class="dropdown-item">
+                <div class="title-wrap">
+                  <span class="title">연차수당 계산</span>
+                </div>
+                <span class="desc">미사용 연차에 대한 연차수당을 계산합니다.</span>
+              </a>
+              <a href="./severance-pay.html" class="dropdown-item">
+                <div class="title-wrap">
+                  <span class="title">퇴직금 계산</span>
+                </div>
+                <span class="desc">근무했던 기간에 따라 퇴직금을 계산합니다.</span>
+              </a>
+              <a href="./unemployment-benefit.html" class="dropdown-item">
+                <div class="title-wrap">
+                  <span class="title">실업급여 계산</span>
+                </div>
+                <span class="desc">퇴직 후 실업급여를 받을 수 있는지 계산합니다.</span>
+              </a>
+            </div>
+          </div>
+        </nav>
+
+        <a href="../index.html" class="btn-list-back">전체 목록</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- 메인 컨텐츠 카드 -->
+  <main class="container">
+    <div class="category-tag">임금 계산기</div>
+    <h1>출산전후휴가 급여 계산기</h1>
+
+    <!-- 상세 백과사전 설명 영역 -->
+    <section class="wiki-box">
+      <p>
+        <strong>출산전후휴가 및 지원 급여의 법적 정의</strong><br>
+        <strong>위키백과 및 네이버 지식백과 참조:</strong> 출산전후휴가 제도는 임신 중인 여성 근로자가 출산 전후를 기하여 휴식을 취할 수 있도록 하여 모성을 보호하고, 모성 재생산 및 여성 근로자의 고용 안정을 도모하는 제도입니다. 근로기준법 제74조에 의해 사업주는 임신 중의 여성에게 출산 전과 출산 후를 통하여 90일(다태아는 120일)의 출산전후휴가를 부여해야 하며, 이 중 출산 후 휴가 기간이 반드시 45일(다태아는 60일) 이상이 되도록 해야 합니다.
+      </p>
+      <p>
+        <strong>급여 지원 및 지급 기준:</strong><br>
+        1) <strong>급여 산정 기준:</strong> 휴가 개시일 기준 통상임금(100%)을 지급하는 것을 원칙으로 합니다.<br>
+        2) <strong>기업 규모별 지급 주체:</strong><br>
+        - <strong>우선지원대상기업(중소기업 등):</strong> 90일 전체(다태아 120일)에 대해 고용보험에서 출산전후휴가 급여를 지원합니다. (월 상한액 210만 원 적용)<br>
+        - <strong>대기업:</strong> 최초 60일(다태아 75일)은 사업주가 통상임금 전액을 지급하고, 이후 30일(다태아 45일)에 대해서만 고용보험에서 지원(상한액 적용)합니다. 사업주 지급 기간 중 고용보험 상한액과의 차액이 발생하는 경우 사업주가 보전 지급할 의무가 있습니다.
+      </p>
+      <span class="wiki-source">※ 출처: 위키백과(출산전후휴가), 네이버 지식백과(두산백과, 고용보험법 및 근로기준법상 출산전후휴가급여)</span>
+    </section>
+
+    <!-- 상단 애드센스 광고 영역 -->
+    <div class="ad-slot">
+      <!-- Google AdSense Code Placement -->
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+           data-ad-slot="1234567890"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <form id="calcForm">
+      <div class="form-group">
+        <label for="monthlyWage">월 통상임금 (원)</label>
+        <input type="number" id="monthlyWage" placeholder="예: 2500000" required>
+      </div>
+
+      <div class="form-group">
+        <label for="companyType">기업 구분</label>
+        <select id="companyType">
+          <option value="small" selected>우선지원대상기업 (중소기업 등)</option>
+          <option value="large">대기업</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="babyType">임신 형태</label>
+        <select id="babyType">
+          <option value="single" selected>단태아 (휴가 기간 90일)</option>
+          <option value="multiple">다태아 - 쌍둥이 이상 (휴가 기간 120일)</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn-calc">출산전후휴가 급여 계산하기</button>
+    </form>
+
+    <!-- 계산 결과 출력 영역 -->
+    <div class="result-container" id="resultContainer" style="display: none;">
+      <div class="result-section">
+        <div class="result-subtitle">급여 산정 상세 결과</div>
+        <div class="result-row">
+          <span>총 휴가 기간</span>
+          <span id="totalDaysResult">90일</span>
+        </div>
+        <div class="result-row">
+          <span>고용보험 지급 예상 총액</span>
+          <span id="govPayResult">0원</span>
+        </div>
+        <div class="result-row">
+          <span>사업주 지급/보전 예상 총액</span>
+          <span id="companyPayResult">0원</span>
+        </div>
+        <div class="result-row total">
+          <span>총 수령 예상 금액 (세전)</span>
+          <span id="totalPayResult">0원</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 하단 애드센스 광고 영역 -->
+    <div class="ad-slot">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+           data-ad-slot="0987654321"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <!-- FAQ 목록 (기본 open 클래스 적용으로 모두 열림) -->
+    <h2>자주 묻는 질문 (FAQ)</h2>
+    <div class="faq-list">
+      <div class="faq-item open">
+        <button type="button" class="faq-question">
+          <span>출산전후휴가 급여 신청 자격 요건은 어떻게 되나요?</span>
+          <span class="faq-icon"></span>
+        </button>
+        <div class="faq-answer">
+          휴가가 끝난 날 이전까지 피보험 단위기간(고용보험 가입 기간)이 통산하여 180일 이상이어야 합니다. 또한, 출산전후휴가를 시작한 날 이후 1개월부터 휴가가 끝난 날 이후 12개월 이내에 신청해야 합니다.
+        </div>
+      </div>
+
+      <div class="faq-item open">
+        <button type="button" class="faq-question">
+          <span>통상임금이 고용보험 상한액(월 210만 원)보다 많은 경우 어떻게 되나요?</span>
+          <span class="faq-icon"></span>
+        </button>
+        <div class="faq-answer">
+          우선지원대상기업의 경우, 고용보험에서 월 상한액(210만 원)을 지급하며, 최초 60일(다태아 75일) 동안은 통상임금과의 차액을 사업주가 지급해야 합니다. 대기업의 경우 최초 60일은 사업주가 통상임금 전체를 지급하고, 나머지 30일은 고용보험에서 상한액 범위 내로 지원합니다.
+        </div>
+      </div>
+
+      <div class="faq-item open">
+        <button type="button" class="faq-question">
+          <span>출산전후휴가 급여 신청 시 필요한 서류는 무엇인가요?</span>
+          <span class="faq-icon"></span>
+        </button>
+        <div class="faq-answer">
+          출산전후휴가 급여 신청서, 출산전후휴가 확인서 1부(최초 1회 한정), 통상임금을 확인할 수 있는 자료(임금대장, 근로계약서 사본 등) 및 휴가기간 동안 사업주로부터 금품을 받은 경우 이를 확인 가능한 서류가 필요합니다.
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>© 2026 Miso Calculator. All rights reserved.</p>
+    <p>본 계산기는 모성보호 관련 법령 기준 단순 시뮬레이션 결과이며, 통상임금 구성 항목, 비과세 수당 및 개별 근로조건에 따라 실제 수령 금액과 차이가 발생할 수 있습니다.</p>
+    <p style="margin-top: 8px;"><a href="../privacy.html">개인정보처리방침</a></p>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. 임금 계산기 드롭다운 토글
+      const salaryDropdown = document.getElementById('salaryCalcDropdown');
+      const salaryToggleBtn = document.getElementById('salaryDropdownToggleBtn');
+
+      if (salaryToggleBtn && salaryDropdown) {
+        salaryToggleBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const isOpen = salaryDropdown.classList.toggle('is-open');
+          salaryToggleBtn.setAttribute('aria-expanded', isOpen);
+        });
+
+        document.addEventListener('click', (e) => {
+          if (!salaryDropdown.contains(e.target)) {
+            salaryDropdown.classList.remove('is-open');
+            salaryToggleBtn.setAttribute('aria-expanded', 'false');
+          }
+        });
+
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') {
+            salaryDropdown.classList.remove('is-open');
+            salaryToggleBtn.setAttribute('aria-expanded', 'false');
+          }
+        });
+      }
+
+      // 2. 모바일 햄버거 토글
+      const hamburgerBtn = document.getElementById('hamburgerBtn');
+      const navGroup = document.getElementById('navGroup');
+
+      if (hamburgerBtn && navGroup) {
+        hamburgerBtn.addEventListener('click', () => {
+          const isOpen = navGroup.classList.toggle('is-open');
+          hamburgerBtn.setAttribute('aria-expanded', isOpen);
+        });
+      }
+
+      // 3. FAQ 아코디언 토글 (기본 Open 상태 유지 및 클릭 시 토글)
+      const faqQuestions = document.querySelectorAll('.faq-question');
+      faqQuestions.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const item = btn.parentElement;
+          item.classList.toggle('open');
+        });
+      });
+
+      // 4. 출산전후휴가 급여 계산 로직
+      const calcForm = document.getElementById('calcForm');
+      const resultContainer = document.getElementById('resultContainer');
+
+      if (calcForm) {
+        calcForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+
+          const monthlyWage = parseFloat(document.getElementById('monthlyWage').value) || 0;
+          const companyType = document.getElementById('companyType').value;
+          const babyType = document.getElementById('babyType').value;
+
+          if (monthlyWage <= 0) {
+            alert('올바른 월 통상임금을 입력해 주세요.');
+            return;
+          }
+
+          const MAX_GOV_MONTHLY = 2100000; // 고용보험 월 상한액
+          const totalDays = (babyType === 'single') ? 90 : 120;
+          const initialDays = (babyType === 'single') ? 60 : 75; // 최초 주체 기간
+          const remainingDays = totalDays - initialDays;          // 후반 고용보험 전담 기간
+
+          const initialMonths = initialDays / 30;
+          const remainingMonths = remainingDays / 30;
+
+          let govPayTotal = 0;
+          let companyPayTotal = 0;
+
+          if (companyType === 'small') {
+            // 우선지원대상기업: 90일(120일) 전체 고용보험 지급 (상한액 적용) + 최초 60일(75일) 차액 사업주 부담
+            const govInitial = Math.min(monthlyWage, MAX_GOV_MONTHLY) * initialMonths;
+            const companyInitial = Math.max(0, monthlyWage - MAX_GOV_MONTHLY) * initialMonths;
+            const govRemaining = Math.min(monthlyWage, MAX_GOV_MONTHLY) * remainingMonths;
+
+            govPayTotal = govInitial + govRemaining;
+            companyPayTotal = companyInitial;
+          } else {
+            // 대기업: 최초 60일(75일) 사업주 100% 지급, 나머지 30일(45일) 고용보험 지원 (상한액 적용)
+            companyPayTotal = monthlyWage * initialMonths;
+            govPayTotal = Math.min(monthlyWage, MAX_GOV_MONTHLY) * remainingMonths;
+          }
+
+          const totalPay = govPayTotal + companyPayTotal;
+
+          // 결과 출력
+          document.getElementById('totalDaysResult').textContent = totalDays + '일';
+          document.getElementById('govPayResult').textContent = Math.floor(govPayTotal).toLocaleString() + '원';
+          document.getElementById('companyPayResult').textContent = Math.floor(companyPayTotal).toLocaleString() + '원';
+          document.getElementById('totalPayResult').textContent = Math.floor(totalPay).toLocaleString() + '원';
+
+          resultContainer.style.display = 'block';
+        });
+      }
+    });
+  </script>
+</body>
+</html>

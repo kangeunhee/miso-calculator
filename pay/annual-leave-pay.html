@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Miso Calculator - 연차수당 계산기</title>
+  <style>
+    :root {
+      --primary: #dc2626;         /* 대표 메인 레드 */
+      --primary-hover: #b91c1c;   /* 버튼/링크 호버 색상 */
+      --primary-light: #fef2f2;   /* 연한 레드 배경/하이라이트 */
+      --text-dark: #7f1d1d;       /* 진한 레드 텍스트 */
+      --text-muted: #991b1b;      /* 보조 텍스트 색상 */
+      --border: #fca5a5;         /* 레드 톤 테두리 선 */
+      --bg-red: #fff5f5;         /* 페이지 전체 메인 배경색 */
+      --bg-white: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      color: var(--text-dark);
+      background-color: var(--bg-red);
+      line-height: 1.6;
+    }
+
+    /* 1. 헤더 영역 */
+    .site-header {
+      background-color: var(--bg-white);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 8px rgba(220, 38, 38, 0.08);
+    }
+
+    .header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--primary);
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+
+    .brand-logo-img {
+      height: 36px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      background-color: var(--primary);
+      color: white;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.95rem;
+      box-shadow: 0 2px 6px rgba(220, 38, 38, 0.3);
+    }
+
+    .nav-right-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .main-nav {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .nav-item {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      transition: all 0.2s;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .nav-item:hover,
+    .nav-item.active {
+      color: var(--primary);
+      background-color: var(--primary-light);
+      font-weight: 700;
+    }
+
+    .dropdown {
+      position: relative;
+    }
+
+    .dropdown-btn {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+    }
+
+    .dropdown-btn .chevron {
+      width: 14px;
+      height: 14px;
+      transition: transform 0.2s ease;
+    }
+
+    .dropdown.is-open .chevron {
+      transform: rotate(180deg);
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      width: 320px;
+      max-height: 480px;
+      overflow-y: auto;
+      background-color: var(--bg-white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 10px 25px -5px rgba(220, 38, 38, 0.12);
+      padding: 8px;
+      display: none;
+      flex-direction: column;
+      gap: 2px;
+      z-index: 1100;
+    }
+
+    .dropdown.is-open .dropdown-menu {
+      display: flex;
+    }
+
+    .dropdown-item {
+      display: flex;
+      flex-direction: column;
+      padding: 10px 12px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background-color 0.2s;
+    }
+
+    .dropdown-item:hover {
+      background-color: var(--primary-light);
+    }
+
+    .title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dropdown-item .title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+
+    .dropdown-item:hover .title {
+      color: var(--primary);
+    }
+
+    .dropdown-item .desc {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .btn-list-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--primary);
+      background-color: var(--primary-light);
+      border: 1px solid var(--border);
+      padding: 8px 14px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .btn-list-back:hover {
+      background-color: var(--primary);
+      color: var(--bg-white);
+      border-color: var(--primary);
+    }
+
+    .btn-hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 24px;
+      height: 18px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .hamburger-bar {
+      width: 100%;
+      height: 2px;
+      background-color: var(--text-dark);
+      border-radius: 2px;
+    }
+
+    /* 2. 메인 컨텐츠 영역 */
+    .container {
+      max-width: 720px;
+      margin: 40px auto;
+      padding: 30px;
+      background-color: var(--bg-white);
+      border-radius: 16px;
+      box-shadow: 0 10px 25px -5px rgba(220, 38, 38, 0.1);
+    }
+
+    .category-tag {
+      font-size: 13px;
+      color: var(--primary);
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+
+    h1 {
+      font-size: 26px;
+      margin-top: 0;
+      margin-bottom: 16px;
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 10px;
+      color: var(--text-dark);
+    }
+
+    h2 {
+      font-size: 19px;
+      margin-top: 36px;
+      margin-bottom: 14px;
+      color: var(--text-dark);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 6px;
+    }
+
+    .wiki-box {
+      background-color: var(--primary-light);
+      border-left: 4px solid var(--primary);
+      padding: 16px;
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 24px;
+      font-size: 14.5px;
+      line-height: 1.7;
+    }
+
+    .wiki-box p {
+      margin: 0 0 10px 0;
+      color: var(--text-dark);
+    }
+
+    .wiki-box p:last-child {
+      margin-bottom: 0;
+    }
+
+    .wiki-source {
+      font-size: 12px;
+      color: #b91c1c;
+      font-weight: bold;
+      display: inline-block;
+      margin-top: 6px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+      font-weight: bold;
+      color: var(--text-dark);
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      box-sizing: border-box;
+      font-size: 15px;
+      color: #450a0a;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px #fecaca;
+    }
+
+    button.btn-calc {
+      width: 100%;
+      padding: 14px;
+      background-color: var(--primary);
+      color: var(--bg-white);
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background-color 0.2s;
+    }
+
+    button.btn-calc:hover {
+      background-color: var(--primary-hover);
+    }
+
+    .result-container {
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 2px solid var(--primary);
+    }
+
+    .result-section {
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .result-subtitle {
+      font-size: 16px;
+      font-weight: bold;
+      color: var(--text-dark);
+      margin-bottom: 10px;
+    }
+
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 15px;
+      color: var(--text-muted);
+    }
+
+    .result-row.total {
+      font-size: 17px;
+      font-weight: bold;
+      color: var(--primary);
+      margin-top: 8px;
+      border-top: 1px dashed var(--border);
+      padding-top: 8px;
+    }
+
+    /* FAQ 아코디언 스타일 (기본 Open 상태) */
+    .faq-list {
+      margin-top: 12px;
+    }
+
+    .faq-item {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+
+    .faq-question {
+      width: 100%;
+      text-align: left;
+      padding: 14px 16px;
+      background-color: var(--bg-red);
+      border: none;
+      font-size: 15px;
+      font-weight: bold;
+      color: var(--text-dark);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background-color 0.2s;
+    }
+
+    .faq-question:hover {
+      background-color: var(--primary-light);
+    }
+
+    .faq-icon {
+      font-size: 18px;
+      color: var(--primary);
+      transition: transform 0.2s;
+      font-weight: bold;
+    }
+
+    /* open 클래스가 있을 때 아이콘 형태 (- 마이너스) */
+    .faq-item.open .faq-icon::before {
+      content: "-";
+    }
+
+    /* open 클래스가 없을 때 아이콘 형태 (+ 플러스) */
+    .faq-item:not(.open) .faq-icon::before {
+      content: "+";
+    }
+
+    .faq-answer {
+      display: none;
+      padding: 14px 16px;
+      font-size: 14px;
+      color: var(--text-muted);
+      background-color: var(--bg-white);
+      border-top: 1px solid var(--border);
+      line-height: 1.6;
+    }
+
+    /* open 클래스가 있을 때 답변 노출 */
+    .faq-item.open .faq-answer {
+      display: block;
+    }
+
+    /* 애드센스 광고 영역 */
+    .ad-slot {
+      margin: 24px 0;
+      text-align: center;
+      background: #fafafa;
+      border: 1px dashed #fca5a5;
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 30px 20px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      background-color: var(--bg-red);
+    }
+
+    footer p {
+      margin: 4px 0;
+      color: var(--text-muted);
+    }
+
+    footer a {
+      color: var(--text-muted);
+      text-decoration: underline;
+    }
+
+    @media (max-width: 1024px) {
+      .container {
+        margin: 20px;
+        padding: 20px;
+      }
+
+      .btn-hamburger {
+        display: flex;
+      }
+
+      .nav-right-group {
+        display: none;
+        position: absolute;
+        top: 61px;
+        left: 0;
+        width: 100%;
+        background-color: var(--bg-white);
+        flex-direction: column;
+        align-items: stretch;
+        padding: 1rem 1.25rem;
+        gap: 1rem;
+        border-bottom: 1px solid var(--border);
+        box-shadow: 0 10px 15px -3px rgba(220, 38, 38, 0.08);
+      }
+
+      .nav-right-group.is-open {
+        display: flex;
+      }
+
+      .main-nav {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 4px;
+      }
+
+      .dropdown-menu {
+        position: static;
+        width: 100%;
+        box-shadow: none;
+        border: none;
+        background: var(--primary-light);
+        padding: 4px;
+        margin-top: 4px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 헤더 영역 -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="../index.html" class="brand">
+        <img src="../logo.png" alt="Miso Calculator Logo" class="brand-logo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="brand-icon" style="display: none;" aria-hidden="true">MP</div>
+        <span>Miso pay</span>
+      </a>
+
+      <button type="button" class="btn-hamburger" id="hamburgerBtn" aria-label="메뉴 열기" aria-expanded="false">
+        <span class="hamburger-bar"></span>
+        <span class="hamburger-bar"></span>
+        <span class="hamburger-bar"></span>
+      </button>
+
+      <div class="nav-right-group" id="navGroup">
+        <nav class="main-nav" aria-label="주요 계산기 메뉴">
+          <a href="./annual-leave-pay.html" class="nav-item active">연차수당 계산</a>
+          <a href="./work-hours.html" class="nav-item">근무시간 계산</a>
+          <a href="./tenure.html" class="nav-item">근속기간 계산</a>
+          <a href="./take-home-pay.html" class="nav-item">급여 실수령액 계산기</a>
+
+          <div class="dropdown" id="salaryCalcDropdown">
+            <button type="button" class="nav-item dropdown-btn" id="salaryDropdownToggleBtn" aria-expanded="false">
+              <span>기타 계산기</span>
+              <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M6 9l6 6 6-6"/>
+              </svg>
+            </button>
+
+            <div class="dropdown-menu">
+              <a href="./take-home-pay.html" class="dropdown-item">
+                <div class="title-wrap">
+                  <span class="title">급여 실수령액 계산기</span>
+                </div>
+                <span class="desc">급여 실수령액 계산합니다.</span>
+              </a>
+
+                 <a href="./salary-increase.html" class="dropdown-item">
+                <div class="title-wrap">
+                  <span class="title">연봉 인상률 계산기</span>
+                </div>
+                <span class="desc">연봉 인상률 계산합니다.</span>
+              </a>
+
+               <a href="./parental-leave-pay.html" class="dropdown-item">
+                <div class="title-wrap">
+                  <span class="title">육아휴직급여 계산기</span>
+                </div>
+                <span class="desc">육아휴직급여 실수령 계산합니다.</span>
+              </a>
+
+              <a href="./freelancer-tax.html" class="dropdown-item">
+                <div class="title-wrap">
+                  <span class="title">프리랜서 3.3% 실수령 계산기</span>
+                </div>
+                <span class="desc">프리랜서 3.3% 실수령 계산합니다.</span>
+              </a>
+
+                <a href="./weekly-holiday-pay.html" class="dropdown-item">
+                <div class="title-wrap">
+                  <span class="title">주휴수당 계산기</span>
+                </div>
+                <span class="desc">유급휴일에 지급되는 주휴수당을 계산합니다.</span>
+              </a>
+
+              <a href="./holiday-work-pay.html" class="dropdown-item">
+                <div class="title-wrap">
+                  <span class="title">휴일근무수당 계산기</span>
+                </div>
+                <span class="desc">휴일근로 가산수당을 계산합니다.</span>
+              </a>
+              
+              <a href="./night-shift-pay.html" class="dropdown-item">
+                <div class="title-wrap">
+                  <span class="title">야근수당 계산</span>
+                </div>
+                <span class="desc">야간근로(22시-06시 가산수당을 계산합니다.</span>
+              </a>
+
+              <a href="./hourly-wage.html" class="dropdown-item">
+                <div class="title-wrap">
+                  <span class="title">시급 계산</span>
+                </div>
+                <span class="desc">시급을 통해 주급과 월급을 계산합니다.</span>
+              </a>
+              
+              <a href="./maternity-leave-pay.html" class="dropdown-item">
+                <div class="title-wrap">
+                  <span class="title">출산전후휴가 급여 계산</span>
+                </div>
+                <span class="desc">출산전후휴가 기간 동안 받을 수 있는 급여를 계산합니다.</span>
+              </a>
+              <a href="./annual-leave-pay.html" class="dropdown-item">
+                <div class="title-wrap">
+                  <span class="title">연차수당 계산</span>
+                </div>
+                <span class="desc">미사용 연차에 대한 연차수당을 계산합니다.</span>
+              </a>
+              <a href="./severance-pay.html" class="dropdown-item">
+                <div class="title-wrap">
+                  <span class="title">퇴직금 계산</span>
+                </div>
+                <span class="desc">근무했던 기간에 따라 퇴직금을 계산합니다.</span>
+              </a>
+              <a href="./unemployment-benefit.html" class="dropdown-item">
+                <div class="title-wrap">
+                  <span class="title">실업급여 계산</span>
+                </div>
+                <span class="desc">퇴직 후 실업급여를 받을 수 있는지 계산합니다.</span>
+              </a>
+            </div>
+          </div>
+        </nav>
+
+        <a href="../index.html" class="btn-list-back">전체 목록</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- 메인 컨텐츠 카드 -->
+  <main class="container">
+    <div class="category-tag">임금 계산기</div>
+    <h1>연차수당 계산기</h1>
+
+    <!-- 상세 백과사전 설명 영역 -->
+    <section class="wiki-box">
+      <p>
+        <strong>연차유급휴가 및 연차수당의 법적 정의</strong><br>
+        <strong>위키백과 및 네이버 지식백과 참조:</strong> 연차유급휴가는 근로기준법 제60조에 따라 사용자가 1년간 80퍼센트 이상 출근한 근로자에게 15일의 유급휴가를 주어야 하는 제도입니다. <strong>연차유급휴가 미사용수당(연차수당)</strong>이란 근로자가 법정 연차휴가를 지정된 1년의 청구권 기간 동안 다 사용하지 못하고 소멸되었을 때, 미사용한 휴가 일수만큼 금전으로 보상받는 수당을 의미합니다.
+      </p>
+      <p>
+        <strong>연차수당 산정 기준 공식:</strong><br>
+        1) <strong>일통상임금(1일 통상임금):</strong> <code>시간급 통상임금 × 1일 소정근로시간(주 40시간 근로자 기준 8시간)</code><br>
+        2) <strong>시간급 통상임금:</strong> <code>월 기본급 ÷ 월 소정근로시간(209시간)</code><br>
+        3) <strong>최종 연차수당 계산액:</strong> <code>1일 통상임금 × 미사용 연차 일수</code>
+      </p>
+      <span class="wiki-source">※ 출처: 위키백과(연차유급휴가), 네이버 지식백과(두산백과, 근로기준법상 연차휴가 미사용수당)</span>
+    </section>
+
+    <!-- 상단 애드센스 광고 영역 -->
+    <div class="ad-slot">
+      <!-- Google AdSense Code Placement -->
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+           data-ad-slot="1234567890"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <form id="calcForm">
+      <div class="form-group">
+        <label for="calcType">계산 방식 선택</label>
+        <select id="calcType">
+          <option value="monthly" selected>월 기본급 기준 계산</option>
+          <option value="hourly">통상시급 직접 입력</option>
+        </select>
+      </div>
+
+      <div class="form-group" id="monthlyGroup">
+        <label for="monthlyWage">월 기본급 (원)</label>
+        <input type="number" id="monthlyWage" placeholder="예: 3000000">
+      </div>
+
+      <div class="form-group" id="hourlyGroup" style="display: none;">
+        <label for="hourlyWage">통상시급 (원)</label>
+        <input type="number" id="hourlyWage" placeholder="예: 14354">
+      </div>
+
+      <div class="form-group">
+        <label for="dailyHours">1일 소정근로시간 (시간)</label>
+        <input type="number" id="dailyHours" value="8" min="1" max="24" required>
+      </div>
+
+      <div class="form-group">
+        <label for="unusedDays">미사용 연차 일수 (일)</label>
+        <input type="number" id="unusedDays" step="0.5" placeholder="예: 5" required>
+      </div>
+
+      <button type="submit" class="btn-calc">연차수당 계산하기</button>
+    </form>
+
+    <!-- 계산 결과 출력 영역 -->
+    <div class="result-container" id="resultContainer" style="display: none;">
+      <div class="result-section">
+        <div class="result-subtitle">연차수당 산정 결과</div>
+        <div class="result-row">
+          <span>적용 통상시급</span>
+          <span id="calculatedHourlyResult">0원</span>
+        </div>
+        <div class="result-row">
+          <span>1일 통상임금 (일급)</span>
+          <span id="dailyWageResult">0원</span>
+        </div>
+        <div class="result-row">
+          <span>미사용 연차 일수</span>
+          <span id="unusedDaysResult">0일</span>
+        </div>
+        <div class="result-row total">
+          <span>예상 연차수당 총액 (세전)</span>
+          <span id="totalAnnualPayResult">0원</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 하단 애드센스 광고 영역 -->
+    <div class="ad-slot">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+           data-ad-slot="0987654321"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <!-- FAQ 목록 (기본 open 클래스 적용으로 모두 열림) -->
+    <h2>자주 묻는 질문 (FAQ)</h2>
+    <div class="faq-list">
+      <div class="faq-item open">
+        <button type="button" class="faq-question">
+          <span>연차수당은 언제 지급받게 되나요?</span>
+          <span class="faq-icon"></span>
+        </button>
+        <div class="faq-answer">
+          연차휴가 청구권이 소멸된 날이 속한 달의 임금지급일(회사의 정기 급여일)에 지급하는 것이 원칙입니다. 퇴직으로 인해 발생하는 연차수당의 경우 퇴직일로부터 14일 이내에 모든 정산금과 함께 지급되어야 합니다.
+        </div>
+      </div>
+
+      <div class="faq-item open">
+        <button type="button" class="faq-question">
+          <span>회사가 연차사용촉진제도를 시행하면 연차수당을 못 받나요?</span>
+          <span class="faq-icon"></span>
+        </button>
+        <div class="faq-answer">
+          사용자가 근로기준법 제61조에 따른 적법한 연차휴가 사용촉진 절차(휴가 지정 및 서면 통보 등)를 모두 이행했음에도 근로자가 휴가를 사용하지 않아 소멸된 경우, 사용자는 미사용 연차에 대한 보상 의무가 면제될 수 있습니다.
+        </div>
+      </div>
+
+      <div class="faq-item open">
+        <button type="button" class="faq-question">
+          <span>1년 미만 근로자의 연차수당 발생 기준은 어떻게 되나요?</span>
+          <span class="faq-icon"></span>
+        </button>
+        <div class="faq-answer">
+           입사 1년 미만 근로자는 1개월 개근 시 1일씩(최대 11일)의 연차가 발생합니다. 이렇게 발생한 연차 역시 입사일로부터 1년이 되는 시점까지 사용하지 않거나, 사용 전에 퇴직할 경우 미사용 연차수당으로 정산받을 수 있습니다.
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>© 2026 Miso Calculator. All rights reserved.</p>
+    <p>본 계산기는 근로기준법 통상임금 기준 단순 시뮬레이션 결과이며, 사업장별 수당 구성(고정수당 포함 여부) 및 취업규칙 등에 따라 실제 산정액이 다를 수 있습니다.</p>
+    <p style="margin-top: 8px;"><a href="../privacy.html">개인정보처리방침</a></p>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. 임금 계산기 드롭다운 토글
+      const salaryDropdown = document.getElementById('salaryCalcDropdown');
+      const salaryToggleBtn = document.getElementById('salaryDropdownToggleBtn');
+
+      if (salaryToggleBtn && salaryDropdown) {
+        salaryToggleBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const isOpen = salaryDropdown.classList.toggle('is-open');
+          salaryToggleBtn.setAttribute('aria-expanded', isOpen);
+        });
+
+        document.addEventListener('click', (e) => {
+          if (!salaryDropdown.contains(e.target)) {
+            salaryDropdown.classList.remove('is-open');
+            salaryToggleBtn.setAttribute('aria-expanded', 'false');
+          }
+        });
+
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') {
+            salaryDropdown.classList.remove('is-open');
+            salaryToggleBtn.setAttribute('aria-expanded', 'false');
+          }
+        });
+      }
+
+      // 2. 모바일 햄버거 토글
+      const hamburgerBtn = document.getElementById('hamburgerBtn');
+      const navGroup = document.getElementById('navGroup');
+
+      if (hamburgerBtn && navGroup) {
+        hamburgerBtn.addEventListener('click', () => {
+          const isOpen = navGroup.classList.toggle('is-open');
+          hamburgerBtn.setAttribute('aria-expanded', isOpen);
+        });
+      }
+
+      // 3. FAQ 아코디언 토글 (기본 Open 상태 유지 및 클릭 시 토글)
+      const faqQuestions = document.querySelectorAll('.faq-question');
+      faqQuestions.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const item = btn.parentElement;
+          item.classList.toggle('open');
+        });
+      });
+
+      // 4. 입력 폼 계산 방식 전환 처리
+      const calcTypeSelect = document.getElementById('calcType');
+      const monthlyGroup = document.getElementById('monthlyGroup');
+      const hourlyGroup = document.getElementById('hourlyGroup');
+
+      calcTypeSelect.addEventListener('change', () => {
+        if (calcTypeSelect.value === 'monthly') {
+          monthlyGroup.style.display = 'block';
+          hourlyGroup.style.display = 'none';
+        } else {
+          monthlyGroup.style.display = 'none';
+          hourlyGroup.style.display = 'block';
+        }
+      });
+
+      // 5. 연차수당 계산 로직
+      const calcForm = document.getElementById('calcForm');
+      const resultContainer = document.getElementById('resultContainer');
+
+      if (calcForm) {
+        calcForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+
+          const calcType = calcTypeSelect.value;
+          const dailyHours = parseFloat(document.getElementById('dailyHours').value) || 8;
+          const unusedDays = parseFloat(document.getElementById('unusedDays').value) || 0;
+
+          if (unusedDays <= 0) {
+            alert('미사용 연차 일수를 올바르게 입력해 주세요.');
+            return;
+          }
+
+          let hourlyWage = 0;
+
+          if (calcType === 'monthly') {
+            const monthlyWage = parseFloat(document.getElementById('monthlyWage').value) || 0;
+            if (monthlyWage <= 0) {
+              alert('월 기본급을 올바르게 입력해 주세요.');
+              return;
+            }
+            // 주 40시간 기준 월 소정근로시간 209시간 적용
+            hourlyWage = monthlyWage / 209;
+          } else {
+            hourlyWage = parseFloat(document.getElementById('hourlyWage').value) || 0;
+            if (hourlyWage <= 0) {
+              alert('통상시급을 올바르게 입력해 주세요.');
+              return;
+            }
+          }
+
+          // 1일 통상임금 (일급) = 통상시급 × 1일 소정근로시간
+          const dailyWage = hourlyWage * dailyHours;
+
+          // 총 연차수당 = 1일 통상임금 × 미사용 연차 일수
+          const totalAnnualPay = dailyWage * unusedDays;
+
+          // 결과 출력
+          document.getElementById('calculatedHourlyResult').textContent = Math.floor(hourlyWage).toLocaleString() + '원';
+          document.getElementById('dailyWageResult').textContent = Math.floor(dailyWage).toLocaleString() + '원';
+          document.getElementById('unusedDaysResult').textContent = unusedDays + '일';
+          document.getElementById('totalAnnualPayResult').textContent = Math.floor(totalAnnualPay).toLocaleString() + '원';
+
+          resultContainer.style.display = 'block';
+        });
+      }
+    });
+  </script>
+</body>
+</html>

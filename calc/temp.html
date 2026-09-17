@@ -1,0 +1,374 @@
+
+<html>
+<style>
+
+
+    :root {
+    --primary: #7c3aed;
+    --primary-light: #f3e8ff;
+    --primary-hover: #6d28d9;
+    --bg-main: #faf5ff;
+    --text-dark: #0f172a;
+    --text-muted: #64748b;
+    --border: #e9d5ff;
+}
+
+/* 헤더 기본 레이아웃 */
+.site-header {
+    background-color: #ffffff;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 8px rgba(124, 58, 237, 0.05);
+}
+
+.header-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+}
+
+/* 로고 영역 */
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--primary);
+    text-decoration: none;
+    flex-shrink: 0;
+}
+
+.brand-icon {
+    width: 36px;
+    height: 36px;
+    background-color: var(--primary);
+    color: white;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.95rem;
+    box-shadow: 0 2px 6px rgba(124, 58, 237, 0.3);
+}
+
+/* 네비게이션 그룹 */
+.nav-right-group {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.main-nav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.nav-item {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: all 0.2s;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.nav-item:hover, 
+.nav-item.active {
+    color: var(--primary);
+    background-color: var(--primary-light);
+    font-weight: 700;
+}
+
+/* 드롭다운 스타일 */
+.dropdown {
+    position: relative;
+}
+
+.dropdown-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.dropdown-btn .chevron {
+    width: 14px;
+    height: 14px;
+    transition: transform 0.2s ease;
+}
+
+.dropdown.is-open .chevron {
+    transform: rotate(180deg);
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 260px;
+    background-color: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+    padding: 8px;
+    display: none;
+    flex-direction: column;
+    gap: 2px;
+    z-index: 1100;
+}
+
+.dropdown.is-open .dropdown-menu {
+    display: flex;
+}
+
+.dropdown-item {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+
+.dropdown-item:hover {
+    background-color: var(--primary-light);
+}
+
+.dropdown-item .title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+.dropdown-item:hover .title {
+    color: var(--primary);
+}
+
+.dropdown-item .desc {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+/* 전체 목록 우측 버튼 */
+.btn-list-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--primary);
+    background-color: var(--primary-light);
+    border: 1px solid var(--border);
+    padding: 8px 14px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.btn-list-back:hover {
+    background-color: var(--primary);
+    color: #ffffff;
+    border-color: var(--primary);
+}
+
+/* 햄버거 버튼 (모바일용) */
+.btn-hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 24px;
+    height: 18px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.hamburger-bar {
+    width: 100%;
+    height: 2px;
+    background-color: var(--text-dark);
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+.btn-hamburger.active .hamburger-bar:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+}
+.btn-hamburger.active .hamburger-bar:nth-child(2) {
+    opacity: 0;
+}
+.btn-hamburger.active .hamburger-bar:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+}
+
+/* 모바일 반응형 (1024px 이하) */
+@media (max-width: 1024px) {
+    .btn-hamburger { 
+        display: flex; 
+    }
+
+    .nav-right-group {
+        display: none;
+        position: absolute;
+        top: 61px;
+        left: 0;
+        width: 100%;
+        background-color: #ffffff;
+        flex-direction: column;
+        align-items: stretch;
+        padding: 1rem 1.25rem;
+        gap: 1rem;
+        border-bottom: 1px solid var(--border);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+    }
+
+    .nav-right-group.is-open { 
+        display: flex; 
+    }
+
+    .main-nav { 
+        flex-direction: column; 
+        align-items: stretch; 
+        gap: 4px; 
+    }
+
+    .dropdown-menu { 
+        position: static; 
+        width: 100%; 
+        box-shadow: none; 
+        border: none; 
+        background: var(--bg-main); 
+        padding: 4px; 
+        margin-top: 4px; 
+    }
+}
+</style>
+<header class="site-header">
+    <div class="header-inner">
+        <!-- 브랜드 로고 -->
+        <a href="../index.html" class="brand">
+            <div class="brand-icon" aria-hidden="true">MC</div>
+            <span>Miso Calculator</span>
+        </a>
+
+        <!-- 모바일 전용 햄버거 버튼 -->
+        <button type="button" class="btn-hamburger" id="hamburgerBtn" aria-label="메뉴 열기" aria-expanded="false">
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+        </button>
+
+        <!-- 네비게이션 & 전체 목록 그룹 -->
+        <div class="nav-right-group" id="navGroup">
+            <nav class="main-nav" aria-label="주요 계산기 메뉴">
+                <!-- 상단 노출 주요 메뉴 (4개) -->
+                <a href="./target-amount.html" class="nav-item">목표금액 달성</a>
+                <a href="./compound-interest.html" class="nav-item">복리 이자</a>
+                <a href="./deposit.html" class="nav-item active">예금 이자</a>
+                <a href="./savings.html" class="nav-item">적금 이자</a>
+
+                <!-- 기타 계산기 드롭다운 메뉴 -->
+                <div class="dropdown" id="moreCalcDropdown">
+                    <button type="button" class="nav-item dropdown-btn" id="dropdownToggleBtn" aria-expanded="false">
+                        <span>기타 계산기</span>
+                        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <path d="M6 9l6 6 6-6"/>
+                        </svg>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a href="./compare-savings.html" class="dropdown-item">
+                            <span class="title">예적금 비교</span>
+                            <span class="desc">예금과 적금의 수익률 직접 비교</span>
+                        </a>
+                        <a href="./pinwheel-savings.html" class="dropdown-item">
+                            <span class="title">풍차 돌리기</span>
+                            <span class="desc">매월 예적금 가입 수익 시뮬레이션</span>
+                        </a>
+                        <a href="./youth-savings.html" class="dropdown-item">
+                            <span class="title">청년미래적금</span>
+                            <span class="desc">정부 지원금 포함 혜택 계산</span>
+                        </a>
+                        <a href="./parking-cma.html" class="dropdown-item">
+                            <span class="title">파킹통장 / CMA</span>
+                            <span class="desc">일할 이자 계산 및 수령액 비교</span>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- 전체 목록 버튼 -->
+            <a href="../index.html" class="btn-list-back">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="8" y1="6" x2="21" y2="6"></line>
+                    <line x1="8" y1="12" x2="21" y2="12"></line>
+                    <line x1="8" y1="18" x2="21" y2="18"></line>
+                    <circle cx="3" cy="6" r="1"></circle>
+                    <circle cx="3" cy="12" r="1"></circle>
+                    <circle cx="3" cy="18" r="1"></circle>
+                </svg>
+                <span>전체 목록</span>
+            </a>
+        </div>
+    </div>
+</header>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+    // 1. 모바일 햄버거 메뉴 토글
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const navGroup = document.getElementById('navGroup');
+
+    if (hamburgerBtn && navGroup) {
+        hamburgerBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = hamburgerBtn.classList.toggle('active');
+            navGroup.classList.toggle('is-open');
+            hamburgerBtn.setAttribute('aria-expanded', isOpen);
+        });
+    }
+
+    // 2. 기타 계산기 드롭다운 토글
+    const dropdown = document.getElementById('moreCalcDropdown');
+    const dropdownToggleBtn = document.getElementById('dropdownToggleBtn');
+
+    if (dropdownToggleBtn && dropdown) {
+        dropdownToggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = dropdown.classList.toggle('is-open');
+            dropdownToggleBtn.setAttribute('aria-expanded', isOpen);
+        });
+
+        // 바깥 영역 클릭 시 드롭다운 닫기
+        document.addEventListener('click', (e) => {
+            if (!dropdown.contains(e.target)) {
+                dropdown.classList.remove('is-open');
+                dropdownToggleBtn.setAttribute('aria-expanded', 'false');
+            }
+        });
+
+        // ESC 키 입력 시 닫기
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                dropdown.classList.remove('is-open');
+                dropdownToggleBtn.setAttribute('aria-expanded', 'false');
+            }
+        });
+    }
+});
+</script>
+</html>

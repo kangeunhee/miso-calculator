@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Miso Calculator - 주식 계산기</title>
+  <style>
+    :root {
+      --primary: #059669;         /* 대표 메인 그린 */
+      --primary-hover: #047857;   /* 버튼/링크 호버 색상 */
+      --primary-light: #ecfdf5;   /* 연한 그린 배경/하이라이트 */
+      --text-dark: #064e3b;       /* 진한 그린 텍스트 */
+      --text-muted: #047857;      /* 보조 텍스트 색상 */
+      --border: #a7f3d0;         /* 그린 톤 테두리 선 */
+      --bg-green: #f0fdf4;       /* 페이지 전체 메인 배경색 */
+      --bg-white: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      color: var(--text-dark);
+      background-color: var(--bg-green);
+      line-height: 1.6;
+    }
+
+    /* 헤더 영역 */
+    .site-header {
+      background-color: var(--bg-white);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 8px rgba(5, 150, 105, 0.08);
+    }
+
+    .header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--primary);
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+
+    .brand-logo-img {
+      height: 36px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      background-color: var(--primary);
+      color: white;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.95rem;
+      box-shadow: 0 2px 6px rgba(5, 150, 105, 0.3);
+    }
+
+    .nav-right-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .main-nav {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .nav-item {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      transition: all 0.2s;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .nav-item:hover,
+    .nav-item.active {
+      color: var(--primary);
+      background-color: var(--primary-light);
+      font-weight: 700;
+    }
+
+    .dropdown {
+      position: relative;
+    }
+
+    .dropdown-btn {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+    }
+
+    .dropdown-btn .chevron {
+      width: 14px;
+      height: 14px;
+      transition: transform 0.2s ease;
+    }
+
+    .dropdown.is-open .chevron {
+      transform: rotate(180deg);
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      width: 340px;
+      max-height: 480px;
+      overflow-y: auto;
+      background-color: var(--bg-white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 10px 25px -5px rgba(5, 150, 105, 0.12);
+      padding: 8px;
+      display: none;
+      flex-direction: column;
+      gap: 2px;
+      z-index: 1100;
+    }
+
+    .dropdown.is-open .dropdown-menu {
+      display: flex;
+    }
+
+    .dropdown-item {
+      display: flex;
+      flex-direction: column;
+      padding: 10px 12px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background-color 0.2s;
+    }
+
+    .dropdown-item:hover {
+      background-color: var(--primary-light);
+    }
+
+    .title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dropdown-item .title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+
+    .dropdown-item:hover .title {
+      color: var(--primary);
+    }
+
+    .dropdown-item .desc {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .badge-popular {
+      font-size: 0.65rem;
+      background-color: #ef4444;
+      color: white;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+
+    .badge-new {
+      font-size: 0.65rem;
+      background-color: #10b981;
+      color: white;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+
+    .btn-list-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--primary);
+      background-color: var(--primary-light);
+      border: 1px solid var(--border);
+      padding: 8px 14px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .btn-list-back:hover {
+      background-color: var(--primary);
+      color: var(--bg-white);
+      border-color: var(--primary);
+    }
+
+    .btn-hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 24px;
+      height: 18px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .hamburger-bar {
+      width: 100%;
+      height: 2px;
+      background-color: var(--text-dark);
+      border-radius: 2px;
+    }
+
+    @media (max-width: 1024px) {
+      .btn-hamburger {
+        display: flex;
+      }
+
+      .nav-right-group {
+        display: none;
+        position: absolute;
+        top: 61px;
+        left: 0;
+        width: 100%;
+        background-color: var(--bg-white);
+        flex-direction: column;
+        align-items: stretch;
+        padding: 1rem 1.25rem;
+        gap: 1rem;
+        border-bottom: 1px solid var(--border);
+        box-shadow: 0 10px 15px -3px rgba(5, 150, 105, 0.08);
+      }
+
+      .nav-right-group.is-open {
+        display: flex;
+      }
+
+      .main-nav {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 4px;
+      }
+
+      .dropdown-menu {
+        position: static;
+        width: 100%;
+        box-shadow: none;
+        border: none;
+        background: var(--primary-light);
+        padding: 4px;
+        margin-top: 4px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 녹색 테마 헤더 영역 -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="../index.html" class="brand">
+        <img src="../logo.png" alt="Miso Calculator Logo" class="brand-logo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="brand-icon" style="display: none;" aria-hidden="true">MC</div>
+        <span>Miso Calculator</span>
+      </a>
+
+      <!-- 모바일 햄버거 버튼 -->
+      <button type="button" class="btn-hamburger" id="hamburgerBtn" aria-label="메뉴 열기" aria-expanded="false">
+        <span class="hamburger-bar"></span>
+        <span class="hamburger-bar"></span>
+        <span class="hamburger-bar"></span>
+      </button>
+
+      <div class="nav-right-group" id="navGroup">
+        <nav class="main-nav" aria-label="주요 계산기 메뉴">
+          <a href="./target-amount.html" class="nav-item">목표금액 달성</a>
+          <a href="./compound-interest.html" class="nav-item">복리 이자</a>
+          <a href="./deposit.html" class="nav-item">예금 이자</a>
+          <a href="./savings.html" class="nav-item">적금 이자</a>
+
+          <!-- 주식 계산기 드롭다운 -->
+          <div class="dropdown" id="stockCalcDropdown">
+            <button type="button" class="nav-item dropdown-btn" id="stockDropdownToggleBtn" aria-expanded="false">
+              <span>주식 계산기</span>
+              <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M6 9l6 6 6-6"/>
+              </svg>
+            </button>
+
+            <div class="dropdown-menu">
+              <a href="./stock/average-price.html" class="dropdown-item">
+                <div class="title-wrap">
+                  <span class="title">평단가 계산</span>
+                </div>
+                <span class="desc">주식의 평단가를 계산합니다.</span>
+              </a>
+
+              <a href="./stock/stock-dividend.html" class="dropdown-item">
+                <div class="title-wrap">
+                  <span class="title">주식 배당금 실수령액 계산</span>
+                  <span class="badge-popular">인기</span>
+                  <span class="badge-new">NEW</span>
+                </div>
+                <span class="desc">국내외 주식 배당금에 대한 배당소득세(15.4% 또는 미국 15%) 차감 후 실수령액을 계산합니다.</span>
+              </a>
+
+              <a href="./stock/foreign-stock-tax.html" class="dropdown-item">
+                <div class="title-wrap">
+                  <span class="title">해외주식 양도소득세 계산</span>
+                  <span class="badge-popular">인기</span>
+                  <span class="badge-new">NEW</span>
+                </div>
+                <span class="desc">해외주식 매매 차익 시 기본공제 250만원 적용 후 양도소득세(22%)를 계산합니다.</span>
+              </a>
+
+              <a href="./stock/crypto-stock-return.html" class="dropdown-item">
+                <div class="title-wrap">
+                  <span class="title">암호화폐/주식 수익률 및 손익 계산</span>
+                  <span class="badge-new">NEW</span>
+                </div>
+                <span class="desc">매수가, 매도가, 수수료를 입력하여 목표 수익률 및 총 평가 손익을 계산합니다.</span>
+              </a>
+            </div>
+          </div>
+        </nav>
+
+        <a href="../index.html" class="btn-list-back">전체 목록</a>
+      </div>
+    </div>
+  </header>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. 주식 계산기 드롭다운 토글
+      const stockDropdown = document.getElementById('stockCalcDropdown');
+      const stockToggleBtn = document.getElementById('stockDropdownToggleBtn');
+
+      if (stockToggleBtn && stockDropdown) {
+        stockToggleBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const isOpen = stockDropdown.classList.toggle('is-open');
+          stockToggleBtn.setAttribute('aria-expanded', isOpen);
+        });
+
+        document.addEventListener('click', (e) => {
+          if (!stockDropdown.contains(e.target)) {
+            stockDropdown.classList.remove('is-open');
+            stockToggleBtn.setAttribute('aria-expanded', 'false');
+          }
+        });
+
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') {
+            stockDropdown.classList.remove('is-open');
+            stockToggleBtn.setAttribute('aria-expanded', 'false');
+          }
+        });
+      }
+
+      // 2. 모바일 햄버거 토글
+      const hamburgerBtn = document.getElementById('hamburgerBtn');
+      const navGroup = document.getElementById('navGroup');
+
+      if (hamburgerBtn && navGroup) {
+        hamburgerBtn.addEventListener('click', () => {
+          const isOpen = navGroup.classList.toggle('is-open');
+          hamburgerBtn.setAttribute('aria-expanded', isOpen);
+        });
+      }
+    });
+  </script>
+</body>
+</html>

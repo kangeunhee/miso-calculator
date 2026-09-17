@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DSR 계산기 | 총부채원리금상환비율 한도 및 기준 안내</title>
+  <meta name="description" content="연소득 대비 연간 원리금 상환액 비율인 DSR(총부채원리금상환비율)을 정확히 계산하고, 백과사전 기준 용어 정의 및 스트레스 DSR 한도 규제를 확인하세요.">
+  
+  <!-- 애드센스 태그 영역 (발급받은 본인 코드로 대체하세요) -->
+  <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+
+      <style>
+        :root {
+            --primary-color: #2b6cb0;
+     
+            --bg-color:  #f7fafc;
+            --card-bg: #ffffff;
+            --text-color: #2d3748;
+            --border-color:#e2e8f0;
+            --primary-hover: #2b6cb0;
+            --primary: #2b6cb0;
+            --primary-light: #d1ddf3;
+            --primary-hover: #2b6cb0;
+            --bg-main: #faf5ff;
+            --bg-card: #ffffff;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --border: #e9d5ff;
+        }
+        
+
+       
+
+           * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            margin: 0;
+            /*padding: 20px;*/
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 { color: var(--primary-color); margin-bottom: 10px; }
+        h2 { color: #2c5282; border-bottom: 2px solid var(--primary-color); padding-bottom: 8px; margin-top: 40px; }
+        h3 { color: #3182ce; }
+
+        .card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+        }
+        .card ul { padding-left: 30px;}
+
+         .card p { padding-left: 15px;}
+
+        /* 폼 스타일 */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background-color: #193f6d;
+        }
+
+        /* 결과 스타일 */
+        .result-box {
+            background-color: #ebf8ff;
+            border: 1px solid #bee3f8;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        .result-item.total {
+            font-weight: bold;
+            font-size: 18px;
+            color: #2b6cb0;
+            border-top: 1px solid #cbd5e0;
+            padding-top: 8px;
+        }
+
+        /* 아코디언 스타일 (전체 열림) */
+        details {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            margin-bottom: 10px;
+            padding: 12px 15px;
+        }
+
+        summary {
+            font-weight: bold;
+            cursor: pointer;
+            color: #2d3748;
+            outline: none;
+        }
+
+        details[open] summary {
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        /* 애드센스 광고 영역 표시용 */
+        .adsense-box {
+            background: #edf2f7;
+            border: 1px dashed #cbd5e0;
+            text-align: center;
+            padding: 20px;
+            margin: 20px 0;
+            color: #718096;
+            font-size: 14px;
+        }
+       
+
+/* 헤더 기본 레이아웃 */
+.site-header {
+    background-color: #ffffff;
+    border-bottom: 1px solid #2b6cb0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 8px rgba(124, 58, 237, 0.05);
+}
+
+.header-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+}
+
+/* 로고 영역 */
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--primary);
+    text-decoration: none;
+    flex-shrink: 0;
+}
+
+.brand-icon {
+    width: 36px;
+    height: 36px;
+    background-color: var(--primary);
+    color: white;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.95rem;
+    box-shadow: 0 2px 6px rgba(124, 58, 237, 0.3);
+}
+
+/* 네비게이션 그룹 */
+.nav-right-group {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.main-nav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.nav-item {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: all 0.2s;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.nav-item:hover, 
+.nav-item.active {
+    color: rgb(255, 255, 255, 255);
+    background-color: var(--primary-color);
+    font-weight: 700;
+}
+
+/* 드롭다운 스타일 */
+.dropdown {
+    position: relative;
+}
+
+.dropdown-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.dropdown-btn .chevron {
+    width: 14px;
+    height: 14px;
+    transition: transform 0.2s ease;
+}
+
+.dropdown.is-open .chevron {
+    transform: rotate(180deg);
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 260px;
+    background-color: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+    padding: 8px;
+    display: none;
+    flex-direction: column;
+    gap: 2px;
+    z-index: 1100;
+}
+
+.dropdown.is-open .dropdown-menu {
+    display: flex;
+}
+
+.dropdown-item {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+.wiki-source {
+      font-size: 12px;
+      color: #3a3c6a;
+      margin-top: -6px;
+      margin-bottom: 20px;
+    }
+.dropdown-item:hover {
+    background-color: var(--primary-light);
+}
+
+.dropdown-item .title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+.dropdown-item:hover .title {
+    color: var(--primary);
+}
+
+.dropdown-item .desc {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+/* 전체 목록 우측 버튼 */
+.btn-list-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--primary);
+    background-color: var(--primary-light);
+    border: 1px solid var(--border);
+    padding: 8px 14px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.btn-list-back:hover {
+    background-color: var(--primary);
+    color: #ffffff;
+    border-color: var(--primary);
+}
+
+/* 햄버거 버튼 (모바일용) */
+.btn-hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 24px;
+    height: 18px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.hamburger-bar {
+    width: 100%;
+    height: 2px;
+    background-color: var(--text-dark);
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+.btn-hamburger.active .hamburger-bar:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+}
+.btn-hamburger.active .hamburger-bar:nth-child(2) {
+    opacity: 0;
+}
+.btn-hamburger.active .hamburger-bar:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+}
+
+/* 모바일 반응형 (1024px 이하) */
+@media (max-width: 1024px) {
+    .btn-hamburger { 
+        display: flex; 
+    }
+
+    .nav-right-group {
+        display: none;
+        position: absolute;
+        top: 61px;
+        left: 0;
+        width: 100%;
+        background-color: #ffffff;
+        flex-direction: column;
+        align-items: stretch;
+        padding: 1rem 1.25rem;
+        gap: 1rem;
+        border-bottom: 1px solid var(--border);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+    }
+
+    .nav-right-group.is-open { 
+        display: flex; 
+    }
+
+    .main-nav { 
+        flex-direction: column; 
+        align-items: stretch; 
+        gap: 4px; 
+    }
+
+    .dropdown-menu { 
+        position: static; 
+        width: 100%; 
+        box-shadow: none; 
+        border: none; 
+        background: var(--bg-main); 
+        padding: 4px; 
+        margin-top: 4px; 
+    }
+}
+footer {
+            background-color: #ffffff;
+            border-top: 1px solid #2b6cb0;
+            padding: 24px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 40px;
+        }
+
+           /* FAQ 아코디언 (기본 열림) */
+    .faq-item { border: 1px solid var(--border-color); border-radius: 6px; margin-bottom: 12px; overflow: hidden; }
+    .faq-header { background: #f8fafc; padding: 14px 18px; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); }
+    .faq-body { padding: 16px 18px; background: #fff; font-size: 0.95rem; line-height: 1.6; }
+    
+    /* 열림 상태 애니메이션 및 토글용 클래스 */
+    .faq-item.open .faq-body { display: block; }
+    .faq-item:not(.open) .faq-body { display: none; }
+    .faq-item.open .icon { transform: rotate(180deg); }
+    .icon { transition: transform 0.2s; }
+    </style>
+</head>
+<body>
+<header class="site-header">
+    <div class="header-inner">
+        <!-- 브랜드 로고 -->
+        <a href="../index.html" class="brand">
+            <div class="brand-icon" aria-hidden="true">MC</div>
+            <span>Miso Calculator</span>
+        </a>
+
+        <!-- 모바일 전용 햄버거 버튼 -->
+        <button type="button" class="btn-hamburger" id="hamburgerBtn" aria-label="메뉴 열기" aria-expanded="false">
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+        </button>
+
+        <!-- 네비게이션 & 전체 목록 그룹 -->
+        <div class="nav-right-group" id="navGroup">
+            <nav class="main-nav" aria-label="주요 계산기 메뉴">
+                <!-- 상단 노출 주요 메뉴 (4개) -->
+                <a href="./dsr.html" class="nav-item active" >DSR 계산</a>
+                <a href="./dti.html" class="nav-item ">DTI 계산</a>
+                <a href="./loan-interest.html" class="nav-item">대출 이자 계산</a>
+                 <a href="./minus-bankbook.html" class="nav-item ">마이너스통장 이자 계산</a>
+               
+         
+
+                <!-- 기타 계산기 드롭다운 메뉴 -->
+                <div class="dropdown" id="moreCalcDropdown">
+                    <button type="button" class="nav-item dropdown-btn" id="dropdownToggleBtn" aria-expanded="false">
+                        <span>기타 계산기</span>
+                        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <path d="M6 9l6 6 6-6"/>
+                        </svg>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a href="./loan-refinance.html" class="dropdown-item">
+                            <span class="title">대출 갈아타기 계산</span>
+                            <span class="desc">기존 대출과 새로운 대출 비용 비교</span>
+                        </a>
+                        <a href="./revolving.html" class="dropdown-item">
+                            <span class="title">리볼빙 이자 계산</span>
+                            <span class="desc">신용카드 리볼빙 이자와 상환 금액 계산</span>
+                        </a>
+                        <a href="./card-installment.html" class="dropdown-item">
+                            <span class="title">신용카드 할부이자 계산</span>
+                            <span class="desc">신용카드 유이자 할부 시 납부액과 이자 계산</span>
+                        </a>
+                        <a href="./mortgage.html" class="dropdown-item">
+                            <span class="title">주택담보대출 계산</span>
+                            <span class="desc">주택담보대출 보증비율 및 대출 이자를 계산</span>
+                        </a>
+                         <a href="./jeonse-loan.html" class="dropdown-item">
+                            <span class="title">전세대출 이자 계산</span>
+                            <span class="desc">전세대출 보증비율 및 대출 이자를 계산</span>
+                        </a>
+                         <a href="./prepayment-fee.html" class="dropdown-item">
+                            <span class="title">중도상환수수료 계산</span>
+                            <span class="desc">대출을 중도에 상환하는 경우 발생하는 비용</span>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+
+
+            <!-- 전체 목록 버튼 -->
+            <a href="../index.html" class="btn-list-back">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="8" y1="6" x2="21" y2="6"></line>
+                    <line x1="8" y1="12" x2="21" y2="12"></line>
+                    <line x1="8" y1="18" x2="21" y2="18"></line>
+                    <circle cx="3" cy="6" r="1"></circle>
+                    <circle cx="3" cy="12" r="1"></circle>
+                    <circle cx="3" cy="18" r="1"></circle>
+                </svg>
+                <span>전체 목록</span>
+            </a>
+        </div>
+    </div>
+</header>
+<div class="container">
+  
+  <header>
+    <h1>DSR(총부채원리금상환비율) 계산기</h1>
+    <p>소득 대비 DSR 비율을 계산하고 1금융권·2금융권 대출 한도 규제 기준을 확인하세요.</p>
+  </header>
+
+  <!-- 상단 광고 영역 
+  <div class="ads-area">
+  
+    광고 영역 (상단 반응형 디스플레이 광고)
+  </div>-->
+
+  <!-- 계산기 입력 카드 -->
+  <div class="card">
+    <div class="form-group">
+      <label for="annualIncome">연간 총소득 (원)</label>
+      <input type="number" id="annualIncome" placeholder="예: 50000000">
+    </div>
+    <div class="form-group">
+      <label for="mortgageRepayment">연간 주택담보대출 원리금 상환액 (원)</label>
+      <input type="number" id="mortgageRepayment" placeholder="예: 12000000 (원금+이자)">
+    </div>
+    <div class="form-group">
+      <label for="otherRepayment">연간 기타대출 원리금 상환액 (원)</label>
+      <input type="number" id="otherRepayment" placeholder="예: 5000000 (신용대출, 카드론, 자동차할부 등)">
+    </div>
+    <button class="btn-calc" onclick="calculateDSR()">DSR 비율 계산하기</button>
+
+    <div class="result-box" id="resultBox">
+      <div class="dsr-val" id="dsrValue">DSR: 0%</div>
+      <div class="dsr-desc" id="dsrStatus">1금융권 한도(40%) 이내입니다.</div>
+    </div>
+  </div>
+
+  <!-- 중간 광고 영역 
+  <div class="ads-area">   
+    광고 영역 (본문 중간 삽입형 광고)
+  </div>-->
+
+  <!-- 상세 백과사전 설명 섹션 (애드센스 고품질 콘텐츠 확보용) -->
+  <div class="card info-section">
+    <h2>DSR (총부채원리금상환비율)</h2>
+    
+    <h3>1. 총부채원리금상환비율(dsr) 정의</h3>
+    <p>
+      <strong>DSR(Debt Service Ratio, 총부채원리금상환비율)</strong>이란 차주(돈을 빌리는 사람)의 연간 총소득에서 모든 금융회사 대출의 연간 원리금 상환액이 차지하는 비율을 의미합니다. 
+      기존의 DTI(총부채상환비율)가 주택담보대출의 원리금과 기타 대출의 '이자'만을 합산했던 것과 달리, DSR은 주택담보대출뿐만 아니라 신용대출, 자동차 할부, 카드론 등 <strong>모든 대출의 '원금+이자'를 합산</strong>하여 채무자의 실제 상환 능력을 보다 엄격하게 평가하는 지표입니다.
+    </p>
+
+    <h3>2. 금융당국 산정 기준</h3>
+    <p>DSR의 산정 공식은 다음과 같습니다:</p>
+    <ul>
+      <li><strong>DSR(%) = ( 모든 대출의 연간 원리금 상환액 ÷ 연간 총소득 ) × 100</strong></li>
+    </ul>
+    <p>
+      대한민국 금융위원회 규제 기준에 따르면, 총대출금이 1억 원을 초과하는 차주에 대해 <strong>1금융권(시중은행)은 DSR 40% 이하</strong>, <strong>2금융권(저축은행, 카드사, 보험사 등)은 DSR 50% 이하</strong>를 준수해야 대출이 승인됩니다.
+    </p>
+
+    <h3>3. 스트레스 DSR(Stress DSR) 제도</h3>
+    <p>
+      금리 변동 위험을 반영하기 위해 미래의 금리 상승 가능성(가산금리)을 반영하여 DSR 한도를 산정하는 제도입니다. 스트레스 금리가 더해지면 연간 이자 부담액이 증가한 것으로 계산되므로, 실제로 빌릴 수 있는 대출 한도가 감소하는 효과가 있습니다.
+    </p>
+    <div class="wiki-source" style="margin-top: 20px;">참조/출처: 위키백과 & 네이버 지식백과 </div>
+
+  </div>
+
+  <!-- 자주 묻는 질문 (FAQ) - 아코디언 (기본 상태 모두 열림) -->
+  <div class="card info-section">
+    <h2>자주 묻는 질문 (FAQ)</h2>
+
+    <!-- FAQ 1 (기본 class에 open 포함) -->
+    <div class="faq-item open">
+      <div class="faq-header" onclick="toggleFaq(this)">
+        <span>Q1. DTI와 DSR의 차이점은 무엇인가요?</span>
+        <span class="icon">▼</span>
+      </div>
+      <div class="faq-body">
+        A. DTI(총부채상환비율)는 주택담보대출의 원리금과 기타 대출의 '이자'만 합산하지만, DSR(총부채원리금상환비율)은 기타 대출(신용대출, 카드론, 자동차 할부 등)의 '원금'까지 모두 포함하여 훨씬 엄격하게 한도를 산정합니다.
+      </div>
+    </div>
+
+    <!-- FAQ 2 (기본 class에 open 포함) -->
+    <div class="faq-item open">
+      <div class="faq-header" onclick="toggleFaq(this)">
+        <span>Q2. DSR 계산 시 제외되는 대출 상품이 있나요?</span>
+        <span class="icon">▼</span>
+      </div>
+      <div class="faq-body">
+        A. 네, 서민금융상품(햇살론, 새희망홀씨 등), 전세자금대출(보증금 담보), 분양주택 중도금대출, 300만 원 이하 소액 서민대출 등 정책적 목적이 있거나 담보 성격이 명확한 일부 대출은 DSR 산정 대상에서 제외됩니다.
+      </div>
+    </div>
+
+    <!-- FAQ 3 (기본 class에 open 포함) -->
+    <div class="faq-item open">
+      <div class="faq-header" onclick="toggleFaq(this)">
+        <span>Q3. DSR 비율을 낮춰 대출 한도를 늘리는 방법은 무엇인가요?</span>
+        <span class="icon">▼</span>
+      </div>
+      <div class="faq-body">
+        A. 대출 만기 기간을 늘려 연간 원리금 상환 부담을 줄이거나, 금리가 높은 고금리 대출(카드론, 현금서비스 등)을 우선 상환하는 방법이 있습니다. 또한 소득 증빙 자료(근로소득, 신용카드 사용액, 연금 수령액 등)를 최대한 반영하여 연소득을 높게 인정받는 것도 효과적입니다.
+      </div>
+    </div>
+  </div>
+
+  <!-- 하단 광고 영역 
+  <div class="ads-area">
+
+    광고 영역 (하단 관련 콘텐츠 및 디스플레이 광고)
+  </div>-->
+
+</div>
+<footer>
+        <p>© 2026 Miso Calculator. All rights reserved.</p>
+        <p>본 계산기는 참고용 시뮬레이션 결과이며, 실제 금융기관의 계산 방식에 따라 원단위 오차가 발생할 수 있습니다.</p>
+        <p style="margin-top: 8px;"><a href="../privacy.html" style="color: var(--text-muted); text-decoration: underline;">개인정보처리방침</a></p>
+    </footer>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+    // 1. 모바일 햄버거 메뉴 토글
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const navGroup = document.getElementById('navGroup');
+
+    if (hamburgerBtn && navGroup) {
+        hamburgerBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = hamburgerBtn.classList.toggle('active');
+            navGroup.classList.toggle('is-open');
+            hamburgerBtn.setAttribute('aria-expanded', isOpen);
+        });
+    }
+
+    // 2. 기타 계산기 드롭다운 토글
+    const dropdown = document.getElementById('moreCalcDropdown');
+    const dropdownToggleBtn = document.getElementById('dropdownToggleBtn');
+
+    if (dropdownToggleBtn && dropdown) {
+        dropdownToggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = dropdown.classList.toggle('is-open');
+            dropdownToggleBtn.setAttribute('aria-expanded', isOpen);
+        });
+
+        // 바깥 영역 클릭 시 드롭다운 닫기
+        document.addEventListener('click', (e) => {
+            if (!dropdown.contains(e.target)) {
+                dropdown.classList.remove('is-open');
+                dropdownToggleBtn.setAttribute('aria-expanded', 'false');
+            }
+        });
+
+        // ESC 키 입력 시 닫기
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                dropdown.classList.remove('is-open');
+                dropdownToggleBtn.setAttribute('aria-expanded', 'false');
+            }
+        });
+    }
+});
+</script>
+<script>
+  // DSR 계산 함수
+  function calculateDSR() {
+    const income = parseFloat(document.getElementById('annualIncome').value);
+    const mortgage = parseFloat(document.getElementById('mortgageRepayment').value) || 0;
+    const other = parseFloat(document.getElementById('otherRepayment').value) || 0;
+
+    if (isNaN(income) || income <= 0) {
+      alert("올바른 연간 총소득을 입력해 주세요.");
+      return;
+    }
+
+    const totalRepayment = mortgage + other;
+    const dsr = (totalRepayment / income) * 100;
+    const roundedDSR = dsr.toFixed(2);
+
+    const resultBox = document.getElementById('resultBox');
+    const dsrValue = document.getElementById('dsrValue');
+    const dsrStatus = document.getElementById('dsrStatus');
+
+    dsrValue.innerText = `DSR 비율: ${roundedDSR}%`;
+
+    if (dsr <= 40) {
+      dsrStatus.innerText = "1금융권(40% 이하) 및 2금융권(50% 이하) 대출 한도 기준을 모두 만족합니다.";
+      dsrStatus.style.color = "#065f46";
+    } else if (dsr <= 50) {
+      dsrStatus.innerText = "1금융권(40%) 한도를 초과하였으나, 2금융권(50% 이하) 대출은 가능할 수 있습니다.";
+      dsrStatus.style.color = "#d97706";
+    } else {
+      dsrStatus.innerText = "DSR 50%를 초과하여 대부분의 금융권에서 신규 대출 신청이 제한될 수 있습니다.";
+      dsrStatus.style.color = "#dc2626";
+    }
+
+    resultBox.style.display = 'block';
+  }
+
+  // 아코디언 토글 함수 (기본 상태는 모두 열려 있으며, 클릭 시 닫기/열기 동작)
+  function toggleFaq(headerElement) {
+    const faqItem = headerElement.parentElement;
+    faqItem.classList.toggle('open');
+  }
+</script>
+
+</body>
+</html>

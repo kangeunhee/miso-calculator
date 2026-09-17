@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Miso Life - 국민연금 예상 수령액 계산기</title>
+  <style>
+    :root {
+      --primary: #eab308;         /* 노란색 (Yellow-500) */
+      --primary-hover: #ca8a04;   /* 진한 노란색 (Yellow-600) */
+      --primary-light: #fef9c3;   /* 연한 노란색 배경 (Yellow-50) */
+      --text-dark: #1f2937;       /* 텍스트 (Gray-800) */
+      --text-muted: #6b7280;      /* 보조 텍스트 (Gray-500) */
+      --border: #e5e7eb;         /* 테두리 (Gray-200) */
+      --bg-gray: #f9fafb;        /* 전체 메인 배경 (Gray-50) */
+      --bg-white: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      color: var(--text-dark);
+      background-color: var(--bg-gray);
+      line-height: 1.6;
+    }
+
+    /* 반응형 헤더 및 내비게이션 영역 */
+    .site-header {
+      background-color: var(--bg-white);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .header-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--primary-hover);
+      text-decoration: none;
+    }
+
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      background-color: var(--primary);
+      color: var(--text-dark);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.95rem;
+    }
+
+    .main-nav {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .nav-item {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 6px 10px;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .nav-item:hover,
+    .nav-item.active {
+      color: var(--primary-hover);
+      background-color: var(--primary-light);
+      font-weight: 700;
+    }
+
+    /* 홈 버튼 (가장 오른쪽 배치) */
+    .btn-home {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      background-color: var(--primary-light);
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: all 0.2s;
+      margin-left: 4px;
+    }
+
+    .btn-home:hover {
+      background-color: var(--primary);
+      color: var(--text-dark);
+    }
+
+    /* 메인 Card 컨테이너 */
+    .container {
+      max-width: 720px;
+      margin: 40px auto;
+      padding: 30px;
+      background-color: var(--bg-white);
+      border-radius: 16px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+      border: 1px solid var(--border);
+    }
+
+    .category-tag {
+      font-size: 13px;
+      color: var(--primary-hover);
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+
+    h1 {
+      font-size: 26px;
+      margin-top: 0;
+      margin-bottom: 16px;
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 10px;
+      color: var(--text-dark);
+    }
+
+    h2 {
+      font-size: 19px;
+      margin-top: 36px;
+      margin-bottom: 14px;
+      color: var(--text-dark);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 6px;
+    }
+
+    /* 계산기 입력 폼 스타일 */
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+      font-weight: bold;
+      color: var(--text-dark);
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 15px;
+      color: var(--text-dark);
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px #fef08a;
+    }
+
+    button.btn-calc {
+      width: 100%;
+      padding: 14px;
+      background-color: var(--primary);
+      color: var(--text-dark);
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background-color 0.2s;
+    }
+
+    button.btn-calc:hover {
+      background-color: var(--primary-hover);
+    }
+
+    /* 계산 결과 출력 영역 */
+    .result-container {
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 2px solid var(--primary);
+    }
+
+    .result-section {
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .result-subtitle {
+      font-size: 16px;
+      font-weight: bold;
+      color: var(--text-dark);
+      margin-bottom: 10px;
+    }
+
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 15px;
+      color: var(--text-muted);
+    }
+
+    .result-row.total {
+      font-size: 18px;
+      font-weight: bold;
+      color: var(--primary-hover);
+      margin-top: 8px;
+      border-top: 1px dashed var(--border);
+      padding-top: 8px;
+    }
+
+    /* 애드센스 광고 슬롯 */
+    .ad-slot {
+      margin: 24px 0;
+      text-align: center;
+      background: #fafafa;
+      border: 1px dashed var(--border);
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    /* 백과사전 상세 설명 (계산기 하단 배치) */
+    .wiki-box {
+      background-color: var(--primary-light);
+      border-left: 4px solid var(--primary);
+      padding: 18px;
+      border-radius: 0 8px 8px 0;
+      margin-top: 30px;
+      margin-bottom: 24px;
+      font-size: 14.5px;
+      line-height: 1.7;
+    }
+
+    .wiki-box p {
+      margin: 0 0 12px 0;
+      color: var(--text-dark);
+    }
+
+    .wiki-box p:last-child {
+      margin-bottom: 0;
+    }
+
+    .wiki-source {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: bold;
+      display: inline-block;
+      margin-top: 6px;
+    }
+
+    /* FAQ 아코디언 스타일 (모두 펼쳐짐) */
+    .faq-list {
+      margin-top: 12px;
+    }
+
+    .faq-item {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+
+    .faq-question {
+      width: 100%;
+      text-align: left;
+      padding: 14px 16px;
+      background-color: var(--bg-gray);
+      border: none;
+      font-size: 15px;
+      font-weight: bold;
+      color: var(--text-dark);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background-color 0.2s;
+    }
+
+    .faq-question:hover {
+      background-color: var(--primary-light);
+    }
+
+    .faq-icon {
+      font-size: 18px;
+      color: var(--primary-hover);
+      font-weight: bold;
+    }
+
+    .faq-item.open .faq-icon::before {
+      content: "-";
+    }
+
+    .faq-item:not(.open) .faq-icon::before {
+      content: "+";
+    }
+
+    .faq-answer {
+      display: none;
+      padding: 14px 16px;
+      font-size: 14px;
+      color: var(--text-muted);
+      background-color: var(--bg-white);
+      border-top: 1px solid var(--border);
+      line-height: 1.6;
+    }
+
+    .faq-item.open .faq-answer {
+      display: block;
+    }
+
+    /* 반응형 푸터 영역 */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 30px 20px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      background-color: var(--bg-gray);
+      margin-top: 60px;
+    }
+
+    footer p {
+      margin: 4px 0;
+    }
+
+    footer a {
+      color: var(--text-muted);
+      text-decoration: underline;
+    }
+
+    @media (max-width: 900px) {
+      .header-inner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .main-nav {
+        width: 100%;
+        overflow-x: auto;
+        padding-bottom: 4px;
+      }
+      .container {
+        margin: 16px;
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 노란색 테마 반응형 헤더 및 내비게이션 -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="../index.html" class="brand">
+        <div class="brand-icon">PN</div>
+        <span>Miso Pension</span>
+      </a>
+
+        <nav class="main-nav">
+        <a href="./retirement-pension.html" class="nav-item ">퇴직연금(IRP)</a>
+        <a href="./survivor-pension.html" class="nav-item">유족연금 </a>
+        <a href="./national-pension.html" class="nav-item active">국민연금 </a>
+        <a href="./personal-pension.html" class="nav-item ">개인연금</a>
+        <a href="../index.html" class="btn-home">전체 목록</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- 메인 컨텐츠 Card -->
+  <main class="container">
+    <div class="category-tag">연금 계산기</div>
+    <h1>국민연금 예상 수령액 계산기</h1>
+
+    <!-- 1. 최상단 배치: 계산 입력 폼 -->
+    <form id="calcForm">
+      <div class="form-group">
+        <label for="avgIncome">가입 기간 동안의 월평균 소득월액 (원)</label>
+        <input type="number" id="avgIncome" placeholder="예: 3000000 (300만 원)" min="0" step="50000" required>
+      </div>
+
+      <div class="form-group">
+        <label for="totalYears">총 가입 기간 (년)</label>
+        <input type="number" id="totalYears" placeholder="예: 25 (25년 가입)" min="1" max="45" value="20" required>
+      </div>
+
+      <button type="submit" class="btn-calc">국민연금 예상 수령액 계산하기</button>
+    </form>
+
+    <!-- 계산 결과 출력 영역 -->
+    <div class="result-container" id="resultContainer" style="display: none;">
+      <div class="result-section">
+        <div class="result-subtitle">국민연금 예상 노령연금 산출 명세</div>
+        <div class="result-row">
+          <span>기준 월평균 소득 반영액</span>
+          <span id="baseIncomeResult">0원</span>
+        </div>
+        <div class="result-row">
+          <span>가입 기간 반영 지수</span>
+          <span id="periodIndexResult">0년</span>
+        </div>
+        <div class="result-row total">
+          <span>월 예상 수령액 (노령연금 기준)</span>
+          <span id="monthlyPensionResult">0원</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 상단 애드센스 광고 영역 -->
+    <div class="ad-slot">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+           data-ad-slot="1234567890"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <!-- 2. 백과사전 상세 설명 영역 (계산기 하단) -->
+    <section class="wiki-box">
+      <p>
+        <strong>국민연금 및 노령연금의 정의</strong><br>
+        <strong>위키백과 및 네이버 지식백과 참조:</strong> **국민연금**은 국가가 운영하는 공적 연금 제도로서, 가입자가 납부한 보험료를 바탕으로 노령에 도달하거나 질병·부상 등으로 소득 활동이 중단되었을 때 본인이나 유족에게 연금을 지급하여 기본 생활을 보장하는 사회보험 제도입니다. 그중 가장 핵심인 **노령연금**은 가입 기간이 10년 이상이고 수급 연령에 도달했을 때 평생 동안 매월 지급받는 급여입니다.
+      </p>
+      <p>
+        <strong>연금 산정 방식의 주요 특징</strong><br>
+        1) **소득대체율과 가입 기간:** 국민연금 수령액은 가입자 전체의 평균 소득(A값)과 가입자 개인의 평균 소득(B값), 그리고 총 가입 기간에 연동되어 산정됩니다. 가입 기간이 길어질수록, 소득이 높을수록 수령액이 늘어납니다.<br>
+        2) **물가 상승률 반영:** 국민연금은 실질 가치를 보장하기 위해 매년 전년도 소비자물가변동률을 반영하여 수령액이 인상 조정되는 특징을 가집니다.
+      </p>
+      <span class="wiki-source">※ 출처: 위키백과(국민연금), 네이버 지식백과(두산백과 / 시사상식사전)</span>
+    </section>
+
+    <!-- 하단 애드센스 광고 영역 -->
+    <div class="ad-slot">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+           data-ad-slot="0987654321"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <!-- 3. 자주 묻는 질문 (FAQ) - 기본적으로 open 클래스로 전부 열림 -->
+    <h2>자주 묻는 질문 (FAQ)</h2>
+    <div class="faq-list">
+      <div class="faq-item open">
+        <button type="button" class="faq-question">
+          <span>국민연금 수급 개시 연령은 어떻게 되나요?</span>
+          <span class="faq-icon"></span>
+        </button>
+        <div class="faq-answer">
+          출생 연도에 따라 노령연금 수급 개시 연령이 점진적으로 상향 조정되어 있습니다. 현재 1953년생 이내는 60세부터였으나, 출생 연도에 따라 61세부터 65세까지 순차적으로 늦춰지며 적용됩니다.
+        </div>
+      </div>
+
+      <div class="faq-item open">
+        <button type="button" class="faq-question">
+          <span>가입 기간이 10년 미만이면 연금을 받을 수 없나요?</span>
+          <span class="faq-icon"></span>
+        </button>
+        <div class="faq-answer">
+          국민연금 최소 가입 기간인 10년(120개월)을 채우지 못한 채 수급 연령에 도달하면, 그동안 납부했던 보험료에 이자를 더해 일시금(반환일시금)으로 받게 됩니다.
+        </div>
+      </div>
+
+      <div class="faq-item open">
+        <button type="button" class="faq-question">
+          <span>임의계속가입 제도를 통해 수령액을 늘릴 수 있나요?</span>
+          <span class="faq-icon"></span>
+        </button>
+        <div class="faq-answer">
+          의무가입 대상이 아니거나 소득이 없어 가입 기간을 더 채우고 싶을 때 '임의계속가입'을 신청하면 60세 이후에도 본인이 희망하는 경우 계속 보험료를 납부하여 가입 기간과 예상 수령액을 늘릴 수 있습니다.
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- 푸터 영역 -->
+  <footer>
+    <p>© 2026 Miso Life. All rights reserved.</p>
+    <p>본 계산기는 입력하신 소득 및 가입 기간을 기반으로 산출된 개략적인 추정치이며, 실제 국민연금공단의 정밀 산정 내역 및 향후 물가 변동률에 따라 차이가 발생할 수 있습니다.</p>
+    <p style="margin-top: 8px;"><a href="../privacy.html">개인정보처리방침</a></p>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // FAQ 아코디언 토글 이벤트 (기본 open 상태 유지)
+      const faqQuestions = document.querySelectorAll('.faq-question');
+      faqQuestions.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const item = btn.parentElement;
+          item.classList.toggle('open');
+        });
+      });
+
+      // 국민연금 예상 수령액 계산 로직 (간이 산식 반영)
+      const calcForm = document.getElementById('calcForm');
+      const resultContainer = document.getElementById('resultContainer');
+
+      calcForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const avgIncome = parseFloat(document.getElementById('avgIncome').value) || 0;
+        const totalYears = parseFloat(document.getElementById('totalYears').value) || 20;
+
+        // 간이 국민연금 추정 공식 (가입기간 1년당 약 1.5% 수준의 소득대체율 반영 구조 근사치)
+        // 실제 연금액 = (전체 가입자 평균소득 + 가입자 개인평균소득) 요소 반영 간이 모형
+        const estimatedMonthly = avgIncome * 0.015 * (totalYears / 20) * 0.8; 
+
+        // UI 결과 바인딩
+        document.getElementById('baseIncomeResult').textContent = Math.round(avgIncome).toLocaleString() + ' 원';
+        document.getElementById('periodIndexResult').textContent = totalYears + '년 (총 ' + (totalYears * 12) + '개월)';
+        document.getElementById('monthlyPensionResult').textContent = Math.round(estimatedMonthly).toLocaleString() + ' 원';
+
+        resultContainer.style.display = 'block';
+      });
+    });
+  </script>
+</body>
+</html>

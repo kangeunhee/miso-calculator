@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Miso Life - 자동차 할부 계산기</title>
+  <style>
+    :root {
+      --primary: #0ea5e9;         /* 하늘색 (Sky-500) */
+      --primary-hover: #0284c7;   /* 진한 하늘색 (Sky-600) */
+      --primary-light: #f0f9ff;   /* 연한 하늘색 배경 (Sky-50) */
+      --text-dark: #1f2937;       /* 텍스트 (Gray-800) */
+      --text-muted: #6b7280;      /* 보조 텍스트 (Gray-500) */
+      --border: #e5e7eb;         /* 테두리 (Gray-200) */
+      --bg-gray: #f9fafb;        /* 전체 메인 배경 (Gray-50) */
+      --bg-white: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      color: var(--text-dark);
+      background-color: var(--bg-gray);
+      line-height: 1.6;
+    }
+
+      /* 홈 버튼 (가장 오른쪽 배치) */
+    .btn-home {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--primary);
+      background-color: var(--primary-light);
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: all 0.2s;
+      margin-left: 4px;
+    }
+    
+    .btn-home:hover {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    /* 헤더 및 내비게이션 영역 */
+    .site-header {
+      background-color: var(--bg-white);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .header-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      background-color: var(--primary);
+      color: white;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.95rem;
+    }
+
+    .main-nav {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .nav-item {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 6px 10px;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .nav-item:hover,
+    .nav-item.active {
+      color: var(--primary-hover);
+      background-color: var(--primary-light);
+      font-weight: 700;
+    }
+
+    /* 메인 Card 컨테이너 */
+    .container {
+      max-width: 720px;
+      margin: 40px auto;
+      padding: 30px;
+      background-color: var(--bg-white);
+      border-radius: 16px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+      border: 1px solid var(--border);
+    }
+
+    .category-tag {
+      font-size: 13px;
+      color: var(--primary);
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+
+    h1 {
+      font-size: 26px;
+      margin-top: 0;
+      margin-bottom: 16px;
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 10px;
+      color: var(--text-dark);
+    }
+
+    h2 {
+      font-size: 19px;
+      margin-top: 36px;
+      margin-bottom: 14px;
+      color: var(--text-dark);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 6px;
+    }
+
+    /* 계산기 입력 폼 스타일 */
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+      font-weight: bold;
+      color: var(--text-dark);
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 15px;
+      color: var(--text-dark);
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px #e0f2fe;
+    }
+
+    button.btn-calc {
+      width: 100%;
+      padding: 14px;
+      background-color: var(--primary);
+      color: var(--bg-white);
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background-color 0.2s;
+    }
+
+    button.btn-calc:hover {
+      background-color: var(--primary-hover);
+    }
+
+    /* 계산 결과 출력 영역 */
+    .result-container {
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 2px solid var(--primary);
+    }
+
+    .result-section {
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .result-subtitle {
+      font-size: 16px;
+      font-weight: bold;
+      color: var(--text-dark);
+      margin-bottom: 10px;
+    }
+
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 15px;
+      color: var(--text-muted);
+    }
+
+    .result-row.total {
+      font-size: 18px;
+      font-weight: bold;
+      color: var(--primary-hover);
+      margin-top: 8px;
+      border-top: 1px dashed var(--border);
+      padding-top: 8px;
+    }
+
+    /* 애드센스 광고 슬롯 */
+    .ad-slot {
+      margin: 24px 0;
+      text-align: center;
+      background: #fafafa;
+      border: 1px dashed var(--border);
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    /* 백과사전 상세 설명 (계산기 하단 배치) */
+    .wiki-box {
+      background-color: var(--primary-light);
+      border-left: 4px solid var(--primary);
+      padding: 18px;
+      border-radius: 0 8px 8px 0;
+      margin-top: 30px;
+      margin-bottom: 24px;
+      font-size: 14.5px;
+      line-height: 1.7;
+    }
+
+    .wiki-box p {
+      margin: 0 0 12px 0;
+      color: var(--text-dark);
+    }
+
+    .wiki-box p:last-child {
+      margin-bottom: 0;
+    }
+
+    .wiki-source {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: bold;
+      display: inline-block;
+      margin-top: 6px;
+    }
+
+    /* FAQ 아코디언 스타일 (모두 펼쳐짐) */
+    .faq-list {
+      margin-top: 12px;
+    }
+
+    .faq-item {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+
+    .faq-question {
+      width: 100%;
+      text-align: left;
+      padding: 14px 16px;
+      background-color: var(--bg-gray);
+      border: none;
+      font-size: 15px;
+      font-weight: bold;
+      color: var(--text-dark);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background-color 0.2s;
+    }
+
+    .faq-question:hover {
+      background-color: var(--primary-light);
+    }
+
+    .faq-icon {
+      font-size: 18px;
+      color: var(--primary);
+      font-weight: bold;
+    }
+
+    .faq-item.open .faq-icon::before {
+      content: "-";
+    }
+
+    .faq-item:not(.open) .faq-icon::before {
+      content: "+";
+    }
+
+    .faq-answer {
+      display: none;
+      padding: 14px 16px;
+      font-size: 14px;
+      color: var(--text-muted);
+      background-color: var(--bg-white);
+      border-top: 1px solid var(--border);
+      line-height: 1.6;
+    }
+
+    .faq-item.open .faq-answer {
+      display: block;
+    }
+
+    /* 푸터 영역 */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 30px 20px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      background-color: var(--bg-gray);
+      margin-top: 60px;
+    }
+
+    footer p {
+      margin: 4px 0;
+    }
+
+    footer a {
+      color: var(--text-muted);
+      text-decoration: underline;
+    }
+
+    @media (max-width: 1024px) {
+      .header-inner {
+        flex-direction: column;
+        gap: 12px;
+      }
+      .main-nav {
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 하늘색 테마 헤더 및 네비게이션 -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="../index.html" class="brand">
+        <div class="brand-icon">LF</div>
+        <span>Miso Life</span>
+      </a>
+
+      <nav class="main-nav">
+        <a href="./car-installment.html" class="nav-item active">자동차 할부</a>
+        <a href="./exchange-rate.html" class="nav-item">환율</a>
+        <a href="./discount-rate.html" class="nav-item">할인율</a>
+        <a href="./fire.html" class="nav-item">FIRE</a>
+        <a href="./emergency-fund.html" class="nav-item">비상금</a>
+        <a href="./card-picking-rate.html" class="nav-item">카드 피킹률</a>
+        <a href="./health-insurance.html" class="nav-item">건강보험료</a>
+           <a href="../index.html" class="btn-home">전체목록</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- 메인 컨텐츠 Card -->
+  <main class="container">
+    <div class="category-tag">생활 계산기</div>
+    <h1>자동차 할부 계산기</h1>
+
+    <!-- 1. 최상단 배치: 계산 입력 폼 -->
+    <form id="calcForm">
+      <div class="form-group">
+        <label for="carPrice">차량 총 가격 (원)</label>
+        <input type="number" id="carPrice" placeholder="예: 35000000 (3,500만 원)" min="0" step="100000" required>
+      </div>
+
+      <div class="form-group">
+        <label for="downPayment">선수금 (초기 현금 지불액, 원)</label>
+        <input type="number" id="downPayment" placeholder="예: 10000000 (1,000만 원)" min="0" step="100000" value="0">
+      </div>
+
+      <div class="form-group">
+        <label for="installmentMonths">할부 기간</label>
+        <select id="installmentMonths">
+          <option value="12">12개월 (1년)</option>
+          <option value="24">24개월 (2년)</option>
+          <option value="36" selected>36개월 (3년)</option>
+          <option value="48">48개월 (4년)</option>
+          <option value="60">60개월 (5년)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="interestRate">연 이자율 (%)</label>
+        <input type="number" id="interestRate" placeholder="예: 5.5" min="0" max="20" step="0.1" value="5.5" required>
+      </div>
+
+      <button type="submit" class="btn-calc">월 상환액 및 총 이자 계산하기</button>
+    </form>
+
+    <!-- 계산 결과 출력 영역 -->
+    <div class="result-container" id="resultContainer" style="display: none;">
+      <div class="result-section">
+        <div class="result-subtitle">자동차 할부 상환 산출 명세</div>
+        <div class="result-row">
+          <span>총 할부 원금 (차량 가격 - 선수금)</span>
+          <span id="principalResult">0원</span>
+        </div>
+        <div class="result-row">
+          <span>총 납부 이자 금액</span>
+          <span id="interestResult">0원</span>
+        </div>
+        <div class="result-row">
+          <span>총 상환 총액 (원금 + 이자)</span>
+          <span id="totalPaymentResult">0원</span>
+        </div>
+        <div class="result-row total">
+          <span>매월 납부할 예상 월 상환액</span>
+          <span id="monthlyPaymentResult">0원</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 상단 애드센스 광고 영역 -->
+    <div class="ad-slot">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+           data-ad-slot="1234567890"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <!-- 2. 백과사전 상세 설명 영역 (계산기 하단) -->
+    <section class="wiki-box">
+      <p>
+        <strong>자동차 할부금융(Car Installment Financing)의 정의</strong><br>
+        <strong>위키백과 및 네이버 지식백과 참조: **자동차 할부**란 소비자가 차량을 구입할 때 목돈 부담을 줄이기 위해 금융회사(캐피탈, 은행 등)로부터 자금을 대출받아 차량 대금을 먼저 지불하고, 약정된 기간 동안 원금과 이자를 나누어 상환하는 대표적인 소비자 금융 제도입니다.</strong>
+      </p>
+      <p>
+        <strong>할부 상환 방식 및 핵심 요소</strong><br>
+        1) **선수금 (Down Payment):** 차량 총 가격 중 계약자가 현금으로 선지급하는 금액으로, 선수금이 높을수록 대출 원금이 줄어들어 매월 납부하는 이자와 월 상환액 부담이 크게 감소합니다.<br>
+        2) **원리금균등상환 방식:** 매월 일정한 금액(원금+이자)을 상환하는 방식을 주로 적용하며, 초기에는 이자 비중이 높고 만기가 다가올수록 원금 비중이 커지는 구조를 가집니다.<br>
+        3) **금리 및 수수료:** 개인의 신용점수, 취급 금융사, 프로모션(저금리 할부 등)에 따라 적용되는 연 이자율이 달라지므로 총 납부 이자액에 큰 영향을 미칩니다.
+      </p>
+      <span class="wiki-source">※ 출처: 위키백과(할부금융), 네이버 지식백과(시사경제용어사전, 매일경제 용어사전)</span>
+    </section>
+
+    <!-- 하단 애드센스 광고 영역 -->
+    <div class="ad-slot">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+           data-ad-slot="0987654321"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <!-- 3. 자주 묻는 질문 (FAQ) - 기본적으로 open 클래스로 전부 열림 -->
+    <h2>자주 묻는 질문 (FAQ)</h2>
+    <div class="faq-list">
+      <div class="faq-item open">
+        <button type="button" class="faq-question">
+          <span>선수금을 많이 낼수록 유리한 이유는 무엇인가요?</span>
+          <span class="faq-icon"></span>
+        </button>
+        <div class="faq-answer">
+          선수금을 많이 지급할수록 금융회사로부터 빌리는 대출 원금이 줄어들기 때문에, 동일한 할부 기간과 금리 조건이라 하더라도 매월 부담하는 원리금 상환액과 전체 계약 기간 동안 지불하게 되는 총 이자 비용을 대폭 절감할 수 있습니다.
+        </div>
+      </div>
+
+      <div class="faq-item open">
+        <button type="button" class="faq-question">
+          <span>자동차 할부 중도상환 시 수수료가 발생하나요?</span>
+          <span class="faq-icon"></span>
+        </button>
+        <div class="faq-answer">
+          대부분의 캐피탈사나 은행 자동차 할부 상품은 약정 기간 이전에 대출 원금을 일부 또는 전액 상환할 경우 남은 기간에 따른 중도상환수수료가 발생할 수 있습니다. 단, 금융사별 계약 조건에 따라 수수료율이 다르거나 면제 기간이 존재할 수 있으니 사전 확인이 필요합니다.
+        </div>
+      </div>
+
+      <div class="faq-item open">
+        <button type="button" class="faq-question">
+          <span>할부 기간은 보통 몇 개월로 설정하는 것이 좋은가요?</span>
+          <span class="faq-icon"></span>
+        </button>
+        <div class="faq-answer">
+          할부 기간이 길어질수록(예: 60개월) 월 납부액은 줄어들어 단기적인 매달 고정비 부담은 낮아지지만, 이자를 내는 기간이 늘어나 총 지불하는 이자 비용이 커집니다. 본인의 매달 가용 소득을 고려하여 적절한 기간(36개월~48개월 등)을 선택하는 것이 지혜롭습니다.
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- 푸터 영역 -->
+  <footer>
+    <p>© 2026 Miso Life. All rights reserved.</p>
+    <p>본 계산기는 원리금균등상환 방식을 기준으로 산출된 추정치이며, 취급수수료, 근저당설정 비용 및 개인 신용도에 따른 실제 적용 금리에 따라 세부 금액은 달라질 수 있습니다.</p>
+    <p style="margin-top: 8px;"><a href="../privacy.html">개인정보처리방침</a></p>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // FAQ 아코디언 토글 이벤트 (기본 open 상태 유지)
+      const faqQuestions = document.querySelectorAll('.faq-question');
+      faqQuestions.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const item = btn.parentElement;
+          item.classList.toggle('open');
+        });
+      });
+
+      // 자동차 할부 계산 로직 (원리금균등상환 공식 적용)
+      const calcForm = document.getElementById('calcForm');
+      const resultContainer = document.getElementById('resultContainer');
+
+      calcForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const carPrice = parseFloat(document.getElementById('carPrice').value) || 0;
+        const downPayment = parseFloat(document.getElementById('downPayment').value) || 0;
+        const months = parseInt(document.getElementById('installmentMonths').value) || 36;
+        const annualRate = parseFloat(document.getElementById('interestRate').value) || 0;
+
+        const principal = Math.max(0, carPrice - downPayment);
+        const monthlyRate = annualRate / 100 / 12;
+
+        let monthlyPayment = 0;
+        let totalPayment = 0;
+        let totalInterest = 0;
+
+        if (principal > 0) {
+          if (monthlyRate === 0) {
+            monthlyPayment = principal / months;
+            totalPayment = principal;
+          } else {
+            // 원리금균등상환 공식: P * r * (1+r)^n / ((1+r)^n - 1)
+            const powered = Math.pow(1 + monthlyRate, months);
+            monthlyPayment = principal * monthlyRate * powered / (powered - 1);
+            totalPayment = monthlyPayment * months;
+          }
+          totalInterest = Math.max(0, totalPayment - principal);
+        }
+
+        // UI 결과 바인딩
+        document.getElementById('principalResult').textContent = Math.round(principal).toLocaleString() + ' 원';
+        document.getElementById('interestResult').textContent = Math.round(totalInterest).toLocaleString() + ' 원';
+        document.getElementById('totalPaymentResult').textContent = Math.round(totalPayment).toLocaleString() + ' 원';
+        document.getElementById('monthlyPaymentResult').textContent = Math.round(monthlyPayment).toLocaleString() + ' 원';
+
+        resultContainer.style.display = 'block';
+      });
+    });
+  </script>
+</body>
+</html>

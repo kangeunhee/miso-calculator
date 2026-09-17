@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>전세대출 이자 계산기 - 보증비율 및 이자 상세 계산</title>
+    <meta name="description" content="전세대출 금액, 대출 금리, 기간을 입력하여 월 이자 및 총 대출 이자를 정확하게 계산해보세요. 전세자금대출 보증기관별 가이드 제공.">
+    <style>
+        :root {         
+           --bg-color: #f7fafc;
+            --primary-hover: #2b6cb0;
+            --primary: #2b6cb0;
+            --primary-light: #d1ddf3;
+            --primary-hover: #2b6cb0;
+            --bg-main: #faf5ff;
+            --bg-card: #ffffff;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --border: #e9d5ff;
+    
+      --primary-color: #0066ff;
+      --bg-color: #f8f9fa;
+      --card-bg: #ffffff;
+      --text-color: #333333;
+      --border-color: #e9ecef;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+     .wiki-source {
+      font-size: 12px;
+      color: #7678c1;
+      margin-top: -6px;
+      margin-bottom: 20px;
+    }
+
+      
+
+      body {
+      font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      line-height: 1.6;
+      padding: 20px 10px;             
+            line-height: 1.6;     
+            background-color: var(--bg-color);
+            margin: 0;
+            /*padding: 20px;*/
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 { color: var(--primary-color); margin-bottom: 10px; }
+        h2 { color: #2c5282; border-bottom: 2px solid var(--primary-color); padding-bottom: 8px; margin-top: 40px; }
+        h3 { color: #3182ce; }
+
+        .card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+        }
+
+        /* 폼 스타일 */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background-color: #193f6d;
+        }
+
+        /* 결과 스타일 */
+        .result-box {
+            background-color: #ebf8ff;
+            border: 1px solid #bee3f8;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        .result-item.total {
+            font-weight: bold;
+            font-size: 18px;
+            color: #2b6cb0;
+            border-top: 1px solid #cbd5e0;
+            padding-top: 8px;
+        }
+
+        /* 아코디언 스타일 (전체 열림) */
+        details {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            margin-bottom: 10px;
+            padding: 12px 15px;
+        }
+
+        summary {
+            font-weight: bold;
+            cursor: pointer;
+            color: #2d3748;
+            outline: none;
+        }
+
+        details[open] summary {
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        /* 애드센스 광고 영역 표시용 */
+        .adsense-box {
+            background: #edf2f7;
+            border: 1px dashed #cbd5e0;
+            text-align: center;
+            padding: 20px;
+            margin: 20px 0;
+            color: #718096;
+            font-size: 14px;
+        }
+       
+
+/* 헤더 기본 레이아웃 */
+.site-header {
+    background-color: #ffffff;
+    border-bottom: 1px solid #2b6cb0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 8px rgba(124, 58, 237, 0.05);
+}
+
+.header-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+}
+
+/* 로고 영역 */
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--primary);
+    text-decoration: none;
+    flex-shrink: 0;
+}
+
+.brand-icon {
+    width: 36px;
+    height: 36px;
+    background-color: var(--primary);
+    color: white;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.95rem;
+    box-shadow: 0 2px 6px rgba(124, 58, 237, 0.3);
+}
+
+/* 네비게이션 그룹 */
+.nav-right-group {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.main-nav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.nav-item {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: all 0.2s;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.nav-item:hover, 
+.nav-item.active {
+    color: rgb(255, 255, 255, 255);
+    background-color: var(--primary-color);
+    font-weight: 700;
+}
+
+/* 드롭다운 스타일 */
+.dropdown {
+    position: relative;
+}
+
+.dropdown-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.dropdown-btn .chevron {
+    width: 14px;
+    height: 14px;
+    transition: transform 0.2s ease;
+}
+
+.dropdown.is-open .chevron {
+    transform: rotate(180deg);
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 260px;
+    background-color: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+    padding: 8px;
+    display: none;
+    flex-direction: column;
+    gap: 2px;
+    z-index: 1100;
+}
+
+.dropdown.is-open .dropdown-menu {
+    display: flex;
+}
+
+.dropdown-item {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+
+.dropdown-item:hover {
+    background-color: var(--primary-light);
+}
+
+.dropdown-item .title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+.dropdown-item:hover .title {
+    color: var(--primary);
+}
+
+.dropdown-item .desc {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+/* 전체 목록 우측 버튼 */
+.btn-list-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--primary);
+    background-color: var(--primary-light);
+    border: 1px solid var(--border);
+    padding: 8px 14px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.btn-list-back:hover {
+    background-color: var(--primary);
+    color: #ffffff;
+    border-color: var(--primary);
+}
+
+/* 햄버거 버튼 (모바일용) */
+.btn-hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 24px;
+    height: 18px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.hamburger-bar {
+    width: 100%;
+    height: 2px;
+    background-color: var(--text-dark);
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+.btn-hamburger.active .hamburger-bar:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+}
+.btn-hamburger.active .hamburger-bar:nth-child(2) {
+    opacity: 0;
+}
+.btn-hamburger.active .hamburger-bar:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+}
+
+/* 모바일 반응형 (1024px 이하) */
+@media (max-width: 1024px) {
+    .btn-hamburger { 
+        display: flex; 
+    }
+
+    .nav-right-group {
+        display: none;
+        position: absolute;
+        top: 61px;
+        left: 0;
+        width: 100%;
+        background-color: #ffffff;
+        flex-direction: column;
+        align-items: stretch;
+        padding: 1rem 1.25rem;
+        gap: 1rem;
+        border-bottom: 1px solid var(--border);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+    }
+
+    .nav-right-group.is-open { 
+        display: flex; 
+    }
+
+    .main-nav { 
+        flex-direction: column; 
+        align-items: stretch; 
+        gap: 4px; 
+    }
+
+    .dropdown-menu { 
+        position: static; 
+        width: 100%; 
+        box-shadow: none; 
+        border: none; 
+        background: var(--bg-main); 
+        padding: 4px; 
+        margin-top: 4px; 
+    }
+}
+footer {
+            background-color: #ffffff;
+            border-top: 1px solid #2b6cb0;
+            padding: 24px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 40px;
+        }
+        .card p {margin-left: 15px;}
+           .card ul {margin-left: 30px;}
+            /* 아코디언 (기본 오픈 스타일) */
+    .accordion-item {
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+    .accordion-header {
+      background: #dfe7ee;
+      padding: 14px 16px;
+      font-weight: bold;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .accordion-content {
+      padding: 16px;
+      background: #fff;
+      font-size: 0.9rem;
+      color: #444;
+      border-top: 1px solid var(--border-color);
+    }
+
+    /* 애드센스 광고 영역 */
+    .adsense-area {
+      margin: 20px 0;
+      text-align: center;
+      background: #fafafa;
+      border: 1px dashed #ddd;
+      padding: 10px;
+    }
+    </style>
+</head>
+<body>
+
+
+<header class="site-header">
+    <div class="header-inner">
+        <!-- 브랜드 로고 -->
+        <a href="../index.html" class="brand">
+            <div class="brand-icon" aria-hidden="true">MC</div>
+            <span>Miso Calculator</span>
+        </a>
+
+        <!-- 모바일 전용 햄버거 버튼 -->
+        <button type="button" class="btn-hamburger" id="hamburgerBtn" aria-label="메뉴 열기" aria-expanded="false">
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+        </button>
+
+        <!-- 네비게이션 & 전체 목록 그룹 -->
+        <div class="nav-right-group" id="navGroup">
+            <nav class="main-nav" aria-label="주요 계산기 메뉴">
+                <!-- 상단 노출 주요 메뉴 (4개) -->
+                <a href="./dsr.html" class="nav-item">DSR 계산</a>
+                <a href="./dti.html" class="nav-item ">DTI 계산</a>
+                <a href="./loan-interest.html" class="nav-item">대출 이자 계산</a>
+                 <a href="./jeonse-loan.html" class="nav-item active">전세대출 이자 계산</a>
+
+
+                <!-- 기타 계산기 드롭다운 메뉴 -->
+                <div class="dropdown" id="moreCalcDropdown">
+                    <button type="button" class="nav-item dropdown-btn" id="dropdownToggleBtn" aria-expanded="false">
+                        <span>기타 계산기</span>
+                        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <path d="M6 9l6 6 6-6"/>
+                        </svg>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a href="./loan-refinance.html" class="dropdown-item">
+                            <span class="title">대출 갈아타기 계산</span>
+                            <span class="desc">기존 대출과 새로운 대출 비용 비교</span>
+                        </a>
+                        <a href="./revolving.html" class="dropdown-item">
+                            <span class="title">리볼빙 이자 계산</span>
+                            <span class="desc">신용카드 리볼빙 이자와 상환 금액 계산</span>
+                        </a>
+                        <a href="./card-installment.html" class="dropdown-item">
+                            <span class="title">신용카드 할부이자 계산</span>
+                            <span class="desc">신용카드 유이자 할부 시 납부액과 이자 계산</span>
+                        </a>
+                        <a href="./minus-bankbook.html" class="dropdown-item">
+                            <span class="title">마이너스통장 이자 계산</span>
+                            <span class="desc">마이너스통장 사용 금액 일별.월별이자 계산</span>
+                        </a>
+                        <a href="./mortgage.html" class="dropdown-item">
+                            <span class="title">주택담보대출 계산</span>
+                            <span class="desc">주택담보대출 보증비율 및 대출 이자를 계산</span>
+                        </a>
+                         
+                         <a href="./prepayment-fee.html" class="dropdown-item">
+                            <span class="title">중도상환수수료 계산</span>
+                            <span class="desc">대출을 중도에 상환하는 경우 발생하는 비용</span>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+
+
+            <!-- 전체 목록 버튼 -->
+            <a href="../index.html" class="btn-list-back">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="8" y1="6" x2="21" y2="6"></line>
+                    <line x1="8" y1="12" x2="21" y2="12"></line>
+                    <line x1="8" y1="18" x2="21" y2="18"></line>
+                    <circle cx="3" cy="6" r="1"></circle>
+                    <circle cx="3" cy="12" r="1"></circle>
+                    <circle cx="3" cy="18" r="1"></circle>
+                </svg>
+                <span>전체 목록</span>
+            </a>
+        </div>
+    </div>
+</header>
+<div class="container">
+    <header>
+        <h1>전세대출 이자 계산기</h1>
+        <p>전세대출 금액, 금리, 기간을 입력하여 보증비율 및 대출 이자를 계산합니다.</p>
+    </header>
+
+    <!-- 상단 애드센스 광고 영역 
+    <div class="adsense-box">
+        구글 애드센스 상단 디스플레이 광고 코드를 여기에 넣으세요 
+        [구글 애드센스 광고 영역 - 상단]
+    </div> -->
+
+    <!-- 이자 계산기 폼 -->
+    <div class="card">
+        <div class="form-group">
+            <label for="loanAmount">대출 금액 (원)</label>
+            <input type="number" id="loanAmount" placeholder="예: 200000000 (2억원)" value="200000000">
+        </div>
+        <div class="form-group">
+            <label for="interestRate">연 대출 금리 (%)</label>
+            <input type="number" id="interestRate" step="0.01" placeholder="예: 3.85" value="3.85">
+        </div>
+        <div class="form-group">
+            <label for="loanPeriod">대출 기간 (개월)</label>
+            <input type="number" id="loanPeriod" placeholder="예: 24 (2년)" value="24">
+        </div>
+        <div class="form-group">
+            <label for="repayType">상환 방식</label>
+            <select id="repayType">
+                <option value="bullet">만기일시상환 (일반적인 전세대출)</option>
+                <option value="equalPrincipalInterest">원리금균등상환</option>
+                <option value="equalPrincipal">원금균등상환</option>
+            </select>
+        </div>
+        <button onclick="calculateLoan()">이자 계산하기</button>
+
+        <div id="resultBox" class="result-box">
+            <div class="result-item">
+                <span>월 평균 이자 (초기):</span>
+                <span id="monthlyInterest">0 원</span>
+            </div>
+            <div class="result-item">
+                <span>총 이자 금액:</span>
+                <span id="totalInterest">0 원</span>
+            </div>
+            <div class="result-item total">
+                <span>총 상환 금액 (원금+이자):</span>
+                <span id="totalPayment">0 원</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 중간 애드센스 광고 영역 
+    <div class="adsense-box">
+       구글 애드센스 중간 디스플레이 광고 코드를 여기에 넣으세요 
+        [구글 애드센스 광고 영역 - 중간]
+    </div>-->
+
+    <!-- 상세 가이드 및 웹 백과사전 설명 콘텐츠 -->
+    <section class="card">
+        <h2>전세자금대출 완벽 가이드</h2>
+        
+        <h3>1. 전세자금대출의 정의 </h3>
+        <p>
+            <strong>전세자금대출</strong>은 대한민국 특유의 주택 임대차 제도인 '전세' 계약 시 필요한 목돈(전세보증금)을 마련하기 위해 금융기관으로부터 자금을 빌리는 대출 상품입니다. 
+            일반적으로 세입자는 보증금의 70%~80% 수준까지 대출을 받을 수 있으며, 임대차 계약 기간(보통 2년) 동안은 매월 이자만 납부하고 계약 만기 시 보증금을 반환받아 대출 원금을 한 번에 상환하는 <strong>만기일시상환</strong> 방식이 보편적입니다.
+        </p>
+
+        <h3>2. 보증기관 및 보증비율 안내</h3>
+        <p>
+            은행은 차주(대출자)의 신용도만으로 거액의 전세자금을 대출해주기 어렵기 때문에, **공공 보증기관의 보증서**를 담보로 대출을 실행합니다. 보증기관에 따라 보증 비율, 한도, 대출 조건이 다릅니다.
+        </p>
+        <ul>
+            <li><strong>HF (한국주택금융공사):</strong> 보증비율 90~100%. 주택금융공사 보증서는 차주의 소득 및 신용도를 주로 평가하며, 무주택자 및 서민을 위한 우대 금리 혜택이 다양합니다.</li>
+            <li><strong>HUG (주택도시보증공사):</strong> 보증비율 100% (특약 기준). '전세보증금 반환보증'과 대출 보증이 결합된 상품으로, 임대인이 보증금을 돌려주지 못할 때 HUG가 대신 변제하므로 안전성이 높습니다.</li>
+            <li><strong>SGI (서울보증):</strong> 보증비율 80%. 민간 보증기관으로 대출 한도가 최대 5억 원으로 높아 고가 전세 계약 시 주로 이용됩니다.</li>
+        </ul>
+
+        <h3>3. 전세대출 이자 계산법</h3>
+        <p>
+            대부분의 전세대출은 <strong>만기일시상환</strong> 방식을 따릅니다. 
+            만기일시상환의 연간 이자 계산식은 단순합니다:
+            <br>
+            <code>연간 이자 = 대출 원금 × 연 이자율(%)</code>
+            <br>
+            <code>매월 이자 = 연간 이자 ÷ 12개월</code>
+        </p>
+         <div class="wiki-source" style="margin-top: 20px;">참조/출처: 위키백과 & 네이버 지식백과 </div>
+    </section>
+
+   
+    <!-- 자주 묻는 질문 (FAQ) - 전부 열려있는 아코디언 -->
+    <section class="card">
+        <h2>자주 묻는 질문 (FAQ)</h2>
+
+        <details open>
+            <summary>Q1. 전세대출 보증료는 무엇이고 이자와 별도인가요?</summary>
+            <p>네, 별도입니다. 전세대출을 받으려면 보증기관(HF, HUG, SGI)의 보증서를 발급받아야 하며, 이에 대한 수수료 개념으로 연 0.02%~0.2% 수준의 '보증료'를 은행이나 보증기관에 추가로 납부해야 합니다.</p>
+        </details>
+
+        <details open>
+            <summary>Q2. 전세대출 연장 시 금리가 변동되나요?</summary>
+            <p>대부분의 전세대출은 변동금리 상품입니다. 기준금리(COFIX 등)의 변동에 따라 주기적(6개월 또는 1년)으로 금리가 재산정되며, 연장 시 시중 금리 상황에 맞춰 적용 금리가 변경됩니다.</p>
+        </details>
+
+        <details open>
+            <summary>Q3. 중도상환수수료가 발생하나요?</summary>
+            <p>대출 계약 기간 도중에 원금을 상환할 경우 중도상환수수료(보통 0.5%~1.5%)가 발생할 수 있습니다. 단, 대출 실행 후 3년이 지나거나 계약 만기 전 특정 조건에 따라 면제될 수 있습니다.</p>
+        </details>
+
+        <details open>
+            <summary>Q4. 버팀목 전세자금대출 등 정부지원 상품 조건은 어떻게 되나요?</summary>
+            <p>정부 지원 버팀목 전세자금대출은 소득 및 자산 기준(무주택 세대주, 부부합산 연소득 5천만 원 이하 등)을 충족해야 하며, 시중은행 대출 대비 현저히 낮은 저금리가 적용됩니다.</p>
+        </details>
+    </section>
+
+    <!-- 하단 애드센스 광고 영역 
+    <div class="adsense-box">
+       구글 애드센스 하단 디스플레이 광고 코드를 여기에 넣으세요 
+        [구글 애드센스 광고 영역 - 하단]
+    </div> -->
+
+</div>
+
+ <footer>
+        <p>© 2026 Miso Calculator. All rights reserved.</p>
+        <p>본 계산기는 참고용 시뮬레이션 결과이며, 실제 금융기관의 계산 방식에 따라 원단위 오차가 발생할 수 있습니다.</p>
+        <p style="margin-top: 8px;"><a href="../privacy.html" style="color: var(--text-muted); text-decoration: underline;">개인정보처리방침</a></p>
+    </footer>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+    // 1. 모바일 햄버거 메뉴 토글
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const navGroup = document.getElementById('navGroup');
+
+    if (hamburgerBtn && navGroup) {
+        hamburgerBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = hamburgerBtn.classList.toggle('active');
+            navGroup.classList.toggle('is-open');
+            hamburgerBtn.setAttribute('aria-expanded', isOpen);
+        });
+    }
+
+    // 2. 기타 계산기 드롭다운 토글
+    const dropdown = document.getElementById('moreCalcDropdown');
+    const dropdownToggleBtn = document.getElementById('dropdownToggleBtn');
+
+    if (dropdownToggleBtn && dropdown) {
+        dropdownToggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = dropdown.classList.toggle('is-open');
+            dropdownToggleBtn.setAttribute('aria-expanded', isOpen);
+        });
+
+        // 바깥 영역 클릭 시 드롭다운 닫기
+        document.addEventListener('click', (e) => {
+            if (!dropdown.contains(e.target)) {
+                dropdown.classList.remove('is-open');
+                dropdownToggleBtn.setAttribute('aria-expanded', 'false');
+            }
+        });
+
+        // ESC 키 입력 시 닫기
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                dropdown.classList.remove('is-open');
+                dropdownToggleBtn.setAttribute('aria-expanded', 'false');
+            }
+        });
+    }
+});
+</script>
+<script>
+    function calculateLoan() {
+        const P = parseFloat(document.getElementById('loanAmount').value);
+        const annualRate = parseFloat(document.getElementById('interestRate').value);
+        const N = parseInt(document.getElementById('loanPeriod').value);
+        const repayType = document.getElementById('repayType').value;
+
+        if (isNaN(P) || isNaN(annualRate) || isNaN(N) || P <= 0 || annualRate <= 0 || N <= 0) {
+            alert('올바른 금액, 금리, 기간을 입력해주세요.');
+            return;
+        }
+
+        const r = (annualRate / 100) / 12; // 월 금리
+        let totalInterest = 0;
+        let firstMonthInterest = 0;
+
+        if (repayType === 'bullet') {
+            // 만기일시상환
+            firstMonthInterest = P * r;
+            totalInterest = firstMonthInterest * N;
+        } else if (repayType === 'equalPrincipalInterest') {
+            // 원리금균등상환
+            const monthlyPayment = (P * r * Math.pow(1 + r, N)) / (Math.pow(1 + r, N) - 1);
+            totalInterest = (monthlyPayment * N) - P;
+            firstMonthInterest = P * r;
+        } else if (repayType === 'equalPrincipal') {
+            // 원금균등상환
+            const monthlyPrincipal = P / N;
+            firstMonthInterest = P * r;
+            
+            for (let i = 0; i < N; i++) {
+                let remainingP = P - (monthlyPrincipal * i);
+                totalInterest += remainingP * r;
+            }
+        }
+
+        const totalPayment = P + totalInterest;
+
+        // 결과 표시
+        document.getElementById('monthlyInterest').innerText = Math.round(firstMonthInterest).toLocaleString() + ' 원';
+        document.getElementById('totalInterest').innerText = Math.round(totalInterest).toLocaleString() + ' 원';
+        document.getElementById('totalPayment').innerText = Math.round(totalPayment).toLocaleString() + ' 원';
+        
+        document.getElementById('resultBox').style.display = 'block';
+    }
+
+    // 페이지 로드시 기본값 자동 계산
+    window.onload = function() {
+        calculateLoan();
+    };
+</script>
+
+</body>
+</html>

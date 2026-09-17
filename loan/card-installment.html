@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>신용카드 할부이자 계산기 | 월 납부액 및 수수료 안내</title>
+  <meta name="description" content="신용카드 유이자 할부 결제 시 발생하는 월별 납부 원금, 할부 수수료(이자), 총 상환금액을 정확히 계산하고 백과사전 기준 구조와 절약 팁을 확인하세요.">
+  
+  <!-- 애드센스 태그 영역 (발급받은 본인 코드로 대체하세요) -->
+  <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+
+  <style>
+        :root {         
+           --bg-color: #f7fafc;
+            --primary-hover: #2b6cb0;
+            --primary: #2b6cb0;
+            --primary-light: #d1ddf3;
+            --primary-hover: #2b6cb0;
+            --bg-main: #faf5ff;
+            --bg-card: #ffffff;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --border: #e9d5ff;
+    
+      --primary-color: #0066ff;
+      --bg-color: #f8f9fa;
+      --card-bg: #ffffff;
+      --text-color: #333333;
+      --border-color: #e9ecef;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+     .wiki-source {
+      font-size: 12px;
+      color: #7678c1;
+      margin-top: -6px;
+      margin-bottom: 20px;
+    }
+
+      
+
+      body {
+      font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      line-height: 1.6;
+      padding: 20px 10px;             
+            line-height: 1.6;     
+            background-color: var(--bg-color);
+            margin: 0;
+            /*padding: 20px;*/
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 { color: var(--primary-color); margin-bottom: 10px; }
+        h2 { color: #2c5282; border-bottom: 2px solid var(--primary-color); padding-bottom: 8px; margin-top: 40px; }
+        h3 { color: #3182ce; }
+
+        .card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+        }
+
+        /* 폼 스타일 */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background-color: #193f6d;
+        }
+
+        /* 결과 스타일 */
+        .result-box {
+            background-color: #ebf8ff;
+            border: 1px solid #bee3f8;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        .result-item.total {
+            font-weight: bold;
+            font-size: 18px;
+            color: #2b6cb0;
+            border-top: 1px solid #cbd5e0;
+            padding-top: 8px;
+        }
+
+        /* 아코디언 스타일 (전체 열림) */
+        details {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            margin-bottom: 10px;
+            padding: 12px 15px;
+        }
+
+        summary {
+            font-weight: bold;
+            cursor: pointer;
+            color: #2d3748;
+            outline: none;
+        }
+
+        details[open] summary {
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        /* 애드센스 광고 영역 표시용 */
+        .adsense-box {
+            background: #edf2f7;
+            border: 1px dashed #cbd5e0;
+            text-align: center;
+            padding: 20px;
+            margin: 20px 0;
+            color: #718096;
+            font-size: 14px;
+        }
+       
+
+/* 헤더 기본 레이아웃 */
+.site-header {
+    background-color: #ffffff;
+    border-bottom: 1px solid #2b6cb0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 8px rgba(124, 58, 237, 0.05);
+}
+
+.header-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+}
+
+/* 로고 영역 */
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--primary);
+    text-decoration: none;
+    flex-shrink: 0;
+}
+
+.brand-icon {
+    width: 36px;
+    height: 36px;
+    background-color: var(--primary);
+    color: white;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.95rem;
+    box-shadow: 0 2px 6px rgba(124, 58, 237, 0.3);
+}
+
+/* 네비게이션 그룹 */
+.nav-right-group {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.main-nav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.nav-item {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: all 0.2s;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.nav-item:hover, 
+.nav-item.active {
+    color: rgb(255, 255, 255, 255);
+    background-color: var(--primary-color);
+    font-weight: 700;
+}
+
+/* 드롭다운 스타일 */
+.dropdown {
+    position: relative;
+}
+
+.dropdown-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.dropdown-btn .chevron {
+    width: 14px;
+    height: 14px;
+    transition: transform 0.2s ease;
+}
+
+.dropdown.is-open .chevron {
+    transform: rotate(180deg);
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 260px;
+    background-color: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+    padding: 8px;
+    display: none;
+    flex-direction: column;
+    gap: 2px;
+    z-index: 1100;
+}
+
+.dropdown.is-open .dropdown-menu {
+    display: flex;
+}
+
+.dropdown-item {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+
+.dropdown-item:hover {
+    background-color: var(--primary-light);
+}
+
+.dropdown-item .title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+.dropdown-item:hover .title {
+    color: var(--primary);
+}
+
+.dropdown-item .desc {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+/* 전체 목록 우측 버튼 */
+.btn-list-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--primary);
+    background-color: var(--primary-light);
+    border: 1px solid var(--border);
+    padding: 8px 14px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.btn-list-back:hover {
+    background-color: var(--primary);
+    color: #ffffff;
+    border-color: var(--primary);
+}
+
+/* 햄버거 버튼 (모바일용) */
+.btn-hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 24px;
+    height: 18px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.hamburger-bar {
+    width: 100%;
+    height: 2px;
+    background-color: var(--text-dark);
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+.btn-hamburger.active .hamburger-bar:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+}
+.btn-hamburger.active .hamburger-bar:nth-child(2) {
+    opacity: 0;
+}
+.btn-hamburger.active .hamburger-bar:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+}
+
+/* 모바일 반응형 (1024px 이하) */
+@media (max-width: 1024px) {
+    .btn-hamburger { 
+        display: flex; 
+    }
+
+    .nav-right-group {
+        display: none;
+        position: absolute;
+        top: 61px;
+        left: 0;
+        width: 100%;
+        background-color: #ffffff;
+        flex-direction: column;
+        align-items: stretch;
+        padding: 1rem 1.25rem;
+        gap: 1rem;
+        border-bottom: 1px solid var(--border);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+    }
+
+    .nav-right-group.is-open { 
+        display: flex; 
+    }
+
+    .main-nav { 
+        flex-direction: column; 
+        align-items: stretch; 
+        gap: 4px; 
+    }
+
+    .dropdown-menu { 
+        position: static; 
+        width: 100%; 
+        box-shadow: none; 
+        border: none; 
+        background: var(--bg-main); 
+        padding: 4px; 
+        margin-top: 4px; 
+    }
+}
+footer {
+            background-color: #ffffff;
+            border-top: 1px solid #2b6cb0;
+            padding: 24px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 40px;
+        }
+        .card p {margin-left: 15px;}
+           .card ul {margin-left: 30px;}
+            /* 아코디언 (기본 오픈 스타일) */
+    .accordion-item {
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+    .accordion-header {
+      background: #dfe7ee;
+      padding: 14px 16px;
+      font-weight: bold;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .accordion-content {
+      padding: 16px;
+      background: #fff;
+      font-size: 0.9rem;
+      color: #444;
+      border-top: 1px solid var(--border-color);
+    }
+
+    /* 애드센스 광고 영역 */
+    .adsense-area {
+      margin: 20px 0;
+      text-align: center;
+      background: #fafafa;
+      border: 1px dashed #ddd;
+      padding: 10px;
+    }
+
+       /* FAQ 아코디언 (기본 열림) */
+    .faq-item { border: 1px solid var(--border-color); border-radius: 6px; margin-bottom: 12px; overflow: hidden; }
+    .faq-header { background: #f8fafc; padding: 14px 18px; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); }
+    .faq-body { padding: 16px 18px; background: #fff; font-size: 0.95rem; line-height: 1.6; }
+    
+    /* 열림 상태 애니메이션 및 토글용 클래스 */
+    .faq-item.open .faq-body { display: block; }
+    .faq-item:not(.open) .faq-body { display: none; }
+    .faq-item.open .icon { transform: rotate(180deg); }
+    .icon { transition: transform 0.2s; }
+    </style>
+</head>
+<body>
+<header class="site-header">
+    <div class="header-inner">
+        <!-- 브랜드 로고 -->
+        <a href="../index.html" class="brand">
+            <div class="brand-icon" aria-hidden="true">MC</div>
+            <span>Miso Calculator</span>
+        </a>
+
+        <!-- 모바일 전용 햄버거 버튼 -->
+        <button type="button" class="btn-hamburger" id="hamburgerBtn" aria-label="메뉴 열기" aria-expanded="false">
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+        </button>
+
+        <!-- 네비게이션 & 전체 목록 그룹 -->
+        <div class="nav-right-group" id="navGroup">
+            <nav class="main-nav" aria-label="주요 계산기 메뉴">
+                <!-- 상단 노출 주요 메뉴 (4개) -->
+                <a href="./dsr.html" class="nav-item">DSR 계산</a>
+                <a href="./dti.html" class="nav-item ">DTI 계산</a>
+                <a href="./loan-interest.html" class="nav-item">대출 이자 계산</a>
+                 <a href="./card-installment.html" class="nav-item active">신용카드 할부이자 계산</a>
+
+
+                <!-- 기타 계산기 드롭다운 메뉴 -->
+                <div class="dropdown" id="moreCalcDropdown">
+                    <button type="button" class="nav-item dropdown-btn" id="dropdownToggleBtn" aria-expanded="false">
+                        <span>기타 계산기</span>
+                        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <path d="M6 9l6 6 6-6"/>
+                        </svg>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a href="./loan-refinance.html" class="dropdown-item">
+                            <span class="title">대출 갈아타기 계산</span>
+                            <span class="desc">기존 대출과 새로운 대출 비용 비교</span>
+                        </a>
+                        <a href="./revolving.html" class="dropdown-item">
+                            <span class="title">리볼빙 이자 계산</span>
+                            <span class="desc">신용카드 리볼빙 이자와 상환 금액 계산</span>
+                        </a>
+                           <a href="./minus-bankbook.html" class="dropdown-item">
+                            <span class="title">마이너스통장 이자 계산</span>
+                            <span class="desc">마이너스통장 사용 금액 일별.월별이자 계산</span>
+                        </a>
+                        <a href="./mortgage.html" class="dropdown-item">
+                            <span class="title">주택담보대출 계산</span>
+                            <span class="desc">주택담보대출 보증비율 및 대출 이자를 계산</span>
+                        </a>
+                         <a href="./jeonse-loan.html" class="dropdown-item">
+                            <span class="title">전세대출 이자 계산</span>
+                            <span class="desc">전세대출 보증비율 및 대출 이자를 계산</span>
+                        </a>
+                         <a href="./prepayment-fee.html" class="dropdown-item">
+                            <span class="title">중도상환수수료 계산</span>
+                            <span class="desc">대출을 중도에 상환하는 경우 발생하는 비용</span>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+
+
+            <!-- 전체 목록 버튼 -->
+            <a href="../index.html" class="btn-list-back">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="8" y1="6" x2="21" y2="6"></line>
+                    <line x1="8" y1="12" x2="21" y2="12"></line>
+                    <line x1="8" y1="18" x2="21" y2="18"></line>
+                    <circle cx="3" cy="6" r="1"></circle>
+                    <circle cx="3" cy="12" r="1"></circle>
+                    <circle cx="3" cy="18" r="1"></circle>
+                </svg>
+                <span>전체 목록</span>
+            </a>
+        </div>
+    </div>
+</header>
+<div class="container">
+  
+  <header>
+    <h1>신용카드 할부이자 계산기</h1>
+    <p>신용카드 유이자 할부 시 월 납부액과 총 할부 수수료(이자)를 정확하게 계산합니다.</p>
+  </header>
+
+  <!-- 상단 광고 영역 
+  <div class="ads-area">
+   
+    광고 영역 (상단 반응형 디스플레이 광고)
+  </div>
+-->
+  <!-- 계산기 입력 카드 -->
+  <div class="card">
+    <div class="form-group">
+      <label for="installmentAmount">할부 결제 금액 (원)</label>
+      <input type="number" id="installmentAmount" placeholder="예: 1200000">
+    </div>
+    <div class="form-group">
+      <label for="installmentMonths">할부 개월 수</label>
+      <select id="installmentMonths">
+        <option value="2">2개월</option>
+        <option value="3" selected>3개월</option>
+        <option value="6">6개월</option>
+        <option value="10">10개월</option>
+        <option value="12">12개월</option>
+        <option value="18">18개월</option>
+        <option value="24">24개월</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="feeRate">할부 수수료율 (연 %)</label>
+      <input type="number" id="feeRate" step="0.1" placeholder="예: 14.5 (회원별·카드사별 수수료율)">
+    </div>
+    <button class="btn-calc" onclick="calculateInstallment()">할부이자 계산하기</button>
+
+    <div class="result-box" id="resultBox">
+      <div class="summary" id="totalSummary">총 납부 금액: 0원</div>
+      <div class="result-details" id="resultDetails">
+        <!-- 세부 내역 출력 위치 -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 중간 광고 영역 
+  <div class="ads-area">
+  
+    광고 영역 (본문 중간 삽입형 광고)
+  </div>-->
+
+  <!-- 상세 백과사전 설명 섹션 (애드센스 고품질 콘텐츠 확보용) -->
+  <div class="card info-section">
+    <h2>신용카드 할부 수수료</h2>
+    
+    <h3>1. 신용카드 할부 수수료 정의</h3>
+    <p>
+      <strong>신용카드 할부금융(Credit Card Installment)</strong>이란 신용카드 이용자가 물품이나 용역을 구매할 때 그 대금을 한 번에 지급하지 않고, 정해진 개월 수에 걸쳐 원금과 수수료(이자)를 나누어 지급하는 금융 서비스입니다. 
+      할부 이용 시 발생하는 <strong>할부 수수료율</strong>은 회원 개인의 신용평점, 이용 개월 수, 카드사 정책에 따라 차등 적용되며, 대출 금리와 유사하게 연율(%)로 계산되어 매월 원금 잔액에 비례해 부과됩니다.
+    </p>
+
+    <h3>2. 카드사 표준 계산 공식</h3>
+    <p>
+      신용카드 할부 수수료는 대출의 <strong>원금균등상환 방식</strong>과 동일하게 산정됩니다. 매월 갚아나갈수록 남은 할부 잔액이 줄어들기 때문에, 회차를 거듭할수록 발생하는 월 할부 수수료도 조금씩 감소합니다.
+    </p>
+    <ul>
+      <li><strong>월 할부 원금 = 총 이용금액 ÷ 할부 개월 수</strong></li>
+      <li><strong>월 할부 수수료 = (할부 잔액 × 할부 수수료율 × 이용일수) ÷ 365일</strong></li>
+    </ul>
+    <p>
+      * 첫 달 수수료가 가장 높으며, 매달 할부 잔액이 줄어들면서 차회 수수료도 점차 줄어드는 특징을 가집니다.
+    </p>
+
+    <h3>3. 부분 무이자 및 할부 수수료 절감 팁</h3>
+    <ul>
+      <li><strong>할부 개월 수 구간 확인:</strong> 카드사는 보통 2개월, 3~5개월, 6~11개월, 12개월 등 구간별로 할부 수수료율을 다르게 적용하므로, 구간 내에서 가장 짧은 개월 수를 선택하는 것이 수수료를 절감하는 지혜입니다.</li>
+      <li><strong>중도 상환 활용:</strong> 여유 자금이 생길 경우 카드사 앱을 통해 '할부 선결제'를 진행하면 남은 기간에 대한 할부 수수료를 면제받을 수 있습니다.</li>
+    </ul>
+             <div class="wiki-source" style="margin-top: 20px;">참조/출처: 위키백과 & 네이버 지식백과 </div>
+
+  </div>
+
+  <!-- 자주 묻는 질문 (FAQ) - 아코디언 (기본 상태 모두 열림) -->
+  <div class="card info-section">
+    <h2>자주 묻는 질문 (FAQ)</h2>
+
+    <!-- FAQ 1 (기본 class에 open 포함) -->
+    <div class="faq-item open">
+      <div class="faq-header" onclick="toggleFaq(this)">
+        <span>Q1. 할부 개월 수가 길어지면 이자율(수수료율)도 높아지나요?</span>
+        <span class="icon">▼</span>
+      </div>
+      <div class="faq-body">
+        A. 네, 그렇습니다. 카드사는 장기 할주일수록 연체 위험 및 자금 운용 비용을 반영하여 더 높은 할부 수수료율을 적용합니다. 예를 들어 3개월 할부 수수료율이 연 12%라면, 12개월 할부 수수료율은 연 18% 이상으로 상승할 수 있습니다.
+      </div>
+    </div>
+
+    <!-- FAQ 2 (기본 class에 open 포함) -->
+    <div class="faq-item open">
+      <div class="faq-header" onclick="toggleFaq(this)">
+        <span>Q2. 무이자 할부와 부분 무이자 할부의 차이는 무엇인가요?</span>
+        <span class="icon">▼</span>
+      </div>
+      <div class="faq-body">
+        A. 무이자 할부는 이용 기간 전체 동안 할부 수수료가 0원인 반면, 부분 무이자 할부(예: 10개월 부분 무이자)는 1~3회차 등 전반부 수수료는 고객이 부담하고 4회차 이후 후반부 수수료는 카드사가 면제해 주는 행사 방식입니다.
+      </div>
+    </div>
+
+    <!-- FAQ 3 (기본 class에 open 포함) -->
+    <div class="faq-item open">
+      <div class="faq-header" onclick="toggleFaq(this)">
+        <span>Q3. 할부 결제한 금액을 중간에 한 번에 갚으면 수수료가 없어지나요?</span>
+        <span class="icon">▼</span>
+      </div>
+      <div class="faq-body">
+        A. 네, 신용카드 할부 수수료는 잔여 일수에 대해 매일 계산되므로, 이용 중 잔여 원금을 '선결제(중도상환)'할 경우 결제일 이후의 잔여 기간에 대한 할부 수수료는 전혀 부과되지 않습니다.
+      </div>
+    </div>
+  </div>
+
+  <!-- 하단 광고 영역 
+  <div class="ads-area">
+    
+    광고 영역 (하단 관련 콘텐츠 및 디스플레이 광고)
+  </div> -->
+
+</div>
+<footer>
+        <p>© 2026 Miso Calculator. All rights reserved.</p>
+        <p>본 계산기는 참고용 시뮬레이션 결과이며, 실제 금융기관의 계산 방식에 따라 원단위 오차가 발생할 수 있습니다.</p>
+        <p style="margin-top: 8px;"><a href="../privacy.html" style="color: var(--text-muted); text-decoration: underline;">개인정보처리방침</a></p>
+    </footer>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+    // 1. 모바일 햄버거 메뉴 토글
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const navGroup = document.getElementById('navGroup');
+
+    if (hamburgerBtn && navGroup) {
+        hamburgerBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = hamburgerBtn.classList.toggle('active');
+            navGroup.classList.toggle('is-open');
+            hamburgerBtn.setAttribute('aria-expanded', isOpen);
+        });
+    }
+
+    // 2. 기타 계산기 드롭다운 토글
+    const dropdown = document.getElementById('moreCalcDropdown');
+    const dropdownToggleBtn = document.getElementById('dropdownToggleBtn');
+
+    if (dropdownToggleBtn && dropdown) {
+        dropdownToggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = dropdown.classList.toggle('is-open');
+            dropdownToggleBtn.setAttribute('aria-expanded', isOpen);
+        });
+
+        // 바깥 영역 클릭 시 드롭다운 닫기
+        document.addEventListener('click', (e) => {
+            if (!dropdown.contains(e.target)) {
+                dropdown.classList.remove('is-open');
+                dropdownToggleBtn.setAttribute('aria-expanded', 'false');
+            }
+        });
+
+        // ESC 키 입력 시 닫기
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                dropdown.classList.remove('is-open');
+                dropdownToggleBtn.setAttribute('aria-expanded', 'false');
+            }
+        });
+    }
+});
+</script>
+<script>
+  // 카드 할부 이자(원금균등) 계산 함수
+  function calculateInstallment() {
+    const amount = parseFloat(document.getElementById('installmentAmount').value);
+    const months = parseInt(document.getElementById('installmentMonths').value);
+    const annualRate = parseFloat(document.getElementById('feeRate').value);
+
+    if (isNaN(amount) || amount <= 0) {
+      alert("올바른 결제 금액을 입력해 주세요.");
+      return;
+    }
+
+    if (isNaN(annualRate) || annualRate < 0) {
+      alert("올바른 할부 수수료율을 입력해 주세요.");
+      return;
+    }
+
+    const monthlyPrincipal = Math.floor(amount / months);
+    let remainingPrincipal = amount;
+    let totalFee = 0;
+    const monthlyRate = (annualRate / 100) / 12; // 월 이율 간이 산정
+
+    let firstMonthTotal = 0;
+
+    for (let i = 1; i <= months; i++) {
+      // 해당 회차 원금 (마지막 회차는 절사 금액 가산)
+      let currentPrincipal = (i === months) ? remainingPrincipal : monthlyPrincipal;
+      
+      // 해당 회차 수수료 (남은 잔액 * 월이율)
+      let currentFee = Math.floor(remainingPrincipal * monthlyRate);
+      totalFee += currentFee;
+
+      if (i === 1) {
+        firstMonthTotal = currentPrincipal + currentFee;
+      }
+
+      remainingPrincipal -= currentPrincipal;
+    }
+
+    const totalPay = amount + totalFee;
+
+    const resultBox = document.getElementById('resultBox');
+    const totalSummary = document.getElementById('totalSummary');
+    const resultDetails = document.getElementById('resultDetails');
+
+    totalSummary.innerText = `총 납부 예정 금액: ${totalPay.toLocaleString()} 원`;
+    resultDetails.innerHTML = `
+      • <strong>할부 원금:</strong> ${amount.toLocaleString()} 원<br>
+      • <strong>총 할부 수수료(이자):</strong> 約 ${totalFee.toLocaleString()} 원<br>
+      • <strong>1회차 예상 청구액:</strong> 約 ${firstMonthTotal.toLocaleString()} 원 (원금 ${monthlyPrincipal.toLocaleString()}원 + 첫달 수수료)
+    `;
+
+    resultBox.style.display = 'block';
+  }
+
+  // 아코디언 토글 함수 (기본 상태는 모두 열려 있으며, 클릭 시 닫기/열기 동작)
+  function toggleFaq(headerElement) {
+    const faqItem = headerElement.parentElement;
+    faqItem.classList.toggle('open');
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Miso Calculator - 종합소득세 예상 계산기</title>
+  <style>
+  :root {
+            --primary: #4b5563;        /* 메인 회색 (Gray-600) */
+            --primary-hover: #374151;  /* Hover 회색 (Gray-700) */
+            --primary-light: #f3f4f6;  /* 연한 회색 배경 (Gray-100) */
+            --text-dark: #1f2937;      /* 텍스트 (Gray-800) */
+            --text-muted: #6b7280;     /* 보조 텍스트 (Gray-500) */
+            --border: #d1d5db;         /* 테두리 (Gray-300) */
+            --bg-gray: #f9fafb;        /* 전체 메인 배경 (Gray-50) */
+            --bg-white: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: var(--text-dark);
+            background-color: var(--bg-gray);
+            line-height: 1.6;
+        }
+
+        /* 헤더 기본 레이아웃 */
+        .site-header {
+            background-color: var(--bg-white);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 8px rgba(75, 85, 99, 0.05);
+        }
+
+        .header-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        /* 로고 영역 */
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-decoration: none;
+            flex-shrink: 0;
+        }
+
+        .brand-icon {
+            width: 36px;
+            height: 36px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.95rem;
+            box-shadow: 0 2px 6px rgba(75, 85, 99, 0.3);
+        }
+
+        /* 네비게이션 그룹 */
+        .nav-right-group {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .main-nav {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .nav-item {
+            font-size: 0.92rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 0.2s;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            color: var(--primary-hover);
+            background-color: var(--primary-light);
+            font-weight: 700;
+        }
+
+        /* 드롭다운 스타일 */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .dropdown-btn .chevron {
+            width: 14px;
+            height: 14px;
+            transition: transform 0.2s ease;
+        }
+
+        .dropdown.is-open .chevron {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            width: 300px;
+            background-color: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            padding: 8px;
+            display: none;
+            flex-direction: column;
+            gap: 2px;
+            z-index: 1100;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .dropdown.is-open .dropdown-menu {
+            display: flex;
+        }
+
+        .dropdown-item {
+            display: flex;
+            flex-direction: column;
+            padding: 10px 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background-color 0.2s;
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--primary-light);
+        }
+
+        .dropdown-item .title-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .dropdown-item .title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .dropdown-item:hover .title {
+            color: var(--primary-hover);
+        }
+
+        .dropdown-item .desc {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* 뱃지 스타일 */
+        .badge {
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 0.1rem 0.35rem;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+        .badge.new {
+            background-color: #fee2e2;
+            color: #dc2626;
+        }
+
+        /* 전체 목록 우측 버튼 */
+        .btn-list-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: var(--primary);
+            background-color: var(--primary-light);
+            border: 1px solid var(--border);
+            padding: 8px 14px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .btn-list-back:hover {
+            background-color: var(--primary);
+            color: #ffffff;
+            border-color: var(--primary);
+        }
+
+        /* 햄버거 버튼 (모바일용) */
+        .btn-hamburger {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 24px;
+            height: 18px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .hamburger-bar {
+            width: 100%;
+            height: 2px;
+            background-color: var(--text-dark);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        /* 모바일 반응형 (1024px 이하) */
+        @media (max-width: 1024px) {
+            .btn-hamburger {
+                display: flex;
+            }
+
+            .nav-right-group {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background-color: var(--bg-white);
+                flex-direction: column;
+                align-items: stretch;
+                padding: 16px 20px;
+                gap: 16px;
+                border-bottom: 1px solid var(--border);
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+            }
+
+            .nav-right-group.is-open {
+                display: flex;
+            }
+
+            .main-nav {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 4px;
+            }
+
+            .dropdown-menu {
+                position: static;
+                width: 100%;
+                box-shadow: none;
+                border: none;
+                background: var(--primary-light);
+                padding: 4px;
+                margin-top: 4px;
+                max-height: none;
+            }
+        }
+    /* 메인 카드 컨테이너 */
+    .container {
+      max-width: 720px;
+      margin: 40px auto;
+      padding: 30px;
+      background-color: var(--bg-white);
+      border-radius: 16px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+      border: 1px solid var(--border);
+    }
+
+    .category-tag {
+      font-size: 13px;
+      color: var(--primary);
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+
+    h1 {
+      font-size: 26px;
+      margin-top: 0;
+      margin-bottom: 16px;
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 10px;
+      color: var(--text-dark);
+    }
+
+    h2 {
+      font-size: 19px;
+      margin-top: 36px;
+      margin-bottom: 14px;
+      color: var(--text-dark);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 6px;
+    }
+
+    /* 계산기 입력 폼 스타일 */
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+      font-weight: bold;
+      color: var(--text-dark);
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 15px;
+      color: var(--text-dark);
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px #e5e7eb;
+    }
+
+    button.btn-calc {
+      width: 100%;
+      padding: 14px;
+      background-color: var(--primary);
+      color: var(--bg-white);
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background-color 0.2s;
+    }
+
+    button.btn-calc:hover {
+      background-color: var(--primary-hover);
+    }
+
+    /* 계산 결과 출력 영역 */
+    .result-container {
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 2px solid var(--primary);
+    }
+
+    .result-section {
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .result-subtitle {
+      font-size: 16px;
+      font-weight: bold;
+      color: var(--text-dark);
+      margin-bottom: 10px;
+    }
+
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 15px;
+      color: var(--text-muted);
+    }
+
+    .result-row.total {
+      font-size: 18px;
+      font-weight: bold;
+      color: var(--primary-hover);
+      margin-top: 8px;
+      border-top: 1px dashed var(--border);
+      padding-top: 8px;
+    }
+
+    /* 애드센스 광고 슬롯 */
+    .ad-slot {
+      margin: 24px 0;
+      text-align: center;
+      background: #fafafa;
+      border: 1px dashed var(--border);
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    /* 백과사전 상세 설명 (계산기 하단 배치) */
+    .wiki-box {
+      background-color: var(--primary-light);
+      border-left: 4px solid var(--primary);
+      padding: 18px;
+      border-radius: 0 8px 8px 0;
+      margin-top: 30px;
+      margin-bottom: 24px;
+      font-size: 14.5px;
+      line-height: 1.7;
+    }
+
+    .wiki-box p {
+      margin: 0 0 12px 0;
+      color: var(--text-dark);
+    }
+
+    .wiki-box p:last-child {
+      margin-bottom: 0;
+    }
+
+    .wiki-source {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: bold;
+      display: inline-block;
+      margin-top: 6px;
+    }
+
+    /* FAQ 아코디언 스타일 */
+    .faq-list {
+      margin-top: 12px;
+    }
+
+    .faq-item {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+
+    .faq-question {
+      width: 100%;
+      text-align: left;
+      padding: 14px 16px;
+      background-color: var(--bg-gray);
+      border: none;
+      font-size: 15px;
+      font-weight: bold;
+      color: var(--text-dark);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background-color 0.2s;
+    }
+
+    .faq-question:hover {
+      background-color: var(--primary-light);
+    }
+
+    .faq-icon {
+      font-size: 18px;
+      color: var(--primary);
+      font-weight: bold;
+    }
+
+    .faq-item.open .faq-icon::before {
+      content: "-";
+    }
+
+    .faq-item:not(.open) .faq-icon::before {
+      content: "+";
+    }
+
+    .faq-answer {
+      display: none;
+      padding: 14px 16px;
+      font-size: 14px;
+      color: var(--text-muted);
+      background-color: var(--bg-white);
+      border-top: 1px solid var(--border);
+      line-height: 1.6;
+    }
+
+    /* 기본적으로 아코디언 항목이 모두 펼쳐진 상태 유지 */
+    .faq-item.open .faq-answer {
+      display: block;
+    }
+
+    /* 푸터 영역 */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 30px 20px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      background-color: var(--bg-gray);
+      margin-top: 60px;
+    }
+
+    footer p {
+      margin: 4px 0;
+    }
+
+    footer a {
+      color: var(--text-muted);
+      text-decoration: underline;
+    }
+
+  
+  
+  </style>
+</head>
+<body>
+
+  <!-- 헤더 & 네비게이션 -->
+<header class="site-header">
+        <div class="header-inner">
+            <!-- 브랜드 로고 -->
+            <a href="../index.html" class="brand">
+                <div class="brand-icon" aria-hidden="true">TX</div>
+                <span>Miso Tax</span>
+            </a>
+
+            <!-- 모바일 전용 햄버거 버튼 -->
+            <button type="button" class="btn-hamburger" id="hamburgerBtn" aria-label="메뉴 열기" aria-expanded="false">
+                <span class="hamburger-bar"></span>
+                <span class="hamburger-bar"></span>
+                <span class="hamburger-bar"></span>
+            </button>
+
+            <!-- 네비게이션 & 전체 목록 그룹 -->
+            <div class="nav-right-group" id="navGroup">
+                <nav class="main-nav" aria-label="주요 세금 계산기 메뉴">
+                    <!-- 상단 주요 노출 세금 계산기 (예시) -->
+                    <a href="./year-end-tax-settlement.html" class="nav-item">연말정산</a>
+                    <a href="./global-income-tax.html" class="nav-item">종합소득세</a>
+                    <a href="./pension-tax-deduction.html" class="nav-item">연금저축공제</a>
+                    <a href="./global-income-tax.html" class="nav-item active">종합소득세 예상 계산</a>
+
+                    <!-- 세금 계산기 전체 드롭다운 (7개 항목 모두 포함) -->
+                    <div class="dropdown" id="taxCalcDropdown">
+                        <button type="button" class="nav-item dropdown-btn" id="dropdownToggleBtn" aria-expanded="false">
+                            <span>전체 세금 계산기</span>
+                            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <path d="M6 9l6 6 6-6"/>
+                            </svg>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a href="./pension-tax-deduction.html" class="dropdown-item">
+                                <div class="title-wrap">
+                                    <span class="title">연금저축 세액공제 계산</span>
+                                </div>
+                                <span class="desc">연금저축/IRP 납입액 세액공제 및 절세 효과 계산</span>
+                            </a>
+                            <a href="./financial-income-tax.html" class="dropdown-item">
+                                <div class="title-wrap">
+                                    <span class="title">금융소득종합과세 계산</span>
+                                </div>
+                                <span class="desc">이자·배당소득 2,000만원 기준 분리/종합과세 비교</span>
+                            </a>
+                            <a href="./gift-tax.html" class="dropdown-item">
+                                <div class="title-wrap">
+                                    <span class="title">증여세 계산</span>
+                                </div>
+                                <span class="desc">현금 증여 시 관계별 공제 및 누진세율 반영</span>
+                            </a>
+                            <a href="./automobile-tax.html" class="dropdown-item">
+                                <div class="title-wrap">
+                                    <span class="title">자동차세 계산</span>
+                                </div>
+                                <span class="desc">배기량, 차종, 연식에 따른 자동차세 및 교육세 계산</span>
+                            </a>
+                            <a href="./inheritance-tax.html" class="dropdown-item">
+                                <div class="title-wrap">
+                                    <span class="title">상속세 계산</span>
+                                </div>
+                                <span class="desc">상속 재산 기본공제 및 누진세율 반영 상속세 산출</span>
+                            </a>
+                            <a href="./global-income-tax.html" class="dropdown-item">
+                                <div class="title-wrap">
+                                    <span class="title">종합소득세 예상 계산</span>
+                                    <span class="badge new">NEW</span>
+                                </div>
+                                <span class="desc">사업소득 등 소득공제 및 누진세율 적용 예상 세액</span>
+                            </a>
+                            <a href="./year-end-tax-settlement.html" class="dropdown-item">
+                                <div class="title-wrap">
+                                    <span class="title">연말정산 환급액/추징액 예상</span>
+                                    <span class="badge new">NEW</span>
+                                </div>
+                                <span class="desc">신용카드, 의료비 등 공제 항목 기납부 세액 정산</span>
+                            </a>
+                        </div>
+                    </div>
+                </nav>
+
+                <a href="../index.html" class="btn-list-back">전체 목록</a>
+            </div>
+        </div>
+    </header>
+
+  <!-- 메인 컨텐츠 Card -->
+  <main class="container">
+    <div class="category-tag">세금 계산기</div>
+    <h1>종합소득세 예상 계산기</h1>
+
+    <!-- 1. 최상단 배치: 계산 입력 폼 -->
+    <form id="calcForm">
+      <div class="form-group">
+        <label for="incomeAmount">연간 종합소득금액 (수익 - 필요경비, 원)</label>
+        <input type="number" id="incomeAmount" placeholder="예: 50000000 (5천만 원)" min="0" step="100000" required>
+      </div>
+
+      <div class="form-group">
+        <label for="incomeDeduction">소득공제 합계액 (기본공제, 인적공제 등, 원)</label>
+        <input type="number" id="incomeDeduction" placeholder="기본공제 150만 원 등 (예: 1500000)" min="0" step="100000" value="1500000">
+      </div>
+
+      <div class="form-group">
+        <label for="taxCredit">세액공제 및 세액감면 합계액 (원)</label>
+        <input type="number" id="taxCredit" placeholder="예: 0" min="0" step="10000" value="0">
+      </div>
+
+      <button type="submit" class="btn-calc">종합소득세 계산하기</button>
+    </form>
+
+    <!-- 계산 결과 출력 영역 -->
+    <div class="result-container" id="resultContainer" style="display: none;">
+      <div class="result-section">
+        <div class="result-subtitle">종합소득세 산출 내역</div>
+        <div class="result-row">
+          <span>종합소득금액</span>
+          <span id="incomeResult">0원</span>
+        </div>
+        <div class="result-row">
+          <span>(-) 소득공제</span>
+          <span id="deductionResult">0원</span>
+        </div>
+        <div class="result-row">
+          <span>과세표준</span>
+          <span id="taxBaseResult">0원</span>
+        </div>
+        <div class="result-row">
+          <span>적용 세율 (누진세율)</span>
+          <span id="taxRateResult">6%</span>
+        </div>
+        <div class="result-row">
+          <span>산출세액 (기본세율 적용)</span>
+          <span id="calcTaxResult">0원</span>
+        </div>
+        <div class="result-row">
+          <span>(-) 세액공제·감면</span>
+          <span id="creditResult">0원</span>
+        </div>
+        <div class="result-row">
+          <span>종합소득세 결정세액</span>
+          <span id="incomeTaxResult">0원</span>
+        </div>
+        <div class="result-row">
+          <span>(+) 지방소득세 (종소세의 10%)</span>
+          <span id="localTaxResult">0원</span>
+        </div>
+        <div class="result-row total">
+          <span>최종 납부 예상 세액 합계</span>
+          <span id="finalTaxResult" style="color: #dc2626;">0원</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 상단 애드센스 광고 영역 -->
+    <div class="ad-slot">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+           data-ad-slot="1234567890"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <!-- 2. 백과사전 상세 설명 영역 (계산기 하단) -->
+    <section class="wiki-box">
+      <p>
+        <strong>종합소득세의 정의 및 과세 대상</strong><br>
+        <strong>위키백과 및 네이버 지식백과 참조:</strong> **종합소득세(Global Income Tax)**는 개인이 1년 동안 얻은 모든 소득을 종합하여 과세하는 국세입니다. 이자·배당·사업(부동산임대)·근로·연금·기타소득을 합산하여 5월에 신고 및 납부해야 합니다.
+      </p>
+      <p>
+        <strong>과세표준 8단계 누진세율 및 계산 원리</strong><br>
+        1) **소득세 과세표준 구간별 세율 (8단계 초과누진세율):**<br>
+        &nbsp;&nbsp;• 1,400만 원 이하: **6%** (누진공제 없음)<br>
+        &nbsp;&nbsp;• 1,400만 원 초과 ~ 5,000만 원 이하: **15%** (누진공제 126만 원)<br>
+        &nbsp;&nbsp;• 5,000만 원 초과 ~ 8,800만 원 이하: **24%** (누진공제 576만 원)<br>
+        &nbsp;&nbsp;• 8,800만 원 초과 ~ 1억 5,000만 원 이하: **35%** (누진공제 1,544만 원)<br>
+        &nbsp;&nbsp;• 1억 5,000만 원 초과 ~ 3억 원 이하: **38%** (누진공제 1,994만 원)<br>
+        &nbsp;&nbsp;• 3억 원 초과 ~ 5억 원 이하: **40%** (누진공제 2,594만 원)<br>
+        &nbsp;&nbsp;• 5억 원 초과 ~ 10억 원 이하: **42%** (누진공제 3,594만 원)<br>
+        &nbsp;&nbsp;• 10억 원 초과: **45%** (누진공제 6,594만 원)<br>
+        2) **지방소득세:** 종합소득세 결정세액의 **10%**가 개별 지방세로 별도 산출됩니다.
+      </p>
+      <span class="wiki-source">※ 출처: 위키백과(종합소득세), 네이버 지식백과(두산백과, 국세청 종합소득세 안내)</span>
+    </section>
+
+    <!-- 하단 애드센스 광고 영역 -->
+    <div class="ad-slot">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+           data-ad-slot="0987654321"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <!-- 3. 자주 묻는 질문 (FAQ) - 기본적으로 open 클래스로 전부 열림 -->
+    <h2>자주 묻는 질문 (FAQ)</h2>
+    <div class="faq-list">
+      <div class="faq-item open">
+        <button type="button" class="faq-question">
+          <span>종합소득세 신고 및 납부 기간은 언제인가요?</span>
+          <span class="faq-icon"></span>
+        </button>
+        <div class="faq-answer">
+          종합소득세는 전년도 1월 1일부터 12월 31일까지 발생한 소득에 대하여 **매년 5월 1일부터 5월 31일까지** (성실신고확인대상자는 6월 30일까지) 관할 세무서에 신고 및 납부해야 합니다.
+        </div>
+      </div>
+
+      <div class="faq-item open">
+        <button type="button" class="faq-question">
+          <span>소득공제와 세액공제의 차이는 무엇인가요?</span>
+          <span class="faq-icon"></span>
+        </button>
+        <div class="faq-answer">
+          **소득공제**는 세율을 곱하기 전 단계인 '과세표준'을 줄여주는 것이며, **세액공제**는 세율을 곱해 산출된 '산출세액'에서 직접 세금을 차감해 주는 차이가 있습니다.
+        </div>
+      </div>
+
+      <div class="faq-item open">
+        <button type="button" class="faq-question">
+          <span>프리랜서(3.3% 원천징수)도 종합소득세 신고를 해야 하나요?</span>
+          <span class="faq-icon"></span>
+        </button>
+        <div class="faq-answer">
+          네, 3.3% 세금을 미리 뗀 프리랜서 소득(사업소득)은 5월 종합소득세 신고를 통해 실제 소득 대비 미리 낸 세금을 정산해야 합니다. 정산 결과에 따라 기납부세액보다 적게 나왔다면 차액을 환급받게 됩니다.
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- 푸터 영역 -->
+  <footer>
+    <p>© 2026 Miso Calculator. All rights reserved.</p>
+    <p>본 계산기는 소득세법 기준 개략적인 예상 세액을 산출하며, 사업자의 장부 작성 여부(추계/기장) 및 개별 세액감면 혜택에 따라 실제 신고 세액과 차이가 발생할 수 있습니다.</p>
+    <p style="margin-top: 8px;"><a href="../privacy.html">개인정보처리방침</a></p>
+  </footer>
+
+  <script>
+    // 햄버거 메뉴 토글
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const navGroup = document.getElementById('navGroup');
+
+        hamburgerBtn.addEventListener('click', () => {
+            const isOpen = navGroup.classList.toggle('is-open');
+            hamburgerBtn.setAttribute('aria-expanded', isOpen);
+        });
+
+        // PC/모바일 공통 드롭다운 토글 제어
+        const taxCalcDropdown = document.getElementById('taxCalcDropdown');
+        const dropdownToggleBtn = document.getElementById('dropdownToggleBtn');
+
+        dropdownToggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            taxCalcDropdown.classList.toggle('is-open');
+            const isOpen = taxCalcDropdown.classList.contains('is-open');
+            dropdownToggleBtn.setAttribute('aria-expanded', isOpen);
+        });
+
+        // 화면 바깥 클릭 시 드롭다운 닫기
+        window.addEventListener('click', () => {
+            taxCalcDropdown.classList.remove('is-open');
+            dropdownToggleBtn.setAttribute('aria-expanded', 'false');
+        });
+    document.addEventListener('DOMContentLoaded', () => {
+      // FAQ 아코디언 토글 이벤트 (기본 open 상태)
+      const faqQuestions = document.querySelectorAll('.faq-question');
+      faqQuestions.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const item = btn.parentElement;
+          item.classList.toggle('open');
+        });
+      });
+
+      // 8단계 초과누진세율 계산 함수
+      function calcIncomeTax(taxBase) {
+        if (taxBase <= 0) return { tax: 0, rate: '0%' };
+
+        if (taxBase <= 14000000) {
+          return { tax: taxBase * 0.06, rate: '6%' };
+        } else if (taxBase <= 50000000) {
+          return { tax: (taxBase * 0.15) - 1260000, rate: '15%' };
+        } else if (taxBase <= 88000000) {
+          return { tax: (taxBase * 0.24) - 5760000, rate: '24%' };
+        } else if (taxBase <= 150000000) {
+          return { tax: (taxBase * 0.35) - 15440000, rate: '35%' };
+        } else if (taxBase <= 300000000) {
+          return { tax: (taxBase * 0.38) - 19940000, rate: '38%' };
+        } else if (taxBase <= 500000000) {
+          return { tax: (taxBase * 0.40) - 25940000, rate: '40%' };
+        } else if (taxBase <= 1000000000) {
+          return { tax: (taxBase * 0.42) - 35940000, rate: '42%' };
+        } else {
+          return { tax: (taxBase * 0.45) - 65940000, rate: '45%' };
+        }
+      }
+
+      // 계산 로직
+      const calcForm = document.getElementById('calcForm');
+      const resultContainer = document.getElementById('resultContainer');
+
+      calcForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const incomeAmount = parseFloat(document.getElementById('incomeAmount').value) || 0;
+        const incomeDeduction = parseFloat(document.getElementById('incomeDeduction').value) || 0;
+        const taxCredit = parseFloat(document.getElementById('taxCredit').value) || 0;
+
+        // 과세표준 = 종합소득금액 - 소득공제
+        const taxBase = Math.max(0, incomeAmount - incomeDeduction);
+
+        // 세율 및 산출세액
+        const taxInfo = calcIncomeTax(taxBase);
+        const calcTax = taxInfo.tax;
+
+        // 결정세액 = 산출세액 - 세액공제
+        const incomeTax = Math.max(0, calcTax - taxCredit);
+        const localTax = incomeTax * 0.10; // 지방소득세 10%
+        const finalTax = incomeTax + localTax;
+
+        // UI 바인딩
+        document.getElementById('incomeResult').textContent = Math.round(incomeAmount).toLocaleString() + ' 원';
+        document.getElementById('deductionResult').textContent = Math.round(incomeDeduction).toLocaleString() + ' 원';
+        document.getElementById('taxBaseResult').textContent = Math.round(taxBase).toLocaleString() + ' 원';
+        document.getElementById('taxRateResult').textContent = taxInfo.rate;
+        document.getElementById('calcTaxResult').textContent = Math.round(calcTax).toLocaleString() + ' 원';
+        document.getElementById('creditResult').textContent = Math.round(taxCredit).toLocaleString() + ' 원';
+        document.getElementById('incomeTaxResult').textContent = Math.round(incomeTax).toLocaleString() + ' 원';
+        document.getElementById('localTaxResult').textContent = Math.round(localTax).toLocaleString() + ' 원';
+        document.getElementById('finalTaxResult').textContent = Math.round(finalTax).toLocaleString() + ' 원';
+
+        resultContainer.style.display = 'block';
+      });
+    });
+  </script>
+</body>
+</html>

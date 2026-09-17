@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Miso Calculator - 금융소득종합과세 계산기</title>
+   <style>
+  :root {
+            --primary: #4b5563;        /* 메인 회색 (Gray-600) */
+            --primary-hover: #374151;  /* Hover 회색 (Gray-700) */
+            --primary-light: #f3f4f6;  /* 연한 회색 배경 (Gray-100) */
+            --text-dark: #1f2937;      /* 텍스트 (Gray-800) */
+            --text-muted: #6b7280;     /* 보조 텍스트 (Gray-500) */
+            --border: #d1d5db;         /* 테두리 (Gray-300) */
+            --bg-gray: #f9fafb;        /* 전체 메인 배경 (Gray-50) */
+            --bg-white: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: var(--text-dark);
+            background-color: var(--bg-gray);
+            line-height: 1.6;
+        }
+
+        /* 헤더 기본 레이아웃 */
+        .site-header {
+            background-color: var(--bg-white);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 8px rgba(75, 85, 99, 0.05);
+        }
+
+        .header-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        /* 로고 영역 */
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-decoration: none;
+            flex-shrink: 0;
+        }
+
+        .brand-icon {
+            width: 36px;
+            height: 36px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.95rem;
+            box-shadow: 0 2px 6px rgba(75, 85, 99, 0.3);
+        }
+
+        /* 네비게이션 그룹 */
+        .nav-right-group {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .main-nav {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .nav-item {
+            font-size: 0.92rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 0.2s;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            color: var(--primary-hover);
+            background-color: var(--primary-light);
+            font-weight: 700;
+        }
+
+        /* 드롭다운 스타일 */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .dropdown-btn .chevron {
+            width: 14px;
+            height: 14px;
+            transition: transform 0.2s ease;
+        }
+
+        .dropdown.is-open .chevron {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            width: 300px;
+            background-color: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            padding: 8px;
+            display: none;
+            flex-direction: column;
+            gap: 2px;
+            z-index: 1100;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .dropdown.is-open .dropdown-menu {
+            display: flex;
+        }
+
+        .dropdown-item {
+            display: flex;
+            flex-direction: column;
+            padding: 10px 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background-color 0.2s;
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--primary-light);
+        }
+
+        .dropdown-item .title-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .dropdown-item .title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .dropdown-item:hover .title {
+            color: var(--primary-hover);
+        }
+
+        .dropdown-item .desc {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* 뱃지 스타일 */
+        .badge {
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 0.1rem 0.35rem;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+        .badge.new {
+            background-color: #fee2e2;
+            color: #dc2626;
+        }
+
+        /* 전체 목록 우측 버튼 */
+        .btn-list-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: var(--primary);
+            background-color: var(--primary-light);
+            border: 1px solid var(--border);
+            padding: 8px 14px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .btn-list-back:hover {
+            background-color: var(--primary);
+            color: #ffffff;
+            border-color: var(--primary);
+        }
+
+        /* 햄버거 버튼 (모바일용) */
+        .btn-hamburger {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 24px;
+            height: 18px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .hamburger-bar {
+            width: 100%;
+            height: 2px;
+            background-color: var(--text-dark);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        /* 모바일 반응형 (1024px 이하) */
+        @media (max-width: 1024px) {
+            .btn-hamburger {
+                display: flex;
+            }
+
+            .nav-right-group {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background-color: var(--bg-white);
+                flex-direction: column;
+                align-items: stretch;
+                padding: 16px 20px;
+                gap: 16px;
+                border-bottom: 1px solid var(--border);
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+            }
+
+            .nav-right-group.is-open {
+                display: flex;
+            }
+
+            .main-nav {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 4px;
+            }
+
+            .dropdown-menu {
+                position: static;
+                width: 100%;
+                box-shadow: none;
+                border: none;
+                background: var(--primary-light);
+                padding: 4px;
+                margin-top: 4px;
+                max-height: none;
+            }
+        }
+    /* 메인 카드 컨테이너 */
+    .container {
+      max-width: 720px;
+      margin: 40px auto;
+      padding: 30px;
+      background-color: var(--bg-white);
+      border-radius: 16px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+      border: 1px solid var(--border);
+    }
+
+    .category-tag {
+      font-size: 13px;
+      color: var(--primary);
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+
+    h1 {
+      font-size: 26px;
+      margin-top: 0;
+      margin-bottom: 16px;
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 10px;
+      color: var(--text-dark);
+    }
+
+    h2 {
+      font-size: 19px;
+      margin-top: 36px;
+      margin-bottom: 14px;
+      color: var(--text-dark);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 6px;
+    }
+
+    /* 계산기 입력 폼 스타일 */
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+      font-weight: bold;
+      color: var(--text-dark);
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 15px;
+      color: var(--text-dark);
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px #e5e7eb;
+    }
+
+    button.btn-calc {
+      width: 100%;
+      padding: 14px;
+      background-color: var(--primary);
+      color: var(--bg-white);
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background-color 0.2s;
+    }
+
+    button.btn-calc:hover {
+      background-color: var(--primary-hover);
+    }
+
+    /* 계산 결과 출력 영역 */
+    .result-container {
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 2px solid var(--primary);
+    }
+
+    .result-section {
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .result-subtitle {
+      font-size: 16px;
+      font-weight: bold;
+      color: var(--text-dark);
+      margin-bottom: 10px;
+    }
+
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 15px;
+      color: var(--text-muted);
+    }
+
+    .result-row.total {
+      font-size: 18px;
+      font-weight: bold;
+      color: var(--primary-hover);
+      margin-top: 8px;
+      border-top: 1px dashed var(--border);
+      padding-top: 8px;
+    }
+
+    /* 애드센스 광고 슬롯 */
+    .ad-slot {
+      margin: 24px 0;
+      text-align: center;
+      background: #fafafa;
+      border: 1px dashed var(--border);
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    /* 백과사전 상세 설명 (계산기 하단 배치) */
+    .wiki-box {
+      background-color: var(--primary-light);
+      border-left: 4px solid var(--primary);
+      padding: 18px;
+      border-radius: 0 8px 8px 0;
+      margin-top: 30px;
+      margin-bottom: 24px;
+      font-size: 14.5px;
+      line-height: 1.7;
+    }
+
+    .wiki-box p {
+      margin: 0 0 12px 0;
+      color: var(--text-dark);
+    }
+
+    .wiki-box p:last-child {
+      margin-bottom: 0;
+    }
+
+    .wiki-source {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: bold;
+      display: inline-block;
+      margin-top: 6px;
+    }
+
+    /* FAQ 아코디언 스타일 */
+    .faq-list {
+      margin-top: 12px;
+    }
+
+    .faq-item {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+
+    .faq-question {
+      width: 100%;
+      text-align: left;
+      padding: 14px 16px;
+      background-color: var(--bg-gray);
+      border: none;
+      font-size: 15px;
+      font-weight: bold;
+      color: var(--text-dark);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background-color 0.2s;
+    }
+
+    .faq-question:hover {
+      background-color: var(--primary-light);
+    }
+
+    .faq-icon {
+      font-size: 18px;
+      color: var(--primary);
+      font-weight: bold;
+    }
+
+    .faq-item.open .faq-icon::before {
+      content: "-";
+    }
+
+    .faq-item:not(.open) .faq-icon::before {
+      content: "+";
+    }
+
+    .faq-answer {
+      display: none;
+      padding: 14px 16px;
+      font-size: 14px;
+      color: var(--text-muted);
+      background-color: var(--bg-white);
+      border-top: 1px solid var(--border);
+      line-height: 1.6;
+    }
+
+    /* 기본적으로 아코디언 항목이 모두 펼쳐진 상태 유지 */
+    .faq-item.open .faq-answer {
+      display: block;
+    }
+
+    /* 푸터 영역 */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 30px 20px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      background-color: var(--bg-gray);
+      margin-top: 60px;
+    }
+
+    footer p {
+      margin: 4px 0;
+    }
+
+    footer a {
+      color: var(--text-muted);
+      text-decoration: underline;
+    }
+
+  
+  
+  </style>
+</head>
+<body>
+
+  <!-- 헤더 & 네비게이션 -->
+<header class="site-header">
+        <div class="header-inner">
+            <!-- 브랜드 로고 -->
+            <a href="../index.html" class="brand">
+                <div class="brand-icon" aria-hidden="true">TX</div>
+                <span>Miso Tax</span>
+            </a>
+
+            <!-- 모바일 전용 햄버거 버튼 -->
+            <button type="button" class="btn-hamburger" id="hamburgerBtn" aria-label="메뉴 열기" aria-expanded="false">
+                <span class="hamburger-bar"></span>
+                <span class="hamburger-bar"></span>
+                <span class="hamburger-bar"></span>
+            </button>
+
+            <!-- 네비게이션 & 전체 목록 그룹 -->
+            <div class="nav-right-group" id="navGroup">
+                <nav class="main-nav" aria-label="주요 세금 계산기 메뉴">
+                    <!-- 상단 주요 노출 세금 계산기 (예시) -->
+                    <a href="./year-end-tax-settlement.html" class="nav-item">연말정산</a>
+                    <a href="./global-income-tax.html" class="nav-item">종합소득세</a>
+                    <a href="./pension-tax-deduction.html" class="nav-item">연금저축공제</a>
+                    <a href="./financial-income-tax.html" class="nav-item active">금융소득종합과세 계산</a>
+
+                    <!-- 세금 계산기 전체 드롭다운 (7개 항목 모두 포함) -->
+                    <div class="dropdown" id="taxCalcDropdown">
+                        <button type="button" class="nav-item dropdown-btn" id="dropdownToggleBtn" aria-expanded="false">
+                            <span>전체 세금 계산기</span>
+                            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <path d="M6 9l6 6 6-6"/>
+                            </svg>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a href="./pension-tax-deduction.html" class="dropdown-item">
+                                <div class="title-wrap">
+                                    <span class="title">연금저축 세액공제 계산</span>
+                                </div>
+                                <span class="desc">연금저축/IRP 납입액 세액공제 및 절세 효과 계산</span>
+                            </a>
+                            <a href="./financial-income-tax.html" class="dropdown-item">
+                                <div class="title-wrap">
+                                    <span class="title">금융소득종합과세 계산</span>
+                                </div>
+                                <span class="desc">이자·배당소득 2,000만원 기준 분리/종합과세 비교</span>
+                            </a>
+                            <a href="./gift-tax.html" class="dropdown-item">
+                                <div class="title-wrap">
+                                    <span class="title">증여세 계산</span>
+                                </div>
+                                <span class="desc">현금 증여 시 관계별 공제 및 누진세율 반영</span>
+                            </a>
+                            <a href="./automobile-tax.html" class="dropdown-item">
+                                <div class="title-wrap">
+                                    <span class="title">자동차세 계산</span>
+                                </div>
+                                <span class="desc">배기량, 차종, 연식에 따른 자동차세 및 교육세 계산</span>
+                            </a>
+                            <a href="./inheritance-tax.html" class="dropdown-item">
+                                <div class="title-wrap">
+                                    <span class="title">상속세 계산</span>
+                                </div>
+                                <span class="desc">상속 재산 기본공제 및 누진세율 반영 상속세 산출</span>
+                            </a>
+                            <a href="./global-income-tax.html" class="dropdown-item">
+                                <div class="title-wrap">
+                                    <span class="title">종합소득세 예상 계산</span>
+                                    <span class="badge new">NEW</span>
+                                </div>
+                                <span class="desc">사업소득 등 소득공제 및 누진세율 적용 예상 세액</span>
+                            </a>
+                            <a href="./year-end-tax-settlement.html" class="dropdown-item">
+                                <div class="title-wrap">
+                                    <span class="title">연말정산 환급액/추징액 예상</span>
+                                    <span class="badge new">NEW</span>
+                                </div>
+                                <span class="desc">신용카드, 의료비 등 공제 항목 기납부 세액 정산</span>
+                            </a>
+                        </div>
+                    </div>
+                </nav>
+
+                <a href="../index.html" class="btn-list-back">전체 목록</a>
+            </div>
+        </div>
+    </header>
+
+  <!-- 메인 컨텐츠 Card -->
+  <main class="container">
+    <div class="category-tag">세금 계산기</div>
+    <h1>금융소득종합과세 계산기</h1>
+
+    <!-- 1. 최상단 배치: 계산 입력 폼 -->
+    <form id="calcForm">
+      <div class="form-group">
+        <label for="financialIncome">연간 금융소득 (이자소득 + 배당소득, 원)</label>
+        <input type="number" id="financialIncome" placeholder="예: 30000000 (3,000만 원)" min="0" step="100000" required>
+      </div>
+
+      <div class="form-group">
+        <label for="otherIncome">기타 종합소득 과세표준 (근로/사업소득 등, 원)</label>
+        <input type="number" id="otherIncome" placeholder="예: 50000000 (5,000만 원)" min="0" step="100000" value="0">
+      </div>
+
+      <button type="submit" class="btn-calc">세액 비교 계산하기</button>
+    </form>
+
+    <!-- 계산 결과 출력 영역 -->
+    <div class="result-container" id="resultContainer" style="display: none;">
+      <div class="result-section">
+        <div class="result-subtitle">1. 분리와세 적용 시 (2,000만원 이하 원천징수 15.4% 기준)</div>
+        <div class="result-row">
+          <span>원천징수 세율</span>
+          <span>15.4% (지방소득세 포함)</span>
+        </div>
+        <div class="result-row total">
+          <span>분리와세 예상 세액</span>
+          <span id="sepTaxResult">0원</span>
+        </div>
+      </div>
+
+      <div class="result-section">
+        <div class="result-subtitle">2. 종합과세 적용 시 (비교과세 방식 산출)</div>
+        <div class="result-row">
+          <span>2,000만 원 이하분 기본 세액 (15.4%)</span>
+          <span id="base20mTaxResult">0원</span>
+        </div>
+        <div class="result-row">
+          <span>2,000만 원 초과분 종합과세 세액</span>
+          <span id="excessTaxResult">0원</span>
+        </div>
+        <div class="result-row">
+          <span>기타 종합소득 산출세액</span>
+          <span id="otherIncomeTaxResult">0원</span>
+        </div>
+        <div class="result-row total">
+          <span>종합과세 예상 총 산출세액</span>
+          <span id="combTaxResult">0원</span>
+        </div>
+      </div>
+
+      <div class="result-section" style="border-bottom: none;">
+        <div class="result-row total" style="color: #111827; font-size: 19px;">
+          <span>추가 부담 예상 세액 (종합과세 - 분리와세)</span>
+          <span id="diffTaxResult" style="color: #dc2626;">0원</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 상단 애드센스 광고 영역 -->
+    <div class="ad-slot">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+           data-ad-slot="1234567890"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <!-- 2. 백과사전 상세 설명 영역 (계산기 하단) -->
+    <section class="wiki-box">
+      <p>
+        <strong>금융소득종합과세의 정의 및 과세 기준</strong><br>
+        <strong>위키백과 및 네이버 지식백과 참조:</strong> **금융소득종합과세**란 개인별 연간 금융소득(이자소득과 배당소득)의 합계액이 **2,000만 원**을 초과하는 경우, 2,000만 원을 초과하는 소득을 근로소득, 사업소득 등 다른 종합소득과 합산하여 누진세율(6%~45%, 지방소득세 별도)을 적용하여 과세하는 제도입니다. 소득 간 형평성을 도모하고 소득 재분배 효과를 극대화하기 위해 1996년부터 시행되었습니다.
+      </p>
+      <p>
+        <strong>과세 방식 및 비교과세 산식 원리:</strong><br>
+        1) **분리과세 구간 (2,000만 원 이하):** 금융기관에서 소득 지급 시 15.4%(소득세 14% + 지방소득세 1.4%)를 원천징수함으로서 세금 납부가 완료됩니다.<br>
+        2) **종합과세 구간 (2,000만 원 초과):** 2,000만 원 초과액은 타 종합소득 과세표준에 합산되어 구간별 기본 누진세율이 적용됩니다.<br>
+        3) **비교과세 제도(Max 산식):** 종합과세 시 산출된 세액이 기존에 원천징수한 금액보다 적어지는 맹점을 방지하기 위해, `Max[① 일반종합과세 산출세액, ② 원천징수 상당 비교세액]` 공식을 통해 더 큰 금액을 최종 세액으로 확정합니다.
+      </p>
+      <span class="wiki-source">※ 출처: 위키백과(금융소득종합과세), 네이버 지식백과(두산백과, 한국민족문화대백과사전)</span>
+    </section>
+
+    <!-- 하단 애드센스 광고 영역 -->
+    <div class="ad-slot">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+           data-ad-slot="0987654321"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <!-- 3. 자주 묻는 질문 (FAQ) - 기본적으로 open 클래스로 전부 열림 -->
+    <h2>자주 묻는 질문 (FAQ)</h2>
+    <div class="faq-list">
+      <div class="faq-item open">
+        <button type="button" class="faq-question">
+          <span>금융소득 2,000만 원 기준은 부부 합산인가요?</span>
+          <span class="faq-icon"></span>
+        </button>
+        <div class="faq-answer">
+          아닙니다. 과거에는 부부 합산 과세 방식이었으나, 2002년 헌법재판소의 위헌 결정 이후 **개인별(인별) 과세**를 원칙으로 합니다. 따라서 본인 명의로 발생한 연간 금융소득 금액만을 기준으로 판단합니다.
+        </div>
+      </div>
+
+      <div class="faq-item open">
+        <button type="button" class="faq-question">
+          <span>주식 매매 차익(양도차익)도 금융소득에 포함되나요?</span>
+          <span class="faq-icon"></span>
+        </button>
+        <div class="faq-answer">
+          포함되지 않습니다. 주식 매매로 얻은 양도차익은 **양도소득세** 대상이며, 금융소득종합과세 대상은 예·적금 이자, 채권 이자, 주식 배당금, 펀드 분배금 등 **이자소득과 배당소득**에만 한정됩니다.
+        </div>
+      </div>
+
+      <div class="faq-item open">
+        <button type="button" class="faq-question">
+          <span>금융소득종합과세 대상이 되면 건강보험료가 인상되나요?</span>
+          <span class="faq-icon"></span>
+        </button>
+        <div class="faq-answer">
+          네, 영향을 받습니다. 연간 금융소득이 1,000만 원을 초과하면 피부양자 자격 탈락 검토 대상에 들어가며, 지역가입자의 경우 1,000만 원을 초과하는 소득 전체가 건강보험료 산정 소득에 합산 부과됩니다.
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- 푸터 영역 -->
+  <footer>
+    <p>© 2026 Miso Calculator. All rights reserved.</p>
+    <p>본 계산기는 세법 개정 및 개인별 각종 공제 항목에 따라 실제 산출세액과 오차가 발생할 수 있으므로 단순 참조용으로 활용하시기 바랍니다.</p>
+    <p style="margin-top: 8px;"><a href="../privacy.html">개인정보처리방침</a></p>
+  </footer>
+
+  <script>
+    // 햄버거 메뉴 토글
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const navGroup = document.getElementById('navGroup');
+
+        hamburgerBtn.addEventListener('click', () => {
+            const isOpen = navGroup.classList.toggle('is-open');
+            hamburgerBtn.setAttribute('aria-expanded', isOpen);
+        });
+
+        // PC/모바일 공통 드롭다운 토글 제어
+        const taxCalcDropdown = document.getElementById('taxCalcDropdown');
+        const dropdownToggleBtn = document.getElementById('dropdownToggleBtn');
+
+        dropdownToggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            taxCalcDropdown.classList.toggle('is-open');
+            const isOpen = taxCalcDropdown.classList.contains('is-open');
+            dropdownToggleBtn.setAttribute('aria-expanded', isOpen);
+        });
+
+        // 화면 바깥 클릭 시 드롭다운 닫기
+        window.addEventListener('click', () => {
+            taxCalcDropdown.classList.remove('is-open');
+            dropdownToggleBtn.setAttribute('aria-expanded', 'false');
+        });
+    document.addEventListener('DOMContentLoaded', () => {
+      // FAQ 아코디언 토글 이벤트 (기본으로 열려있고 클릭 시 접기/펴기 가능)
+      const faqQuestions = document.querySelectorAll('.faq-question');
+      faqQuestions.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const item = btn.parentElement;
+          item.classList.toggle('open');
+        });
+      });
+
+      // 종합소득세 세율 계산 함수 (지방소득세 제외 기본세율 기준)
+      function getTaxRateInfo(taxableIncome) {
+        if (taxableIncome <= 14000000) return { rate: 0.06, deduction: 0 };
+        if (taxableIncome <= 50000000) return { rate: 0.15, deduction: 1260000 };
+        if (taxableIncome <= 88000000) return { rate: 0.24, deduction: 5760000 };
+        if (taxableIncome <= 150000000) return { rate: 0.35, deduction: 15440000 };
+        if (taxableIncome <= 300000000) return { rate: 0.38, deduction: 19940000 };
+        if (taxableIncome <= 500000000) return { rate: 0.40, deduction: 25940000 };
+        if (taxableIncome <= 1000000000) return { rate: 0.42, deduction: 35940000 };
+        return { rate: 0.45, deduction: 65940000 };
+      }
+
+      function calcIncomeTax(taxableIncome) {
+        if (taxableIncome <= 0) return 0;
+        const info = getTaxRateInfo(taxableIncome);
+        return (taxableIncome * info.rate) - info.deduction;
+      }
+
+      // 계산 실행 로직
+      const calcForm = document.getElementById('calcForm');
+      const resultContainer = document.getElementById('resultContainer');
+
+      calcForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const financialIncome = parseFloat(document.getElementById('financialIncome').value) || 0;
+        const otherIncome = parseFloat(document.getElementById('otherIncome').value) || 0;
+
+        // 1. 분리와세 세액 (15.4% = 소득세 14% + 지방세 1.4%)
+        const sepTax = financialIncome * 0.154;
+
+        // 2. 종합과세 계산
+        let combTax = 0;
+        let base20mTax = 0;
+        let excessTax = 0;
+        let otherTax = calcIncomeTax(otherIncome) * 1.1; // 지방소득세 10% 포함
+
+        if (financialIncome <= 20000000) {
+          base20mTax = sepTax;
+          excessTax = 0;
+          combTax = sepTax + otherTax;
+        } else {
+          base20mTax = 20000000 * 0.154;
+          const excessIncome = financialIncome - 20000000;
+          
+          const totalTaxable = otherIncome + excessIncome;
+          const totalIncomeTax = calcIncomeTax(totalTaxable);
+          const baseOtherIncomeTax = calcIncomeTax(otherIncome);
+          
+          excessTax = (totalIncomeTax - baseOtherIncomeTax) * 1.1; // 지방소득세 10% 포함
+          combTax = base20mTax + excessTax + otherTax;
+        }
+
+        const diffTax = Math.max(0, combTax - (sepTax + otherTax));
+
+        // UI에 바인딩
+        document.getElementById('sepTaxResult').textContent = Math.round(sepTax).toLocaleString() + ' 원';
+        document.getElementById('base20mTaxResult').textContent = Math.round(base20mTax).toLocaleString() + ' 원';
+        document.getElementById('excessTaxResult').textContent = Math.round(excessTax).toLocaleString() + ' 원';
+        document.getElementById('otherIncomeTaxResult').textContent = Math.round(otherTax).toLocaleString() + ' 원';
+        document.getElementById('combTaxResult').textContent = Math.round(combTax).toLocaleString() + ' 원';
+        document.getElementById('diffTaxResult').textContent = Math.round(diffTax).toLocaleString() + ' 원';
+
+        resultContainer.style.display = 'block';
+      });
+    });
+  </script>
+</body>
+</html>

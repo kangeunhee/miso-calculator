@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Miso Calculator - 연금저축 세액공제 계산기</title>
+  <style>
+  :root {
+            --primary: #4b5563;        /* 메인 회색 (Gray-600) */
+            --primary-hover: #374151;  /* Hover 회색 (Gray-700) */
+            --primary-light: #f3f4f6;  /* 연한 회색 배경 (Gray-100) */
+            --text-dark: #1f2937;      /* 텍스트 (Gray-800) */
+            --text-muted: #6b7280;     /* 보조 텍스트 (Gray-500) */
+            --border: #d1d5db;         /* 테두리 (Gray-300) */
+            --bg-gray: #f9fafb;        /* 전체 메인 배경 (Gray-50) */
+            --bg-white: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: var(--text-dark);
+            background-color: var(--bg-gray);
+            line-height: 1.6;
+        }
+
+        /* 헤더 기본 레이아웃 */
+        .site-header {
+            background-color: var(--bg-white);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 8px rgba(75, 85, 99, 0.05);
+        }
+
+        .header-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        /* 로고 영역 */
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-decoration: none;
+            flex-shrink: 0;
+        }
+
+        .brand-icon {
+            width: 36px;
+            height: 36px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.95rem;
+            box-shadow: 0 2px 6px rgba(75, 85, 99, 0.3);
+        }
+
+        /* 네비게이션 그룹 */
+        .nav-right-group {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .main-nav {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .nav-item {
+            font-size: 0.92rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 0.2s;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            color: var(--primary-hover);
+            background-color: var(--primary-light);
+            font-weight: 700;
+        }
+
+        /* 드롭다운 스타일 */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .dropdown-btn .chevron {
+            width: 14px;
+            height: 14px;
+            transition: transform 0.2s ease;
+        }
+
+        .dropdown.is-open .chevron {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            width: 300px;
+            background-color: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            padding: 8px;
+            display: none;
+            flex-direction: column;
+            gap: 2px;
+            z-index: 1100;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .dropdown.is-open .dropdown-menu {
+            display: flex;
+        }
+
+        .dropdown-item {
+            display: flex;
+            flex-direction: column;
+            padding: 10px 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background-color 0.2s;
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--primary-light);
+        }
+
+        .dropdown-item .title-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .dropdown-item .title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .dropdown-item:hover .title {
+            color: var(--primary-hover);
+        }
+
+        .dropdown-item .desc {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* 뱃지 스타일 */
+        .badge {
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 0.1rem 0.35rem;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+        .badge.new {
+            background-color: #fee2e2;
+            color: #dc2626;
+        }
+
+        /* 전체 목록 우측 버튼 */
+        .btn-list-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: var(--primary);
+            background-color: var(--primary-light);
+            border: 1px solid var(--border);
+            padding: 8px 14px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .btn-list-back:hover {
+            background-color: var(--primary);
+            color: #ffffff;
+            border-color: var(--primary);
+        }
+
+        /* 햄버거 버튼 (모바일용) */
+        .btn-hamburger {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 24px;
+            height: 18px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .hamburger-bar {
+            width: 100%;
+            height: 2px;
+            background-color: var(--text-dark);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        /* 모바일 반응형 (1024px 이하) */
+        @media (max-width: 1024px) {
+            .btn-hamburger {
+                display: flex;
+            }
+
+            .nav-right-group {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background-color: var(--bg-white);
+                flex-direction: column;
+                align-items: stretch;
+                padding: 16px 20px;
+                gap: 16px;
+                border-bottom: 1px solid var(--border);
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+            }
+
+            .nav-right-group.is-open {
+                display: flex;
+            }
+
+            .main-nav {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 4px;
+            }
+
+            .dropdown-menu {
+                position: static;
+                width: 100%;
+                box-shadow: none;
+                border: none;
+                background: var(--primary-light);
+                padding: 4px;
+                margin-top: 4px;
+                max-height: none;
+            }
+        }
+    /* 메인 카드 컨테이너 */
+    .container {
+      max-width: 720px;
+      margin: 40px auto;
+      padding: 30px;
+      background-color: var(--bg-white);
+      border-radius: 16px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+      border: 1px solid var(--border);
+    }
+
+    .category-tag {
+      font-size: 13px;
+      color: var(--primary);
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+
+    h1 {
+      font-size: 26px;
+      margin-top: 0;
+      margin-bottom: 16px;
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 10px;
+      color: var(--text-dark);
+    }
+
+    h2 {
+      font-size: 19px;
+      margin-top: 36px;
+      margin-bottom: 14px;
+      color: var(--text-dark);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 6px;
+    }
+
+    /* 계산기 입력 폼 스타일 */
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+      font-weight: bold;
+      color: var(--text-dark);
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 15px;
+      color: var(--text-dark);
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px #e5e7eb;
+    }
+
+    button.btn-calc {
+      width: 100%;
+      padding: 14px;
+      background-color: var(--primary);
+      color: var(--bg-white);
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background-color 0.2s;
+    }
+
+    button.btn-calc:hover {
+      background-color: var(--primary-hover);
+    }
+
+    /* 계산 결과 출력 영역 */
+    .result-container {
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 2px solid var(--primary);
+    }
+
+    .result-section {
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .result-subtitle {
+      font-size: 16px;
+      font-weight: bold;
+      color: var(--text-dark);
+      margin-bottom: 10px;
+    }
+
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 15px;
+      color: var(--text-muted);
+    }
+
+    .result-row.total {
+      font-size: 18px;
+      font-weight: bold;
+      color: var(--primary-hover);
+      margin-top: 8px;
+      border-top: 1px dashed var(--border);
+      padding-top: 8px;
+    }
+
+    /* 애드센스 광고 슬롯 */
+    .ad-slot {
+      margin: 24px 0;
+      text-align: center;
+      background: #fafafa;
+      border: 1px dashed var(--border);
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    /* 백과사전 상세 설명 (계산기 하단 배치) */
+    .wiki-box {
+      background-color: var(--primary-light);
+      border-left: 4px solid var(--primary);
+      padding: 18px;
+      border-radius: 0 8px 8px 0;
+      margin-top: 30px;
+      margin-bottom: 24px;
+      font-size: 14.5px;
+      line-height: 1.7;
+    }
+
+    .wiki-box p {
+      margin: 0 0 12px 0;
+      color: var(--text-dark);
+    }
+
+    .wiki-box p:last-child {
+      margin-bottom: 0;
+    }
+
+    .wiki-source {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: bold;
+      display: inline-block;
+      margin-top: 6px;
+    }
+
+    /* FAQ 아코디언 스타일 */
+    .faq-list {
+      margin-top: 12px;
+    }
+
+    .faq-item {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+
+    .faq-question {
+      width: 100%;
+      text-align: left;
+      padding: 14px 16px;
+      background-color: var(--bg-gray);
+      border: none;
+      font-size: 15px;
+      font-weight: bold;
+      color: var(--text-dark);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background-color 0.2s;
+    }
+
+    .faq-question:hover {
+      background-color: var(--primary-light);
+    }
+
+    .faq-icon {
+      font-size: 18px;
+      color: var(--primary);
+      font-weight: bold;
+    }
+
+    .faq-item.open .faq-icon::before {
+      content: "-";
+    }
+
+    .faq-item:not(.open) .faq-icon::before {
+      content: "+";
+    }
+
+    .faq-answer {
+      display: none;
+      padding: 14px 16px;
+      font-size: 14px;
+      color: var(--text-muted);
+      background-color: var(--bg-white);
+      border-top: 1px solid var(--border);
+      line-height: 1.6;
+    }
+
+    /* 기본적으로 아코디언 항목이 모두 펼쳐진 상태 유지 */
+    .faq-item.open .faq-answer {
+      display: block;
+    }
+
+    /* 푸터 영역 */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 30px 20px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      background-color: var(--bg-gray);
+      margin-top: 60px;
+    }
+
+    footer p {
+      margin: 4px 0;
+    }
+
+    footer a {
+      color: var(--text-muted);
+      text-decoration: underline;
+    }
+
+  
+  
+  </style>
+</head>
+<body>
+
+  <!-- 회색 테마 헤더 영역 -->
+<header class="site-header">
+        <div class="header-inner">
+            <!-- 브랜드 로고 -->
+            <a href="../index.html" class="brand">
+                <div class="brand-icon" aria-hidden="true">TX</div>
+                <span>Miso Tax</span>
+            </a>
+
+            <!-- 모바일 전용 햄버거 버튼 -->
+            <button type="button" class="btn-hamburger" id="hamburgerBtn" aria-label="메뉴 열기" aria-expanded="false">
+                <span class="hamburger-bar"></span>
+                <span class="hamburger-bar"></span>
+                <span class="hamburger-bar"></span>
+            </button>
+
+            <!-- 네비게이션 & 전체 목록 그룹 -->
+            <div class="nav-right-group" id="navGroup">
+                <nav class="main-nav" aria-label="주요 세금 계산기 메뉴">
+                    <!-- 상단 주요 노출 세금 계산기 (예시) -->
+                    <a href="./year-end-tax-settlement.html" class="nav-item">연말정산</a>
+                    <a href="./global-income-tax.html" class="nav-item">종합소득세</a>
+                    <a href="./pension-tax-deduction.html" class="nav-item">연금저축공제</a>
+                    <a href="./pension-tax-deduction.html" class="nav-item active">연금저축 세액공제 계산</a>
+
+                    <!-- 세금 계산기 전체 드롭다운 (7개 항목 모두 포함) -->
+                    <div class="dropdown" id="taxCalcDropdown">
+                        <button type="button" class="nav-item dropdown-btn" id="dropdownToggleBtn" aria-expanded="false">
+                            <span>전체 세금 계산기</span>
+                            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <path d="M6 9l6 6 6-6"/>
+                            </svg>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a href="./pension-tax-deduction.html" class="dropdown-item">
+                                <div class="title-wrap">
+                                    <span class="title">연금저축 세액공제 계산</span>
+                                </div>
+                                <span class="desc">연금저축/IRP 납입액 세액공제 및 절세 효과 계산</span>
+                            </a>
+                            <a href="./financial-income-tax.html" class="dropdown-item">
+                                <div class="title-wrap">
+                                    <span class="title">금융소득종합과세 계산</span>
+                                </div>
+                                <span class="desc">이자·배당소득 2,000만원 기준 분리/종합과세 비교</span>
+                            </a>
+                            <a href="./gift-tax.html" class="dropdown-item">
+                                <div class="title-wrap">
+                                    <span class="title">증여세 계산</span>
+                                </div>
+                                <span class="desc">현금 증여 시 관계별 공제 및 누진세율 반영</span>
+                            </a>
+                            <a href="./automobile-tax.html" class="dropdown-item">
+                                <div class="title-wrap">
+                                    <span class="title">자동차세 계산</span>
+                                </div>
+                                <span class="desc">배기량, 차종, 연식에 따른 자동차세 및 교육세 계산</span>
+                            </a>
+                            <a href="./inheritance-tax.html" class="dropdown-item">
+                                <div class="title-wrap">
+                                    <span class="title">상속세 계산</span>
+                                </div>
+                                <span class="desc">상속 재산 기본공제 및 누진세율 반영 상속세 산출</span>
+                            </a>
+                            <a href="./global-income-tax.html" class="dropdown-item">
+                                <div class="title-wrap">
+                                    <span class="title">종합소득세 예상 계산</span>
+                                    <span class="badge new">NEW</span>
+                                </div>
+                                <span class="desc">사업소득 등 소득공제 및 누진세율 적용 예상 세액</span>
+                            </a>
+                            <a href="./year-end-tax-settlement.html" class="dropdown-item">
+                                <div class="title-wrap">
+                                    <span class="title">연말정산 환급액/추징액 예상</span>
+                                    <span class="badge new">NEW</span>
+                                </div>
+                                <span class="desc">신용카드, 의료비 등 공제 항목 기납부 세액 정산</span>
+                            </a>
+                        </div>
+                    </div>
+                </nav>
+
+                <a href="../index.html" class="btn-list-back">전체 목록</a>
+            </div>
+        </div>
+    </header>
+
+  <!-- 메인 컨텐츠 Card -->
+  <main class="container">
+    <div class="category-tag">세금 계산기</div>
+    <h1>연금저축 세액공제 계산기</h1>
+
+    <!-- 1. 최상단 배치: 계산 입력 폼 -->
+    <form id="calcForm">
+      <div class="form-group">
+        <label for="incomeType">소득 구간 선택</label>
+        <select id="incomeType" required>
+          <option value="low">총급여 5,500만원 이하 (종합소득 4,500만원 이하) - 16.5% 공제</option>
+          <option value="high">총급여 5,500만원 초과 (종합소득 4,500만원 초과) - 13.2% 공제</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="pensionSavings">연금저축 연간 납입액 (원)</label>
+        <input type="number" id="pensionSavings" placeholder="예: 6000000 (최대 600만원 인정)" min="0" step="10000" required>
+      </div>
+
+      <div class="form-group">
+        <label for="irpSavings">IRP (개인형 퇴직연금) 연간 납입액 (원)</label>
+        <input type="number" id="irpSavings" placeholder="예: 3000000 (합산 최대 900만원 인정)" min="0" step="10000" value="0">
+      </div>
+
+      <button type="submit" class="btn-calc">세액공제 환급액 계산하기</button>
+    </form>
+
+    <!-- 계산 결과 출력 영역 -->
+    <div class="result-container" id="resultContainer" style="display: none;">
+      <div class="result-section">
+        <div class="result-subtitle">세액공제 절세 결과</div>
+        <div class="result-row">
+          <span>연금저축 공제 인정금액</span>
+          <span id="pensionEligibleResult">0원</span>
+        </div>
+        <div class="result-row">
+          <span>IRP 추가 공제 인정금액</span>
+          <span id="irpEligibleResult">0원</span>
+        </div>
+        <div class="result-row">
+          <span>총 세액공제 대상 금액</span>
+          <span id="totalEligibleResult">0원</span>
+        </div>
+        <div class="result-row">
+          <span>적용 세액공제율 (지방세 포함)</span>
+          <span id="taxRateResult">16.5%</span>
+        </div>
+        <div class="result-row total">
+          <span>예상 세액공제 환급액 (절세 효과)</span>
+          <span id="taxRefundResult">0원</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 상단 애드센스 광고 영역 -->
+    <div class="ad-slot">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+           data-ad-slot="1234567890"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <!-- 2. 계산기 하단으로 이동한 상세 백과사전 설명 영역 -->
+    <section class="wiki-box">
+      <p>
+        <strong>연금저축 및 세액공제(Tax Credit)의 법적·경제적 개념</strong><br>
+        <strong>위키백과 및 네이버 지식백과 참조:</strong> **세액공제(Tax Credit)**란 산출된 세액에서 일정 금액을 직접 차감해 주는 제도를 말하며, 소득금액에서 차감하는 소득공제와 구별됩니다. **연금저축**은 노후 대비 및 절세를 목적으로 가입하는 금융 상품으로, 연금저축펀드·연금저축보험·개인형 퇴직연금(IRP) 등이 포함됩니다.
+      </p>
+      <p>
+        <strong>세액공제 한도 및 공제율 적용 기준:</strong><br>
+        1) **공제 한도:** 연금저축 단독 납입 시 연간 최대 600만 원까지 공제 대상이 되며, IRP를 포함한 퇴직연금 합산 시 연간 최대 900만 원까지 세액공제 한도가 확대됩니다.<br>
+        2) **소득 기준별 공제율 (지방소득세 10% 포함):**<br>
+        &nbsp;&nbsp;• 총급여 5,500만 원 이하 (종합소득금액 4,500만 원 이하): **16.5%** 적용<br>
+        &nbsp;&nbsp;• 총급여 5,500만 원 초과 (종합소득금액 4,500만 원 초과): **13.2%** 적용<br>
+        3) **최대 환급액 산정:** 연간 900만 원 납입 시 소득 기준에 따라 최대 1,485,000원 또는 1,188,000원의 절세 혜택을 받을 수 있습니다.
+      </p>
+      <span class="wiki-source">※ 출처: 위키백과(연금저축, 세액공제), 네이버 지식백과(두산백과, 연말정산 세액공제)</span>
+    </section>
+
+    <!-- 하단 애드센스 광고 영역 -->
+    <div class="ad-slot">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+           data-ad-slot="0987654321"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <!-- FAQ 목록 (모두 열린 상태) -->
+    <h2>자주 묻는 질문 (FAQ)</h2>
+    <div class="faq-list">
+      <div class="faq-item open">
+        <button type="button" class="faq-question">
+          <span>연금저축만으로 900만 원 전체 세액공제를 받을 수 있나요?</span>
+          <span class="faq-icon"></span>
+        </button>
+        <div class="faq-answer">
+          불가능합니다. 연금저축 단독 한도는 연간 600만 원까지입니다. 최대 900만 원 세액공제 한도를 채우기 위해서는 연금저축 600만 원과 IRP 300만 원을 조합하거나, IRP 단독으로 900만 원을 납입하셔야 합니다.
+        </div>
+      </div>
+
+      <div class="faq-item open">
+        <button type="button" class="faq-question">
+          <span>세액공제 한도를 초과해서 납입한 금액은 어떻게 처리되나요?</span>
+          <span class="faq-icon"></span>
+        </button>
+        <div class="faq-answer">
+          연간 공제한도(900만 원)를 초과하여 납입한 금액은 해당 연도에는 세액공제를 받지 못하지만, 다음 연도 이후 납입금으로 이월하여 세액공제를 신청(이월공제)하거나 연금 수령 시 비과세 혜택을 적용받을 수 있습니다.
+        </div>
+      </div>
+
+      <div class="faq-item open">
+        <button type="button" class="faq-question">
+          <span>중도 해지할 경우 어떤 불이익이 발생하나요?</span>
+          <span class="faq-icon"></span>
+        </button>
+        <div class="faq-answer">
+          연금저축이나 IRP를 만 55세 이전에 중도 해지할 경우, 기존에 받아서 절세했던 세액공제 혜택 이상인 16.5%의 기타소득세가 원금과 운용 수익 전체에 부과되므로 신중히 유지하시는 것이 유리합니다.
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- 푸터 영역 (회색 테마) -->
+  <footer>
+    <p>© 2026 Miso Calculator. All rights reserved.</p>
+    <p>본 계산기는 입력된 소득 구간 및 납입액을 바탕으로 개략적인 세액공제 절세 예상액을 산출하며, 세법 개정 및 개인별 최종 결정세액에 따라 실제 환급액과 차이가 발생할 수 있습니다.</p>
+    <p style="margin-top: 8px;"><a href="../privacy.html">개인정보처리방침</a></p>
+  </footer>
+
+  <script>
+    // 햄버거 메뉴 토글
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const navGroup = document.getElementById('navGroup');
+
+        hamburgerBtn.addEventListener('click', () => {
+            const isOpen = navGroup.classList.toggle('is-open');
+            hamburgerBtn.setAttribute('aria-expanded', isOpen);
+        });
+
+        // PC/모바일 공통 드롭다운 토글 제어
+        const taxCalcDropdown = document.getElementById('taxCalcDropdown');
+        const dropdownToggleBtn = document.getElementById('dropdownToggleBtn');
+
+        dropdownToggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            taxCalcDropdown.classList.toggle('is-open');
+            const isOpen = taxCalcDropdown.classList.contains('is-open');
+            dropdownToggleBtn.setAttribute('aria-expanded', isOpen);
+        });
+
+        // 화면 바깥 클릭 시 드롭다운 닫기
+        window.addEventListener('click', () => {
+            taxCalcDropdown.classList.remove('is-open');
+            dropdownToggleBtn.setAttribute('aria-expanded', 'false');
+        });
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. 세금 계산기 드롭다운 토글
+      const taxDropdown = document.getElementById('taxCalcDropdown');
+      const taxToggleBtn = document.getElementById('taxDropdownToggleBtn');
+
+      if (taxToggleBtn && taxDropdown) {
+        taxToggleBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const isOpen = taxDropdown.classList.toggle('is-open');
+          taxToggleBtn.setAttribute('aria-expanded', isOpen);
+        });
+
+        document.addEventListener('click', (e) => {
+          if (!taxDropdown.contains(e.target)) {
+            taxDropdown.classList.remove('is-open');
+            taxToggleBtn.setAttribute('aria-expanded', 'false');
+          }
+        });
+
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') {
+            taxDropdown.classList.remove('is-open');
+            taxToggleBtn.setAttribute('aria-expanded', 'false');
+          }
+        });
+      }
+
+      // 2. 모바일 햄버거 토글
+      const hamburgerBtn = document.getElementById('hamburgerBtn');
+      const navGroup = document.getElementById('navGroup');
+
+      if (hamburgerBtn && navGroup) {
+        hamburgerBtn.addEventListener('click', () => {
+          const isOpen = navGroup.classList.toggle('is-open');
+          hamburgerBtn.setAttribute('aria-expanded', isOpen);
+        });
+      }
+
+      // 3. FAQ 아코디언 토글 (기본 Open 상태 유지 및 클릭 시 토글)
+      const faqQuestions = document.querySelectorAll('.faq-question');
+      faqQuestions.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const item = btn.parentElement;
+          item.classList.toggle('open');
+        });
+      });
+
+      // 4. 연금저축 세액공제 계산 로직
+      const calcForm = document.getElementById('calcForm');
+      const resultContainer = document.getElementById('resultContainer');
+
+      if (calcForm) {
+        calcForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+
+          const incomeType = document.getElementById('incomeType').value;
+          const pensionSavings = parseFloat(document.getElementById('pensionSavings').value) || 0;
+          const irpSavings = parseFloat(document.getElementById('irpSavings').value) || 0;
+
+          // 공제율 설정
+          const taxRate = incomeType === 'low' ? 0.165 : 0.132;
+
+          // 공제 한도 산정 (연금저축 최대 600만원, 합산 최대 900만원)
+          const eligiblePension = Math.min(pensionSavings, 6000000);
+          const remainingCap = 9000000 - eligiblePension;
+          const eligibleIrp = Math.min(irpSavings, remainingCap);
+
+          const totalEligible = eligiblePension + eligibleIrp;
+          const taxRefund = totalEligible * taxRate;
+
+          document.getElementById('pensionEligibleResult').textContent = Math.round(eligiblePension).toLocaleString() + ' 원';
+          document.getElementById('irpEligibleResult').textContent = Math.round(eligibleIrp).toLocaleString() + ' 원';
+          document.getElementById('totalEligibleResult').textContent = Math.round(totalEligible).toLocaleString() + ' 원';
+          document.getElementById('taxRateResult').textContent = (taxRate * 100).toFixed(1) + '%';
+          document.getElementById('taxRefundResult').textContent = Math.round(taxRefund).toLocaleString() + ' 원';
+
+          resultContainer.style.display = 'block';
+        });
+      }
+    });
+  </script>
+</body>
+</html>

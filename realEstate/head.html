@@ -1,0 +1,405 @@
+<header class="site-header">
+    <div class="header-inner">
+        <!-- 브랜드 로고 -->
+        <a href="../index.html" class="brand">
+            <div class="brand-icon" aria-hidden="true">RE</div>
+            <span>Miso Real Estate</span>
+        </a>
+
+        <!-- 모바일 전용 햄버거 버튼 -->
+        <button type="button" class="btn-hamburger" id="hamburgerBtn" aria-label="메뉴 열기" aria-expanded="false">
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+        </button>
+
+        <!-- 네비게이션 & 전체 목록 그룹 -->
+        <div class="nav-right-group" id="navGroup">
+            <nav class="main-nav" aria-label="주요 계산기 메뉴">
+                <!-- 상단 노출 주요 부동산 메뉴 5개 -->
+                <a href="./realEstate/brokerage-fee.html" class="nav-item">중개수수료</a>
+                <a href="./realEstate/acquisition-tax.html" class="nav-item">취득세 계산</a>
+                <a href="./realEstate/ltv.html" class="nav-item">LTV 계산</a>
+                <a href="./realEstate/jeonse-to-charter-rate.html" class="nav-item">전월세 전환율</a>
+                <a href="./realEstate/capital-gains-tax.html" class="nav-item">양도소득세</a>
+
+                <!-- 전체 부동산 계산기 드롭다운 (12개 항목 모두 포함) -->
+                <div class="dropdown" id="realEstateCalcDropdown">
+                    <button type="button" class="nav-item dropdown-btn" id="realEstateDropdownToggleBtn" aria-expanded="false">
+                        <span>전체 계산기</span>
+                        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <path d="M6 9l6 6 6-6"/>
+                        </svg>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a href="./realEstate/jeonse-to-charter-rate.html" class="dropdown-item">
+                            <div class="title-wrap">
+                                <span class="title">전월세 전환율 계산</span>
+                            </div>
+                            <span class="desc">전세금과 월세를 법정 전환율 또는 이자율 기준으로 상호 전환합니다.</span>
+                        </a>
+                        <a href="./realEstate/brokerage-fee.html" class="dropdown-item">
+                            <div class="title-wrap">
+                                <span class="title">중개수수료 계산</span>
+                            </div>
+                            <span class="desc">부동산 매매, 전세, 월세 거래 시 법정 중개수수료 상한액을 계산합니다.</span>
+                        </a>
+                        <a href="./realEstate/monthly-rent.html" class="dropdown-item">
+                            <div class="title-wrap">
+                                <span class="title">월세 계산</span>
+                            </div>
+                            <span class="desc">월세, 관리비, 보증금 대출 이자를 포함한 실제 주거 비용을 계산합니다.</span>
+                        </a>
+                        <a href="./realEstate/ltv.html" class="dropdown-item">
+                            <div class="title-wrap">
+                                <span class="title">LTV 계산</span>
+                            </div>
+                            <span class="desc">담보 금액과 LTV 비율로 최대 대출 가능 금액을 계산합니다.</span>
+                        </a>
+                        <a href="./realEstate/acquisition-tax.html" class="dropdown-item">
+                            <div class="title-wrap">
+                                <span class="title">취득세 계산</span>
+                            </div>
+                            <span class="desc">부동산 취득 시 취득세, 지방교육세, 농어촌특별세를 계산합니다.</span>
+                        </a>
+                        <a href="./realEstate/capital-gains-tax.html" class="dropdown-item">
+                            <div class="title-wrap">
+                                <span class="title">양도소득세 계산</span>
+                            </div>
+                            <span class="desc">부동산 양도 시 양도소득세와 실수령액을 계산합니다.</span>
+                        </a>
+                        <a href="./realEstate/subscription-points.html" class="dropdown-item">
+                            <div class="title-wrap">
+                                <span class="title">청약 가점 계산</span>
+                            </div>
+                            <span class="desc">무주택기간, 부양가족, 청약통장 기준 가점 계산</span>
+                        </a>
+                        <a href="./realEstate/rental-yield.html" class="dropdown-item">
+                            <div class="title-wrap">
+                                <span class="title">임대수익률 계산</span>
+                            </div>
+                            <span class="desc">매매가 대비 월세 수익률을 계산합니다.</span>
+                        </a>
+                        <a href="./realEstate/jeonse-rate.html" class="dropdown-item">
+                            <div class="title-wrap">
+                                <span class="title">전세가율 계산</span>
+                            </div>
+                            <span class="desc">매매가 대비 전세가 비율을 계산합니다.</span>
+                        </a>
+                        <a href="./realEstate/registration-cost.html" class="dropdown-item">
+                            <div class="title-wrap">
+                                <span class="title">등기비용 계산</span>
+                            </div>
+                            <span class="desc">부동산 매매 시 소유권이전등기에 필요한 비용을 계산합니다.</span>
+                        </a>
+                        <a href="./realEstate/comprehensive-real-estate-tax.html" class="dropdown-item">
+                            <div class="title-wrap">
+                                <span class="title">종부세(종합부동산세) 계산</span>
+                                <span class="badge new">NEW</span>
+                            </div>
+                            <span class="desc">주택 수 및 공시가격 합계액 기준 종합부동산세와 지방세를 계산합니다.</span>
+                        </a>
+                        <a href="./realEstate/property-tax.html" class="dropdown-item">
+                            <div class="title-wrap">
+                                <span class="title">재산세 계산</span>
+                                <span class="badge new">NEW</span>
+                            </div>
+                            <span class="desc">보유 주택/토지의 공정시장가액비율 및 과세표준 기준 재산세를 산출합니다.</span>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+
+            <a href="../index.html" class="btn-list-back">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="8" y1="6" x2="21" y2="6"></line>
+                    <line x1="8" y1="12" x2="21" y2="12"></line>
+                    <line x1="8" y1="18" x2="21" y2="18"></line>
+                    <circle cx="3" cy="6" r="1"></circle>
+                    <circle cx="3" cy="12" r="1"></circle>
+                    <circle cx="3" cy="18" r="1"></circle>
+                </svg>
+                <span>전체 목록</span>
+            </a>
+        </div>
+    </div>
+</header>
+
+<style>
+    /* 주황색 테마 CSS 변수 및 스타일 설정 */
+    :root {
+        --primary: #f97316;
+        --primary-hover: #ea580c;
+        --primary-light: #ffedd5;
+        --text-main: #1f2937;
+        --border: #e5e7eb;
+        --bg-main: #ffffff;
+    }
+
+    .site-header {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background-color: var(--bg-main);
+        border-bottom: 1px solid var(--border);
+    }
+
+    .header-inner {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1rem;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .brand {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none;
+        font-weight: 700;
+        color: var(--primary);
+    }
+
+    .brand-icon {
+        width: 32px;
+        height: 32px;
+        background-color: var(--primary);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        font-weight: 800;
+    }
+
+    .main-nav {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .nav-item {
+        padding: 0.5rem 0.75rem;
+        text-decoration: none;
+        color: #4b5563;
+        font-size: 0.9rem;
+        font-weight: 600;
+        border-radius: 6px;
+        transition: all 0.2s;
+    }
+
+    .nav-item:hover, .nav-item.active {
+        color: var(--primary-hover);
+        background-color: var(--primary-light);
+    }
+
+    /* 드롭다운 스타일 */
+    .dropdown {
+        position: relative;
+        margin-left: 0.25rem;
+    }
+
+    .dropdown-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-family: inherit;
+    }
+
+    .chevron {
+        width: 14px;
+        height: 14px;
+        transition: transform 0.2s;
+    }
+
+    .dropdown:hover .chevron,
+    .dropdown.is-open .chevron {
+        transform: rotate(180deg);
+    }
+
+    .dropdown-menu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        right: 0;
+        width: 320px;
+        background: var(--bg-main);
+        border: 1px solid var(--border);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+        border-radius: 8px;
+        padding: 0.5rem;
+        margin-top: 0.25rem;
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    .dropdown:hover .dropdown-menu,
+    .dropdown.is-open .dropdown-menu {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .dropdown-item {
+        display: flex;
+        flex-direction: column;
+        padding: 0.5rem 0.75rem;
+        text-decoration: none;
+        border-radius: 4px;
+        transition: background-color 0.15s;
+    }
+
+    .dropdown-item:hover {
+        background-color: var(--primary-light);
+    }
+
+    .dropdown-item .title-wrap {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .dropdown-item .title {
+        font-weight: 600;
+        color: var(--text-main);
+        font-size: 0.9rem;
+    }
+
+    .dropdown-item:hover .title {
+        color: var(--primary);
+    }
+
+    .dropdown-item .desc {
+        font-size: 0.75rem;
+        color: #6b7280;
+        margin-top: 2px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* 뱃지 스타일 */
+    .badge {
+        font-size: 0.65rem;
+        font-weight: 700;
+        padding: 0.1rem 0.35rem;
+        border-radius: 4px;
+        text-transform: uppercase;
+    }
+    .badge.new {
+        background-color: #fee2e2;
+        color: #dc2626;
+    }
+
+    .nav-right-group {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .btn-list-back {
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+        text-decoration: none;
+        color: var(--primary);
+        background-color: var(--primary-light);
+        font-weight: 600;
+        font-size: 0.88rem;
+        padding: 0.45rem 0.85rem;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        transition: all 0.2s;
+    }
+
+    .btn-list-back:hover {
+        background-color: var(--primary);
+        color: white;
+        border-color: var(--primary);
+    }
+
+    /* 햄버거 버튼 기본 숨김 */
+    .btn-hamburger {
+        display: none;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 24px;
+        height: 18px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+    }
+
+    .hamburger-bar {
+        width: 100%;
+        height: 2px;
+        background-color: var(--text-main);
+        border-radius: 2px;
+        transition: all 0.3s;
+    }
+
+    /* 모바일 반응형 (1024px 이하) */
+    @media (max-width: 1024px) {
+        .btn-hamburger {
+            display: flex;
+        }
+
+        .nav-right-group {
+            display: none;
+            position: absolute;
+            top: 60px;
+            left: 0;
+            width: 100%;
+            background-color: var(--bg-main);
+            flex-direction: column;
+            align-items: stretch;
+            padding: 1rem 1.25rem;
+            gap: 1rem;
+            border-bottom: 1px solid var(--border);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+            max-height: calc(100vh - 60px);
+            overflow-y: auto;
+        }
+
+        .nav-right-group.is-open {
+            display: flex;
+        }
+
+        .main-nav {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 4px;
+        }
+
+        .dropdown-menu {
+            position: static;
+            width: 100%;
+            box-shadow: none;
+            border: none;
+            background: var(--primary-light);
+            padding: 4px;
+            margin-top: 4px;
+            max-height: none;
+        }
+    }
+</style>
+
+<script>
+    // 햄버거 메뉴 토글 스크립트
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const navGroup = document.getElementById('navGroup');
+
+    hamburgerBtn.addEventListener('click', () => {
+        const isOpen = navGroup.classList.toggle('is-open');
+        hamburgerBtn.classList.toggle('active', isOpen);
+        hamburgerBtn.setAttribute('aria-expanded', isOpen);
+    });
+</script>

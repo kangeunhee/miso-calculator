@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ehtm@naver.com.github.io/miso-calculator/sitemap.xml

@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>목표금액 달성 계산기</title>
+  <!-- 구글 애드센스 스크립트 (발급받은 pub-ID로 변경하세요) -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_PUBLISHER_ID" crossorigin="anonymous"></script>
+  <style>
+    /* 글로벌 CSS 변수 */
+    :root {
+      --primary: #7c3aed;
+      --primary-light: #f3e8ff;
+      --primary-hover: #6d28d9;
+      --bg-purple: #f3e8ff;
+      --text-dark: #0f172a;
+      --text-muted: #64748b;
+      --border: #e9d5ff;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #2e1065;
+      background-color: var(--bg-purple);
+      line-height: 1.6;
+    }
+
+    /* 헤더 레이아웃 */
+    .site-header {
+      background-color: #ffffff;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 8px rgba(124, 58, 237, 0.05);
+    }
+
+    .header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--primary);
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      background-color: var(--primary);
+      color: white;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.95rem;
+      box-shadow: 0 2px 6px rgba(124, 58, 237, 0.3);
+    }
+
+    .nav-right-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .main-nav {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .nav-item {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      transition: all 0.2s;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .nav-item:hover, 
+    .nav-item.active {
+      color: var(--primary);
+      background-color: var(--primary-light);
+      font-weight: 700;
+    }
+
+    .dropdown {
+      position: relative;
+    }
+
+    .dropdown-btn {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+    }
+
+    .dropdown-btn .chevron {
+      width: 14px;
+      height: 14px;
+      transition: transform 0.2s ease;
+    }
+
+    .dropdown.is-open .chevron {
+      transform: rotate(180deg);
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      width: 260px;
+      background-color: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+      padding: 8px;
+      display: none;
+      flex-direction: column;
+      gap: 2px;
+      z-index: 1100;
+    }
+
+    .dropdown.is-open .dropdown-menu {
+      display: flex;
+    }
+
+    .dropdown-item {
+      display: flex;
+      flex-direction: column;
+      padding: 10px 12px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background-color 0.2s;
+    }
+
+    .dropdown-item:hover {
+      background-color: var(--primary-light);
+    }
+
+    .dropdown-item .title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+
+    .dropdown-item:hover .title {
+      color: var(--primary);
+    }
+
+    .dropdown-item .desc {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .btn-list-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--primary);
+      background-color: var(--primary-light);
+      border: 1px solid var(--border);
+      padding: 8px 14px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .btn-list-back:hover {
+      background-color: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+
+    .btn-hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 24px;
+      height: 18px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .hamburger-bar {
+      width: 100%;
+      height: 2px;
+      background-color: var(--text-dark);
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+
+    .btn-hamburger.active .hamburger-bar:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+    .btn-hamburger.active .hamburger-bar:nth-child(2) { opacity: 0; }
+    .btn-hamburger.active .hamburger-bar:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+    /* 메인 컨테이너 */
+    .container {
+      max-width: 650px;
+      margin: 40px auto;
+      padding: 30px;
+      background-color: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px -5px rgba(124, 58, 237, 0.1);
+    }
+
+    .category-tag {
+      font-size: 13px;
+      color: #7c3aed;
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+
+    h1 {
+      font-size: 26px;
+      margin-top: 0;
+      margin-bottom: 16px;
+      border-bottom: 2px solid #6b21a8;
+      padding-bottom: 10px;
+      color: #581c87;
+    }
+
+    h2 {
+      font-size: 18px;
+      margin-top: 32px;
+      margin-bottom: 12px;
+      color: #6b21a8;
+      border-bottom: 1px solid #ddd6fe;
+      padding-bottom: 6px;
+    }
+
+    p, ul {
+      font-size: 14px;
+      color: #4c1d95;
+      margin-bottom: 12px;
+    }
+
+    .wiki-source {
+      font-size: 12px;
+      color: #a78bfa;
+      margin-top: -6px;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+      font-weight: bold;
+      color: #581c87;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #c084fc;
+      border-radius: 6px;
+      box-sizing: border-box;
+      font-size: 15px;
+      color: #3b0764;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: #7c3aed;
+      box-shadow: 0 0 0 3px #e9d5ff;
+    }
+
+    button.btn-calc {
+      width: 100%;
+      padding: 14px;
+      background-color: #7c3aed;
+      color: #ffffff;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background-color 0.2s;
+    }
+
+    button.btn-calc:hover {
+      background-color: #6d28d9;
+    }
+
+    .result-container {
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 2px solid #7c3aed;
+      display: none;
+    }
+
+    .result-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 16px;
+      color: #581c87;
+    }
+
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 15px;
+      color: #4c1d95;
+    }
+
+    .result-row.total {
+      font-size: 18px;
+      font-weight: bold;
+      color: #7c3aed;
+      margin-top: 12px;
+      border-top: 1px dashed #c084fc;
+      padding-top: 12px;
+    }
+
+    /* FAQ 아코디언 스타일 */
+    .faq-item {
+      border: 1px solid #ddd6fe;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+
+    .faq-question {
+      width: 100%;
+      text-align: left;
+      background: #f3e8ff;
+      border: none;
+      padding: 12px 16px;
+      font-size: 15px;
+      font-weight: bold;
+      color: #581c87;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .faq-answer {
+      padding: 14px 16px;
+      font-size: 14px;
+      color: #4c1d95;
+      display: none;
+      background-color: #ffffff;
+      border-top: 1px solid #ddd6fe;
+    }
+
+    .faq-item.open .faq-answer {
+      display: block;
+    }
+
+    .ad-slot {
+      margin: 24px 0;
+      text-align: center;
+    }
+
+    footer {
+      background-color: #ffffff;
+      border-top: 1px solid var(--border);
+      padding: 30px 20px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    footer p {
+      margin: 4px 0;
+      color: var(--text-muted);
+    }
+
+    @media (max-width: 1024px) {
+      .container { margin: 20px; padding: 20px; }
+      .btn-hamburger { display: flex; }
+      .nav-right-group {
+        display: none;
+        position: absolute;
+        top: 61px;
+        left: 0;
+        width: 100%;
+        background-color: #ffffff;
+        flex-direction: column;
+        align-items: stretch;
+        padding: 1rem 1.25rem;
+        gap: 1rem;
+        border-bottom: 1px solid var(--border);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+      }
+      .nav-right-group.is-open { display: flex; }
+      .main-nav { flex-direction: column; align-items: stretch; gap: 4px; }
+      .dropdown-menu {
+        position: static;
+        width: 100%;
+        box-shadow: none;
+        border: none;
+        background: var(--primary-light);
+        padding: 4px;
+        margin-top: 4px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- 헤더 영역 -->
+<header class="site-header">
+  <div class="header-inner">
+    <a href="../index.html" class="brand">
+      <div class="brand-icon" aria-hidden="true">MC</div>
+      <span>Miso Calculator</span>
+    </a>
+
+    <button type="button" class="btn-hamburger" id="hamburgerBtn" aria-label="메뉴 열기" aria-expanded="false">
+      <span class="hamburger-bar"></span>
+      <span class="hamburger-bar"></span>
+      <span class="hamburger-bar"></span>
+    </button>
+
+    <div class="nav-right-group" id="navGroup">
+      <nav class="main-nav" aria-label="주요 계산기 메뉴">
+        <a href="./target-amount.html" class="nav-item active">목표금액 달성</a>
+        <a href="./compound-interest.html" class="nav-item">복리 이자</a>
+        <a href="./deposit.html" class="nav-item">예금 이자</a>
+        <a href="./savings.html" class="nav-item">적금 이자</a>
+
+        <div class="dropdown" id="moreCalcDropdown">
+          <button type="button" class="nav-item dropdown-btn" id="dropdownToggleBtn" aria-expanded="false">
+            <span>기타 계산기</span>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+          </button>
+          <div class="dropdown-menu">
+            <a href="./compare-savings.html" class="dropdown-item">
+              <span class="title">예적금 비교</span>
+              <span class="desc">예금과 적금의 수익률 직접 비교</span>
+            </a>
+            <a href="./pinwheel-savings.html" class="dropdown-item">
+              <span class="title">풍차 돌리기</span>
+              <span class="desc">매월 예적금 가입 수익 시뮬레이션</span>
+            </a>
+            <a href="./youth-savings.html" class="dropdown-item">
+              <span class="title">청년미래적금</span>
+              <span class="desc">정부 지원금 포함 혜택 계산</span>
+            </a>
+            <a href="./parking-cma.html" class="dropdown-item">
+              <span class="title">파킹통장 / CMA</span>
+              <span class="desc">일할 이자 계산 및 수령액 비교</span>
+            </a>
+          </div>
+        </div>
+      </nav>
+
+      <a href="../index.html" class="btn-list-back">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="8" y1="6" x2="21" y2="6"></line>
+          <line x1="8" y1="12" x2="21" y2="12"></line>
+          <line x1="8" y1="18" x2="21" y2="18"></line>
+          <circle cx="3" cy="6" r="1"></circle>
+          <circle cx="3" cy="12" r="1"></circle>
+          <circle cx="3" cy="18" r="1"></circle>
+        </svg>
+        <span>전체 목록</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- 메인 콘텐츠 영역 -->
+<div class="container">
+  <div class="category-tag">예금·적금</div>
+  <h1>목표금액 달성 계산기</h1>
+  
+  <p>
+    목표로 하는 자산을 모으기 위해 매월 얼마씩 저축해야 하는지 시뮬레이션합니다. 위키백과에 따르면 <strong>적금(Installment Savings)</strong>은 일정 기간 매월 일정 금액을 적립하여 만기일에 원금과 이자를 수령하는 금융 상품입니다.
+  </p>
+
+  <div class="ad-slot">
+    <!-- 구글 애드센스 디스플레이 광고 코드 -->
+    <!-- <ins class="adsbygoogle" ...></ins> -->
+  </div>
+
+  <h2>1. 목표 계산 정보 입력</h2>
+  <div class="form-group">
+    <label for="targetAmount">목표 금액 (원)</label>
+    <input type="number" id="targetAmount" placeholder="예: 50000000">
+  </div>
+
+  <div class="form-group">
+    <label for="periodMonths">저축 기간 (개월)</label>
+    <input type="number" id="periodMonths" placeholder="예: 24 (2년)">
+  </div>
+
+  <div class="form-group">
+    <label for="interestRate">예상 연이율 (%)</label>
+    <input type="number" id="interestRate" step="0.1" placeholder="예: 4.5">
+  </div>
+
+  <div class="form-group">
+    <label for="taxType">과세 구분</label>
+    <select id="taxType">
+      <option value="15.4">일반과세 (15.4%)</option>
+      <option value="1.4">세금우대 (1.4%)</option>
+      <option value="0">비과세 (0%)</option>
+    </select>
+  </div>
+
+  <button class="btn-calc" onclick="calculateTarget()">필요 월 저축액 계산하기</button>
+
+  <!-- 계산 결과 영역 -->
+  <div class="result-container" id="result">
+    <div class="result-title">계산 결과</div>
+    
+    <div class="result-row total">
+      <span>필요 월 저축액</span>
+      <span id="monthlyDeposit">0 원</span>
+    </div>
+    <div class="result-row">
+      <span>총 납입 원금</span>
+      <span id="totalPrincipal">0 원</span>
+    </div>
+    <div class="result-row">
+      <span>세전 이자</span>
+      <span id="grossInterest">0 원</span>
+    </div>
+    <div class="result-row">
+      <span>이자 과세 (세금)</span>
+      <span id="taxAmount">0 원</span>
+    </div>
+    <div class="result-row">
+      <span>세후 이자 수익</span>
+      <span id="netInterest">0 원</span>
+    </div>
+  </div>
+
+  <div class="ad-slot">
+    <!-- 구글 애드센스 광고 코드 -->
+  </div>
+
+  <h2>2. 자주 묻는 질문 (FAQ)</h2>
+  
+  <div class="faq-item open">
+    <button class="faq-question" onclick="toggleFaq(this)">
+      Q. 정기적금 이자 계산 방식은 예금과 다른가요?
+      <span class="faq-icon">▲</span>
+    </button>
+    <div class="faq-answer">
+      네, 다릅니다. 정기예금은 전체 금액에 대해 전체 기간 동안 이자가 붙지만, 적금은 매월 들어가는 원금의 보존 기간이 다르므로 첫 달 납입액은 전체 기간 이자가, 마지막 달 납입액은 1개월치 이자만 적용됩니다.
+    </div>
+  </div>
+
+  <div class="faq-item open">
+    <button class="faq-question" onclick="toggleFaq(this)">
+      Q. 이자소득세 15.4%는 어떻게 구성되나요?
+      <span class="faq-icon">▲</span>
+    </button>
+    <div class="faq-answer">
+      대한민국 금융 이자소득세는 소득세 14%와 지방소득세 1.4%(소득세의 10%)가 합쳐져 총 15.4%가 적용됩니다.
+    </div>
+  </div>
+
+  <div class="faq-item open">
+    <button class="faq-question" onclick="toggleFaq(this)">
+      Q. 복리적금과 단리적금 중 어떤 것이 유리한가요?
+      <span class="faq-icon">▲</span>
+    </button>
+    <div class="faq-answer">
+      월복리 적금은 발생한 이자에 다시 이자가 붙으므로 동일한 금리라면 단리적금보다 수익률이 높습니다. 다만 기간이 1년 단기일 경우 차이는 미미할 수 있습니다.
+    </div>
+  </div>
+
+  <div class="wiki-source" style="margin-top: 20px;">참조/출처: 위키백과 (Wikipedia - 적금, 이자소득세)</div>
+
+  <div class="ad-slot">
+    <!-- 구글 애드센스 광고 코드 -->
+  </div>
+</div>
+
+<!-- 푸터 영역 -->
+<footer>
+  <p>© 2026 Miso Calculator. All rights reserved.</p>
+  <p>본 계산기는 단리 적금 공식을 기준으로 작성된 시뮬레이션 결과입니다.</p>
+  <p style="margin-top: 8px;"><a href="../privacy.html" style="color: var(--text-muted); text-decoration: underline;">개인정보처리방침</a></p>
+</footer>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // 햄버거 메뉴 토글
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const navGroup = document.getElementById('navGroup');
+
+    if (hamburgerBtn && navGroup) {
+      hamburgerBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = hamburgerBtn.classList.toggle('active');
+        navGroup.classList.toggle('is-open');
+        hamburgerBtn.setAttribute('aria-expanded', isOpen);
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!navGroup.contains(e.target) && !hamburgerBtn.contains(e.target)) {
+          hamburgerBtn.classList.remove('active');
+          navGroup.classList.remove('is-open');
+          hamburgerBtn.setAttribute('aria-expanded', 'false');
+        }
+      });
+    }
+
+    // 드롭다운 토글
+    const dropdown = document.getElementById('moreCalcDropdown');
+    const dropdownToggleBtn = document.getElementById('dropdownToggleBtn');
+
+    if (dropdownToggleBtn && dropdown) {
+      dropdownToggleBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = dropdown.classList.toggle('is-open');
+        dropdownToggleBtn.setAttribute('aria-expanded', isOpen);
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!dropdown.contains(e.target)) {
+          dropdown.classList.remove('is-open');
+          dropdownToggleBtn.setAttribute('aria-expanded', 'false');
+        }
+      });
+    }
+  });
+
+  // FAQ 아코디언 토글 함수
+  function toggleFaq(button) {
+    const item = button.parentElement;
+    const isOpen = item.classList.toggle('open');
+    const icon = button.querySelector('.faq-icon');
+    if (icon) {
+      icon.textContent = isOpen ? '▲' : '▼';
+    }
+  }
+
+  // 목표금액 계산 로직 (적금 단리 공식 역산)
+  function calculateTarget() {
+    const target = parseFloat(document.getElementById('targetAmount').value);
+    const months = parseInt(document.getElementById('periodMonths').value);
+    const rate = parseFloat(document.getElementById('interestRate').value) / 100;
+    const taxRate = parseFloat(document.getElementById('taxType').value) / 100;
+
+    if (isNaN(target) || isNaN(months) || isNaN(rate) || target <= 0 || months <= 0 || rate < 0) {
+      alert("모든 입력값을 올바르게 입력해주세요.");
+      return;
+    }
+
+    // 적금 단리 이자 계수 K = (months * (months + 1) / 2) * (rate / 12)
+    const K = (months * (months + 1) / 2) * (rate / 12);
+    
+    // 세후 목표 금액 Target = Monthly * months + Monthly * K * (1 - taxRate)
+    // Monthly = Target / (months + K * (1 - taxRate))
+    const monthlyDeposit = target / (months + (K * (1 - taxRate)));
+    const totalPrincipal = monthlyDeposit * months;
+    const grossInterest = monthlyDeposit * K;
+    const taxAmount = grossInterest * taxRate;
+    const netInterest = grossInterest - taxAmount;
+
+    document.getElementById('monthlyDeposit').innerText = Math.round(monthlyDeposit).toLocaleString() + ' 원';
+    document.getElementById('totalPrincipal').innerText = Math.round(totalPrincipal).toLocaleString() + ' 원';
+    document.getElementById('grossInterest').innerText = Math.round(grossInterest).toLocaleString() + ' 원';
+    document.getElementById('taxAmount').innerText = Math.round(taxAmount).toLocaleString() + ' 원';
+    document.getElementById('netInterest').innerText = Math.round(netInterest).toLocaleString() + ' 원';
+
+    document.getElementById('result').style.display = 'block';
+  }
+</script>
+
+</body>
+</html>

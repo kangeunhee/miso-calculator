@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Miso Real Estate - 전세가율 계산기</title>
+  <style>
+    :root {
+      --primary: #f97316;         /* 주황색 (Orange-500) */
+      --primary-hover: #ea580c;   /* Dark 주황색 (Orange-600) */
+      --primary-light: #fff7ed;   /* 연한 주황 배경 (Orange-50) */
+      --text-dark: #1f2937;       /* 텍스트 (Gray-800) */
+      --text-muted: #6b7280;      /* 보조 텍스트 (Gray-500) */
+      --border: #e5e7eb;         /* 테두리 (Gray-200) */
+      --bg-gray: #f9fafb;        /* 전체 메인 배경 (Gray-50) */
+      --bg-white: #ffffff;
+       --bg-main: #ffffff;
+       --text-main: #1f2937;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      color: var(--text-dark);
+      background-color: var(--bg-gray);
+      line-height: 1.6;
+    }
+
+    /* 헤더 및 내비게이션 영역 */
+    .site-header {
+      background-color: var(--bg-white);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      background-color: var(--primary);
+      color: white;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.95rem;
+    }
+    
+
+    .nav-right-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .main-nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-item {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+
+    .nav-item:hover,
+    .nav-item.active {
+      color: var(--primary-hover);
+      background-color: var(--primary-light);
+      font-weight: 700;
+    }
+     /* 드롭다운 스타일 */
+    .dropdown {
+        position: relative;
+        margin-left: 0.25rem;
+    }
+
+    .dropdown-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-family: inherit;
+    }
+
+    .chevron {
+        width: 14px;
+        height: 14px;
+        transition: transform 0.2s;
+    }
+ .dropdown:hover .chevron,
+    .dropdown.is-open .chevron {
+        transform: rotate(180deg);
+    }
+
+    .dropdown-menu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        right: 0;
+        width: 320px;
+        background: var(--bg-main);
+        border: 1px solid var(--border);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+        border-radius: 8px;
+        padding: 0.5rem;
+        margin-top: 0.25rem;
+        max-height: 400px;
+        overflow-y: auto;
+    }
+     .dropdown:hover .dropdown-menu,
+    .dropdown.is-open .dropdown-menu {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .dropdown-item {
+        display: flex;
+        flex-direction: column;
+        padding: 0.5rem 0.75rem;
+        text-decoration: none;
+        border-radius: 4px;
+        transition: background-color 0.15s;
+    }
+
+    .dropdown-item:hover {
+        background-color: var(--primary-light);
+    }
+
+    .dropdown-item .title-wrap {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .dropdown-item .title {
+        font-weight: 600;
+        color: var(--text-main);
+        font-size: 0.9rem;
+    }
+
+    .dropdown-item:hover .title {
+        color: var(--primary);
+    }
+
+    .dropdown-item .desc {
+        font-size: 0.75rem;
+        color: #6b7280;
+        margin-top: 2px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+     /* 뱃지 스타일 */
+    .badge {
+        font-size: 0.65rem;
+        font-weight: 700;
+        padding: 0.1rem 0.35rem;
+        border-radius: 4px;
+        text-transform: uppercase;
+    }
+    .badge.new {
+        background-color: #fee2e2;
+        color: #dc2626;
+    }
+
+    .nav-right-group {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .btn-list-back {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--primary);
+      background-color: var(--primary-light);
+      border: 1px solid var(--border);
+      padding: 8px 14px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-list-back:hover {
+      background-color: var(--primary);
+      color: var(--bg-white);
+    }
+ /* 햄버거 버튼 기본 숨김 */
+    .btn-hamburger {
+        display: none;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 24px;
+        height: 18px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+    }
+
+     .hamburger-bar {
+        width: 100%;
+        height: 2px;
+        background-color: var(--text-main);
+        border-radius: 2px;
+        transition: all 0.3s;
+    }
+
+    /* 모바일 반응형 (1024px 이하) */
+    @media (max-width: 1024px) {
+        .btn-hamburger {
+            display: flex;
+        }
+
+        .nav-right-group {
+            display: none;
+            position: absolute;
+            top: 60px;
+            left: 0;
+            width: 100%;
+            background-color: var(--bg-main);
+            flex-direction: column;
+            align-items: stretch;
+            padding: 1rem 1.25rem;
+            gap: 1rem;
+            border-bottom: 1px solid var(--border);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+            max-height: calc(100vh - 60px);
+            overflow-y: auto;
+        }
+
+        .nav-right-group.is-open {
+            display: flex;
+        }
+
+        .main-nav {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 4px;
+        }
+
+        .dropdown-menu {
+            position: static;
+            width: 100%;
+            box-shadow: none;
+            border: none;
+            background: var(--primary-light);
+            padding: 4px;
+            margin-top: 4px;
+            max-height: none;
+        }
+    }
+
+
+    /* 메인 Card 컨테이너 */
+    .container {
+      max-width: 720px;
+      margin: 40px auto;
+      padding: 30px;
+      background-color: var(--bg-white);
+      border-radius: 16px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+      border: 1px solid var(--border);
+    }
+
+    .category-tag {
+      font-size: 13px;
+      color: var(--primary);
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+
+    h1 {
+      font-size: 26px;
+      margin-top: 0;
+      margin-bottom: 16px;
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 10px;
+      color: var(--text-dark);
+    }
+
+    h2 {
+      font-size: 19px;
+      margin-top: 36px;
+      margin-bottom: 14px;
+      color: var(--text-dark);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 6px;
+    }
+
+    /* 계산기 입력 폼 스타일 */
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+      font-weight: bold;
+      color: var(--text-dark);
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 15px;
+      color: var(--text-dark);
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px #ffedd5;
+    }
+
+    button.btn-calc {
+      width: 100%;
+      padding: 14px;
+      background-color: var(--primary);
+      color: var(--bg-white);
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background-color 0.2s;
+    }
+
+    button.btn-calc:hover {
+      background-color: var(--primary-hover);
+    }
+
+    /* 계산 결과 출력 영역 */
+    .result-container {
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 2px solid var(--primary);
+    }
+
+    .result-section {
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .result-subtitle {
+      font-size: 16px;
+      font-weight: bold;
+      color: var(--text-dark);
+      margin-bottom: 10px;
+    }
+
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 15px;
+      color: var(--text-muted);
+    }
+
+    .result-row.total {
+      font-size: 18px;
+      font-weight: bold;
+      color: var(--primary-hover);
+      margin-top: 8px;
+      border-top: 1px dashed var(--border);
+      padding-top: 8px;
+    }
+
+    /* 애드센스 광고 슬롯 */
+    .ad-slot {
+      margin: 24px 0;
+      text-align: center;
+      background: #fafafa;
+      border: 1px dashed var(--border);
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    /* 백과사전 상세 설명 (계산기 하단 배치) */
+    .wiki-box {
+      background-color: var(--primary-light);
+      border-left: 4px solid var(--primary);
+      padding: 18px;
+      border-radius: 0 8px 8px 0;
+      margin-top: 30px;
+      margin-bottom: 24px;
+      font-size: 14.5px;
+      line-height: 1.7;
+    }
+
+    .wiki-box p {
+      margin: 0 0 12px 0;
+      color: var(--text-dark);
+    }
+
+    .wiki-box p:last-child {
+      margin-bottom: 0;
+    }
+
+    .wiki-source {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: bold;
+      display: inline-block;
+      margin-top: 6px;
+    }
+
+    /* FAQ 아코디언 스타일 */
+    .faq-list {
+      margin-top: 12px;
+    }
+
+    .faq-item {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+
+    .faq-question {
+      width: 100%;
+      text-align: left;
+      padding: 14px 16px;
+      background-color: var(--bg-gray);
+      border: none;
+      font-size: 15px;
+      font-weight: bold;
+      color: var(--text-dark);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background-color 0.2s;
+    }
+
+    .faq-question:hover {
+      background-color: var(--primary-light);
+    }
+
+    .faq-icon {
+      font-size: 18px;
+      color: var(--primary);
+      font-weight: bold;
+    }
+
+    .faq-item.open .faq-icon::before {
+      content: "-";
+    }
+
+    .faq-item:not(.open) .faq-icon::before {
+      content: "+";
+    }
+
+    .faq-answer {
+      display: none;
+      padding: 14px 16px;
+      font-size: 14px;
+      color: var(--text-muted);
+      background-color: var(--bg-white);
+      border-top: 1px solid var(--border);
+      line-height: 1.6;
+    }
+
+    /* 기본적으로 아코디언 항목이 모두 펼쳐진 상태 유지 */
+    .faq-item.open .faq-answer {
+      display: block;
+    }
+
+    /* 푸터 영역 */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 30px 20px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      background-color: var(--bg-gray);
+      margin-top: 60px;
+    }
+
+    footer p {
+      margin: 4px 0;
+    }
+
+    footer a {
+      color: var(--text-muted);
+      text-decoration: underline;
+    }
+
+    
+  </style>
+</head>
+<body>
+
+  <!-- 헤더 & 네비게이션 -->
+ <header class="site-header">
+    <div class="header-inner">
+        <!-- 브랜드 로고 -->
+        <a href="../index.html" class="brand">
+            <div class="brand-icon" aria-hidden="true">RE</div>
+            <span>Miso Real Estate</span>
+        </a>
+
+        <!-- 모바일 전용 햄버거 버튼 -->
+        <button type="button" class="btn-hamburger" id="hamburgerBtn" aria-label="메뉴 열기" aria-expanded="false">
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+        </button>
+
+        <!-- 네비게이션 & 전체 목록 그룹 -->
+        <div class="nav-right-group" id="navGroup">
+            <nav class="main-nav" aria-label="주요 계산기 메뉴">
+                <!-- 상단 노출 주요 부동산 메뉴 5개 -->
+                <a href="./brokerage-fee.html" class="nav-item">중개수수료</a>
+                <a href="./acquisition-tax.html" class="nav-item">취득세 계산</a>
+                <a href="./ltv.html" class="nav-item">LTV 계산</a>
+                <a href="./jeonse-to-charter-rate.html" class="nav-item">전월세 전환율</a>
+                <a href="./jeonse-rate.html"  class="nav-item active ">전세가율 계산</a>
+
+                <!-- 전체 부동산 계산기 드롭다운 (12개 항목 모두 포함) -->
+                <div class="dropdown" id="realEstateCalcDropdown">
+                    <button type="button" class="nav-item dropdown-btn" id="realEstateDropdownToggleBtn" aria-expanded="false">
+                        <span>전체 계산기</span>
+                        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <path d="M6 9l6 6 6-6"/>
+                        </svg>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a href="./jeonse-to-charter-rate.html" class="dropdown-item">
+                            <div class="title-wrap">
+                                <span class="title">전월세 전환율 계산</span>
+                            </div>
+                            <span class="desc">전세금과 월세를 법정 전환율 또는 이자율 기준으로 상호 전환합니다.</span>
+                        </a>
+                        <a href="./brokerage-fee.html" class="dropdown-item">
+                            <div class="title-wrap">
+                                <span class="title">중개수수료 계산</span>
+                            </div>
+                            <span class="desc">부동산 매매, 전세, 월세 거래 시 법정 중개수수료 상한액을 계산합니다.</span>
+                        </a>
+                        <a href="./monthly-rent.html" class="dropdown-item">
+                            <div class="title-wrap">
+                                <span class="title">월세 계산</span>
+                            </div>
+                            <span class="desc">월세, 관리비, 보증금 대출 이자를 포함한 실제 주거 비용을 계산합니다.</span>
+                        </a>
+                        <a href="./ltv.html" class="dropdown-item">
+                            <div class="title-wrap">
+                                <span class="title">LTV 계산</span>
+                            </div>
+                            <span class="desc">담보 금액과 LTV 비율로 최대 대출 가능 금액을 계산합니다.</span>
+                        </a>
+                        <a href="./acquisition-tax.html" class="dropdown-item">
+                            <div class="title-wrap">
+                                <span class="title">취득세 계산</span>
+                            </div>
+                            <span class="desc">부동산 취득 시 취득세, 지방교육세, 농어촌특별세를 계산합니다.</span>
+                        </a>
+                        <a href="./capital-gains-tax.html" class="dropdown-item">
+                            <div class="title-wrap">
+                                <span class="title">양도소득세 계산</span>
+                            </div>
+                            <span class="desc">부동산 양도 시 양도소득세와 실수령액을 계산합니다.</span>
+                        </a>
+                        <a href="./subscription-points.html" class="dropdown-item">
+                            <div class="title-wrap">
+                                <span class="title">청약 가점 계산</span>
+                            </div>
+                            <span class="desc">무주택기간, 부양가족, 청약통장 기준 가점 계산</span>
+                        </a>
+                        <a href="./rental-yield.html" class="dropdown-item">
+                            <div class="title-wrap">
+                                <span class="title">임대수익률 계산</span>
+                            </div>
+                            <span class="desc">매매가 대비 월세 수익률을 계산합니다.</span>
+                        </a>
+                        <a href="./jeonse-rate.html" class="dropdown-item">
+                            <div class="title-wrap">
+                                <span class="title">전세가율 계산</span>
+                            </div>
+                            <span class="desc">매매가 대비 전세가 비율을 계산합니다.</span>
+                        </a>
+                        <a href="./registration-cost.html" class="dropdown-item">
+                            <div class="title-wrap">
+                                <span class="title">등기비용 계산</span>
+                            </div>
+                            <span class="desc">부동산 매매 시 소유권이전등기에 필요한 비용을 계산합니다.</span>
+                        </a>
+                        <a href="./comprehensive-real-estate-tax.html" class="dropdown-item">
+                            <div class="title-wrap">
+                                <span class="title">종부세(종합부동산세) 계산</span>
+                                <span class="badge new">NEW</span>
+                            </div>
+                            <span class="desc">주택 수 및 공시가격 합계액 기준 종합부동산세와 지방세를 계산합니다.</span>
+                        </a>
+                        <a href="./property-tax.html" class="dropdown-item">
+                            <div class="title-wrap">
+                                <span class="title">재산세 계산</span>
+                                <span class="badge new">NEW</span>
+                            </div>
+                            <span class="desc">보유 주택/토지의 공정시장가액비율 및 과세표준 기준 재산세를 산출합니다.</span>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+
+            <a href="../index.html" class="btn-list-back">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="8" y1="6" x2="21" y2="6"></line>
+                    <line x1="8" y1="12" x2="21" y2="12"></line>
+                    <line x1="8" y1="18" x2="21" y2="18"></line>
+                    <circle cx="3" cy="6" r="1"></circle>
+                    <circle cx="3" cy="12" r="1"></circle>
+                    <circle cx="3" cy="18" r="1"></circle>
+                </svg>
+                <span>전체 목록</span>
+            </a>
+        </div>
+    </div>
+</header>
+  <!-- 메인 컨텐츠 Card -->
+  <main class="container">
+    <div class="category-tag">부동산 계산기</div>
+    <h1>전세가율 계산기</h1>
+
+    <!-- 1. 최상단 배치: 계산 입력 폼 -->
+    <form id="calcForm">
+      <div class="form-group">
+        <label for="salePrice">매매 가격 (원)</label>
+        <input type="number" id="salePrice" placeholder="예: 400000000 (4억 원)" min="0" step="1000000" required>
+      </div>
+
+      <div class="form-group">
+        <label for="jeonsePrice">전세 보증금 (원)</label>
+        <input type="number" id="jeonsePrice" placeholder="예: 300000000 (3억 원)" min="0" step="1000000" required>
+      </div>
+
+      <button type="submit" class="btn-calc">전세가율 계산하기</button>
+    </form>
+
+    <!-- 계산 결과 출력 영역 -->
+    <div class="result-container" id="resultContainer" style="display: none;">
+      <div class="result-section">
+        <div class="result-subtitle">전세가율 산출 결과</div>
+        <div class="result-row">
+          <span>입력된 매매가</span>
+          <span id="resSalePrice">0원</span>
+        </div>
+        <div class="result-row">
+          <span>입력된 전세보증금</span>
+          <span id="resJeonsePrice">0원</span>
+        </div>
+        <div class="result-row total">
+          <span>전세가율 (비율)</span>
+          <span id="jeonseRateResult">0%</span>
+        </div>
+        <div style="text-align: right;">
+          <span id="safetyBadge" class="safety-badge">안전도 분석중</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 상단 애드센스 광고 영역 -->
+    <div class="ad-slot">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+           data-ad-slot="1234567890"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <!-- 2. 백과사전 상세 설명 영역 (계산기 하단) -->
+    <section class="wiki-box">
+      <p>
+        <strong>전세가율(Jeonse-to-Sale Ratio)의 정의</strong><br>
+        <strong>위키백과 및 네이버 지식백과 참조:</strong> **전세가율**이란 매매가격 대비 전세보증금의 비율을 나타내는 지표로, 주택 시장의 안정성과 깡통전세 위험성을 가늠하는 핵심 척도입니다. 일반적으로 전세가율이 높을수록 매매가와 전세가의 차이가 적어 적은 자본으로 주택을 매수하는 '갭투자'가 성행하게 됩니다.
+      </p>
+      <p>
+        <strong>전세가율 산정 공식 및 리스크 기준</strong><br>
+        1) **산정 공식:** `(전세보증금 ÷ 매매가격) × 100`<br>
+        2) **안전성 및 위험 수준 판단:**<br>
+        &nbsp;&nbsp;• **80% 초과:** 깡통전세 위험 경고 단계. 집값 하락 시 보증금 반환 보장이 어려워질 수 있으며, 주택도시보증공사(HUG) 전세보증금반환보증 가입 심사에 제동이 걸릴 수 있습니다.<br>
+        &nbsp;&nbsp;• **60% ~ 80%:** 통상적인 수도권 아파트의 일반적인 전세가율 수준이나 주의 관찰이 필요합니다.<br>
+        &nbsp;&nbsp;• **60% 미만:** 매매가와 전세가의 간격이 넓어 상대적으로 보증금 반환 안전성이 높다고 평가됩니다.
+      </p>
+      <span class="wiki-source">※ 출처: 위키백과(전세), 네이버 지식백과(시사경제용어사전, 부동산 실무 가이드)</span>
+    </section>
+
+    <!-- 하단 애드센스 광고 영역 -->
+    <div class="ad-slot">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+           data-ad-slot="0987654321"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <!-- 3. 자주 묻는 질문 (FAQ) - 기본적으로 open 클래스로 전부 열림 -->
+    <h2>자주 묻는 질문 (FAQ)</h2>
+    <div class="faq-list">
+      <div class="faq-item open">
+        <button type="button" class="faq-question">
+          <span>전세가율이 높으면 왜 깡통전세 위험이 커지나요?</span>
+          <span class="faq-icon"></span>
+        </button>
+        <div class="faq-answer">
+          전세가율이 80%를 넘어설 경우, 향후 부동산 시장 침체로 집값이 하락하거나 경매에 넘어갔을 때 낙찰가가 매매가보다 떨어지면서 세입자가 전세보증금을 전액 돌려받지 못하는 상황(깡통전세)이 발생할 확률이 매우 높아집니다.
+        </div>
+      </div>
+
+      <div class="faq-item open">
+        <button type="button" class="faq-question">
+          <span>전세보증금 반환보증보험 가입 기준 전세가율은 어떻게 되나요?</span>
+          <span class="faq-icon"></span>
+        </button>
+        <div class="faq-answer">
+          주택도시보증공사(HUG) 등의 전세보증금반환보증 가입 시, 주택의 공시가격 또는 감정가격을 기준으로 삼으며 선순위 채권과 전세보증금을 합산한 금액이 주택 가격의 일정 비율(현재 기준 보통 90% 이하) 이내여야 안전하게 보증 가입이 가능합니다.
+        </div>
+      </div>
+
+      <div class="faq-item open">
+        <button type="button" class="faq-question">
+          <span>빌라(다세대·연립주택)와 아파트의 전세가율 해석에 차이가 있나요?</span>
+          <span class="faq-icon"></span>
+        </button>
+        <div class="faq-answer">
+          네, 아파트는 실거래가 조회가 쉽고 환금성이 높아 전세가율이 다소 높아도 위험성이 상대적으로 낮게 평가될 수 있으나, 빌라나 다세대 주택은 매매 시장이 활성화되지 않아 환금성이 낮으므로 전세가율이 70~80기만 되어도 매우 위험한 신호로 받아들여집니다.
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- 푸터 영역 -->
+  <footer>
+    <p>© 2026 Miso Real Estate. All rights reserved.</p>
+    <p>본 계산기는 입력된 매매가와 전세보증금을 기준으로 산출된 단순 통계 시뮬레이션이며, 선순위 근저당권이나 체납 세금 등에 따라 실제 보증금 안전성은 달라질 수 있습니다.</p>
+    <p style="margin-top: 8px;"><a href="../privacy.html">개인정보처리방침</a></p>
+  </footer>
+
+  <script>
+    // 햄버거 메뉴 토글 스크립트
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const navGroup = document.getElementById('navGroup');
+
+    hamburgerBtn.addEventListener('click', () => {
+        const isOpen = navGroup.classList.toggle('is-open');
+        hamburgerBtn.classList.toggle('active', isOpen);
+        hamburgerBtn.setAttribute('aria-expanded', isOpen);
+    });
+    document.addEventListener('DOMContentLoaded', () => {
+      // FAQ 아코디언 토글 이벤트 (기본 open 상태 유지)
+      const faqQuestions = document.querySelectorAll('.faq-question');
+      faqQuestions.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const item = btn.parentElement;
+          item.classList.toggle('open');
+        });
+      });
+
+      // 계산 로직
+      const calcForm = document.getElementById('calcForm');
+      const resultContainer = document.getElementById('resultContainer');
+
+      calcForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const salePrice = parseFloat(document.getElementById('salePrice').value) || 0;
+        const jeonsePrice = parseFloat(document.getElementById('jeonsePrice').value) || 0;
+
+        if (salePrice <= 0) {
+          alert('매매 가격을 올바르게 입력해주세요.');
+          return;
+        }
+
+        const jeonseRate = (jeonsePrice / salePrice) * 100;
+
+        // UI 결과 바인딩
+        document.getElementById('resSalePrice').textContent = Math.round(salePrice).toLocaleString() + ' 원';
+        document.getElementById('resJeonsePrice').textContent = Math.round(jeonsePrice).toLocaleString() + ' 원';
+        document.getElementById('jeonseRateResult').textContent = jeonseRate.toFixed(2) + ' %';
+
+        // 안전도 배지 설정
+        const badge = document.getElementById('safetyBadge');
+        if (jeonseRate > 80) {
+          badge.textContent = '위험 (80% 초과 - 깡통전세 주의)';
+          badge.style.backgroundColor = '#fee2e2';
+          badge.style.color = '#991b1b';
+        } else if (jeonseRate >= 60) {
+          badge.textContent = '주의 (60% ~ 80% 구간)';
+          badge.style.backgroundColor = '#fef3c7';
+          badge.style.color = '#92400e';
+        } else {
+          badge.textContent = '안정 (60% 미만)';
+          badge.style.backgroundColor = '#d1fae5';
+          badge.style.color = '#065f46';
+        }
+
+        resultContainer.style.display = 'block';
+      });
+    });
+  </script>
+</body>
+</html>
