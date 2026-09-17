@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://kangeunhee.github.io/miso-calculator/miso-calculator/sitemap.xml
+Sitemap: https://kangeunhee.github.io/miso-calculator/sitemap.xml
