@@ -202,6 +202,11 @@
     <loc>https://kangeunhee.github.io/miso-calculator/realEstate/ltv.html</loc>
     <priority>0.8</priority>
   </url>
+  <!-- 필요시 폴더 위치 재조정 검토 -->
+  <url>
+    <loc>https://kangeunhee.github.io/miso-calculator/realEstate/python-oracledb.html</loc>
+    <priority>0.8</priority>
+  </url>
   <url>
     <loc>https://kangeunhee.github.io/miso-calculator/realEstate/acquisition-tax.html</loc>
     <priority>0.8</priority>
