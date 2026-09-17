@@ -6,6 +6,10 @@
     <priority>1.0</priority>
   </url>
   <url>
+    <loc>https://kangeunhee.github.io/miso-calculator/index.html</loc>
+    <priority>1.0</priority>
+  </url>
+  <url>
     <loc>https://kangeunhee.github.io/miso-calculator/privacy.html</loc>
     <priority>0.5</priority>
   </url>
