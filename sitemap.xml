@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <!-- Root -->
-    <url>
+  <url>
     <loc>https://kangeunhee.github.io/miso-calculator/index.html</loc>
     <priority>0.8</priority>
   </url>
@@ -198,8 +198,6 @@
     <loc>https://kangeunhee.github.io/miso-calculator/realEstate/ltv.html</loc>
     <priority>0.8</priority>
   </url>
-  <!-- 필요시 폴더 위치 재조정 검토 -->
-
   <url>
     <loc>https://kangeunhee.github.io/miso-calculator/realEstate/acquisition-tax.html</loc>
     <priority>0.8</priority>
@@ -241,6 +239,7 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://kangeunhee.github.io/miso-calculator/living/discount-rate.html</loc>
     <loc>https://kangeunhee.github.io/miso-calculator/living/discount-rate.html</loc>
     <priority>0.8</priority>
   </url>
