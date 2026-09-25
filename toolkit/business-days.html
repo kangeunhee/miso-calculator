@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>영업일 계산기 - 미소툴킷</title>
+    <meta name="description" content="주말과 공휴일을 제외한 실제 영업일을 계산해 주는 무료 유틸리티입니다. 기준일로부터 목표 영업일 후 또는 두 날짜 사이의 영업일을 계산해 보세요.">
+    
+    <!-- 폰트 및 아이콘 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+          footer {
+      border-top: 1px solid var(--border);
+      padding: 30px 20px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      background-color: var(--bg-green);
+    }
+
+    footer p {
+      margin: 4px 0;
+      color: var(--text-muted);
+    }
+
+    footer a {
+      color: var(--text-muted);
+      text-decoration: underline;
+    }
+        :root {
+            --primary-color: #10b981;       /* 메인 초록색 (Emerald) */
+            --primary-hover: #059669;       /* 버튼 호버 시 짙은 초록색 */
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;           /* 본문 텍스트 (가독성을 위한 짙은 컬러) */
+            --text-sub: #64748b;
+            --border-color: #e2e8f0;
+            --accent-bg: #ecfdf5;           /* 결과창 연한 초록색 배경 */
+            --accent-border: #a7f3d0;       /* 결과창 연한 초록색 테두리 */
+        }
+        body {
+            font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        header {
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        header .logo {
+            text-decoration: none;
+            color: var(--primary-color);
+            font-weight: 800;
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .all-tools-btn {
+            background-color: #f1f5f9;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.2s;
+        }
+        .all-tools-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        /* 메인 영역 카드 */
+        .tool-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+        }
+        h1 {
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #0f172a;
+        }
+        .subtitle {
+            color: var(--text-sub);
+            margin-bottom: 2rem;
+            font-size: 1.05rem;
+        }
+        .tab-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-sub);
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        .tab-btn.active {
+            color: var(--primary-color);
+            background-color: var(--accent-bg);
+        }
+        .input-group {
+            margin-bottom: 1.25rem;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-main);
+            font-size: 0.95rem;
+        }
+        input[type="date"], input[type="number"] {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            background-color: white;
+            font-family: inherit;
+        }
+        input[type="date"]:focus, input[type="number"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+            color: var(--text-main);
+        }
+        .checkbox-group input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--primary-color);
+        }
+        button.action-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.875rem 1.5rem;
+            font-size: 1.05rem;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s;
+        }
+        button.action-btn:hover {
+            background-color: var(--primary-hover);
+        }
+        
+        .result-box {
+            margin-top: 1.5rem;
+            background: var(--accent-bg);
+            border: 1px solid var(--accent-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: none;
+        }
+        .result-title {
+            font-size: 0.95rem;
+            color: #047857;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        .result-val {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--primary-color);
+        }
+        .result-desc {
+            font-size: 0.9rem;
+            color: var(--text-sub);
+            margin-top: 0.5rem;
+        }
+
+        /* SEO 상세 설명 및 아코디언 FAQ */
+        .seo-content {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+        }
+        .seo-content h2 {
+            font-size: 1.25rem;
+            border-left: 4px solid var(--primary-color);
+            padding-left: 0.75rem;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            color: #0f172a;
+        }
+
+        /* 아코디언 FAQ 스타일 */
+        .faq-accordion {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+        .accordion-item {
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            overflow: hidden;
+            background: white;
+        }
+        .accordion-header {
+            width: 100%;
+            background: none;
+            border: none;
+            padding: 1rem;
+            text-align: left;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-main);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .accordion-header:hover {
+            background: var(--bg-color);
+        }
+        .accordion-header i {
+            transition: transform 0.3s;
+            color: var(--text-sub);
+        }
+        .accordion-item.active .accordion-header i {
+            transform: rotate(180deg);
+            color: var(--primary-color);
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+            padding: 0 1rem;
+            background: var(--bg-color);
+            color: var(--text-sub);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        .accordion-item.active .accordion-content {
+            padding: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: var(--text-sub);
+            font-size: 0.875rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 4rem;
+            background: var(--card-bg);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="logo"><i class="fa-solid fa-toolbox"></i> 미소툴킷</a>
+        <a href="index.html" class="all-tools-btn"><i class="fa-solid fa-grip"></i> 전체 보기</a>
+    </header>
+
+    <div class="container">
+        
+        <main>
+            <div class="tool-card">
+                <h1><i class="fa-solid fa-business-time" style="color: var(--primary-color);"></i> 영업일 계산기</h1>
+                <p class="subtitle">주말(토, 일)과 주요 공휴일을 제외한 정확한 영업일을 계산해 드립니다.</p>
+
+                <!-- 탭 메뉴 -->
+                <div class="tab-group">
+                    <button class="tab-btn active" onclick="switchTab('addDays')">영업일 더하기/빼기</button>
+                    <button class="tab-btn" onclick="switchTab('diffDays')">기간 내 영업일 수 계산</button>
+                </div>
+
+                <!-- 탭 1: 기준일 + N 영업일 -->
+                <div id="tabAddDays">
+                    <div class="input-group">
+                        <label for="startDate">기준 일자 선택</label>
+                        <input type="date" id="startDate">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="daysCount">계산할 영업일 수 (일)</label>
+                        <input type="number" id="daysCount" placeholder="예: 5 (음수 입력 시 이전 영업일)" value="5">
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="includeStartAdd" checked>
+                        <label for="includeStartAdd" style="margin:0; font-weight:normal;">기준일이 영업일인 경우 당일 포함하여 계산</label>
+                    </div>
+
+                    <button class="action-btn" onclick="calcAddDays()">영업일 날짜 계산하기</button>
+                </div>
+
+                <!-- 탭 2: 두 날짜 사이 영업일 수 -->
+                <div id="tabDiffDays" style="display: none;">
+                    <div class="input-group">
+                        <label for="diffStartDate">시작일 선택</label>
+                        <input type="date" id="diffStartDate">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="diffEndDate">종료일 선택</label>
+                        <input type="date" id="diffEndDate">
+                    </div>
+
+                    <button class="action-btn" onclick="calcDiffDays()">기간 내 영업일 수 계산하기</button>
+                </div>
+
+                <!-- 결과 영역 -->
+                <div class="result-box" id="resultBox">
+                    <div class="result-title" id="resTitle">계산 결과</div>
+                    <div class="result-val" id="resValue">-</div>
+                    <div class="result-desc" id="resDesc"></div>
+                </div>
+            </div>
+
+            <!-- SEO 상세 설명 및 아코디언 FAQ -->
+            <div class="seo-content">
+                <h2>📖 도구 상세 설명</h2>
+                <p>본 영업일 계산기는 관공서, 금융기관, 기업 업무 처리 시 필수적인 <strong>영업일(Business Days) 기준 날짜</strong>를 손쉽게 산출할 수 있도록 제작된 유틸리티입니다.</p>
+                <p>토요일과 일요일은 물론, 신정, 설날, 삼일절, 어린이날, 석가탄신일, 현충일, 광복절, 추석, 개천절, 한글날, 성탄절 및 대체공휴일 등 대한민국 주요 법정 공휴일을 자동 계산하여 제외합니다.</p>
+
+                <h2 style="margin-top: 2rem;">❓ 자주 하는 질문 (FAQ)</h2>
+                
+                <div class="faq-accordion">
+                    <!-- 첫 번째 아코디언 (자동 열림) -->
+                    <div class="accordion-item active">
+                        <button class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>Q. 영업일(Business Day)이란 무엇인가요?</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div class="accordion-content">
+                            A. 주말(토요일, 일요일)과 법정 공휴일, 관공서 휴무일을 제외하고 실제 회사나 관공서가 정상 근무하는 일수를 의미합니다.
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <button class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>Q. 대출금 입금이나 서류 처리 시 3영업일은 언제인가요?</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div class="accordion-content">
+                            A. 금요일에 신청 후 '3영업일 이내' 처리라면, 주말(토, 일)을 제외하고 월, 화, 수요일 중 처리가 완료됩니다.
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <button class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>Q. 대체공휴일도 자동으로 제외되나요?</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div class="accordion-content">
+                            A. 네, 대한민국 공휴일 규정에 따른 주요 대체공휴일 지정일을 포함하여 영업일을 정밀하게 계산합니다.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+    </div>
+
+    <footer>
+    <p>&copy; 2026 misopick.kr. All rights reserved.</p>
+    <p>본 사이트에서 제공하는 모든 변환, 추첨, 번호 생성 및 팀 편성 기능은 사용자 편의를 위한 시뮬레이션 및 무작위 연산 결과로 제공되며, 사용 결과에 대한 법적 책임은 지지 않습니다.</p>
+        <p style="margin-top: 8px;"><a href="../privacy.html">개인정보처리방침</a></p>
+  </footer>
+
+    <script>
+        // 고정 공휴일 (월-일)
+        const fixedHolidays = ["01-01", "03-01", "05-05", "06-06", "08-15", "10-03", "10-09", "12-25"];
+
+        // 가변 공휴일 (설날, 추석, 석가탄신일, 대체공휴일)
+        const variableHolidays = [
+            "2026-02-16", "2026-02-17", "2026-02-18",
+            "2026-05-24", "2026-05-25",
+            "2026-09-24", "2026-09-25", "2026-09-26",
+            "2026-10-05"
+        ];
+
+        function isHoliday(date) {
+            const day = date.getDay();
+            if (day === 0 || day === 6) return true;
+
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const dateNum = String(date.getDate()).padStart(2, '0');
+            const monthDay = `${month}-${dateNum}`;
+            const fullDate = `${date.getFullYear()}-${monthDay}`;
+
+            if (fixedHolidays.includes(monthDay)) return true;
+            if (variableHolidays.includes(fullDate)) return true;
+
+            return false;
+        }
+
+        window.onload = function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('startDate').value = today;
+            document.getElementById('diffStartDate').value = today;
+            
+            let future = new Date();
+            future.setDate(future.getDate() + 14);
+            document.getElementById('diffEndDate').value = future.toISOString().split('T')[0];
+
+            // 첫 번째 아코디언 높이 세팅 (자동 열림)
+            const firstActive = document.querySelector('.accordion-item.active .accordion-content');
+            if (firstActive) {
+                firstActive.style.maxHeight = firstActive.scrollHeight + "px";
+            }
+        };
+
+        function switchTab(tabName) {
+            const btns = document.querySelectorAll('.tab-btn');
+            btns.forEach(btn => btn.classList.remove('active'));
+
+            if (tabName === 'addDays') {
+                btns[0].classList.add('active');
+                document.getElementById('tabAddDays').style.display = 'block';
+                document.getElementById('tabDiffDays').style.display = 'none';
+            } else {
+                btns[1].classList.add('active');
+                document.getElementById('tabAddDays').style.display = 'none';
+                document.getElementById('tabDiffDays').style.display = 'block';
+            }
+            document.getElementById('resultBox').style.display = 'none';
+        }
+
+        function calcAddDays() {
+            const startVal = document.getElementById('startDate').value;
+            const daysCount = parseInt(document.getElementById('daysCount').value, 10);
+            const includeStart = document.getElementById('includeStartAdd').checked;
+
+            if (!startVal) {
+                alert('기준 일자를 선택해 주세요.');
+                return;
+            }
+            if (isNaN(daysCount)) {
+                alert('영업일 수를 입력해 주세요.');
+                return;
+            }
+
+            let currDate = new Date(startVal);
+            let added = 0;
+            let target = Math.abs(daysCount);
+            let step = daysCount >= 0 ? 1 : -1;
+
+            if (includeStart && !isHoliday(currDate)) {
+                added = 1;
+            }
+
+            while (added < target) {
+                currDate.setDate(currDate.getDate() + step);
+                if (!isHoliday(currDate)) {
+                    added++;
+                }
+            }
+
+            const resYear = currDate.getFullYear();
+            const resMonth = currDate.getMonth() + 1;
+            const resDay = currDate.getDate();
+            const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
+            const resWeek = dayNames[currDate.getDay()];
+
+            document.getElementById('resTitle').innerText = '목표 영업일 날짜';
+            document.getElementById('resValue').innerText = `${resYear}년 ${resMonth}월 ${resDay}일 (${resWeek})`;
+            document.getElementById('resDesc').innerText = `기준일(${startVal})로부터 주말 및 공휴일을 제외한 ${daysCount}영업일 후 날짜입니다.`;
+            document.getElementById('resultBox').style.display = 'block';
+        }
+
+        function calcDiffDays() {
+            const startVal = document.getElementById('diffStartDate').value;
+            const endVal = document.getElementById('diffEndDate').value;
+
+            if (!startVal || !endVal) {
+                alert('시작일과 종료일을 모두 선택해 주세요.');
+                return;
+            }
+
+            let d1 = new Date(startVal);
+            let d2 = new Date(endVal);
+
+            if (d1 > d2) {
+                alert('종료일은 시작일보다 이후여야 합니다.');
+                return;
+            }
+
+            let totalDays = 0;
+            let businessDays = 0;
+            let curr = new Date(d1);
+
+            while (curr <= d2) {
+                totalDays++;
+                if (!isHoliday(curr)) {
+                    businessDays++;
+                }
+                curr.setDate(curr.getDate() + 1);
+            }
+
+            document.getElementById('resTitle').innerText = '기간 내 순수 영업일 수';
+            document.getElementById('resValue').innerText = `${businessDays} 영업일`;
+            document.getElementById('resDesc').innerText = `총 ${totalDays}일 중 주말 및 공휴일 ${totalDays - businessDays}일 제외됨`;
+            document.getElementById('resultBox').style.display = 'block';
+        }
+
+        // 아코디언 토글 함수
+        function toggleAccordion(headerBtn) {
+            const item = headerBtn.parentElement;
+            const content = item.querySelector('.accordion-content');
+            const isActive = item.classList.contains('active');
+
+            if (isActive) {
+                item.classList.remove('active');
+                content.style.maxHeight = null;
+            } else {
+                item.classList.add('active');
+                content.style.maxHeight = content.scrollHeight + "px";
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>랜덤 팀 나누기 - 미소툴킷</title>
+    <meta name="description" content="참여 인원 명단을 입력하여 무작위로 팀이나 조를 나눠주는 계산기입니다. 동호회 운동 경기, 조별 과제, 워크숍 조 편성을 빠르고 공정하게 진행하세요.">
+    
+    <!-- 폰트 및 아이콘 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #10b981;       /* 메인 초록색 (Emerald) */
+            --primary-hover: #059669;       /* 버튼 호버 시 짙은 초록색 */
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;           /* 본문 텍스트 */
+            --text-sub: #64748b;
+            --border-color: #e2e8f0;
+            --accent-bg: #ecfdf5;           /* 결과창 연한 초록색 배경 */
+            --accent-border: #a7f3d0;       /* 결과창 연한 초록색 테두리 */
+        }
+        body {
+            font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        header {
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        header .logo {
+            text-decoration: none;
+            color: var(--primary-color);
+            font-weight: 800;
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .all-tools-btn {
+            background-color: #f1f5f9;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.2s;
+        }
+        .all-tools-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        /* 메인 레이아웃 (좌측 콘텐트 + 우측 인기 계산기 사이드바) */
+        .container {
+            max-width: 1100px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            display: grid;
+            grid-template-columns: 1fr 310px;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 868px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* 메인 영역 카드 */
+        .tool-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+        }
+        h1 {
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #0f172a;
+        }
+          footer {
+      border-top: 1px solid var(--border);
+      padding: 30px 20px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      background-color: var(--bg-green);
+    }
+
+    footer p {
+      margin: 4px 0;
+      color: var(--text-muted);
+    }
+
+    footer a {
+      color: var(--text-muted);
+      text-decoration: underline;
+    }
+        .subtitle {
+            color: var(--text-sub);
+            margin-bottom: 2rem;
+            font-size: 1.05rem;
+        }
+
+        /* 퀵 세팅 버튼 */
+        .quick-btn-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .quick-btn {
+            background-color: #f1f5f9;
+            border: 1px solid var(--border-color);
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .quick-btn:hover {
+            background-color: var(--accent-bg);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .input-group {
+            margin-bottom: 1.25rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-main);
+            font-size: 0.95rem;
+        }
+        textarea, input[type="number"], select {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            background-color: white;
+            font-family: inherit;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        textarea:focus, input[type="number"]:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+        }
+
+        .option-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+        }
+
+        @media (max-width: 500px) {
+            .option-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        button.action-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 1rem 1.5rem;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        button.action-btn:hover {
+            background-color: var(--primary-hover);
+        }
+        
+        /* 결과 출력 박스 */
+        .result-box {
+            margin-top: 1.5rem;
+            background: var(--accent-bg);
+            border: 1px solid var(--accent-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: none;
+        }
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px dashed var(--accent-border);
+            padding-bottom: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        .result-title {
+            font-size: 0.95rem;
+            color: #047857;
+            font-weight: 600;
+        }
+        .copy-btn {
+            background: white;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        .copy-btn:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .teams-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        .team-card-item {
+            background: white;
+            border: 1px solid var(--accent-border);
+            border-radius: 10px;
+            padding: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .team-card-item h4 {
+            margin: 0 0 0.5rem 0;
+            color: var(--primary-color);
+            font-size: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--accent-bg);
+            padding-bottom: 0.4rem;
+        }
+        .team-card-item h4 span.count {
+            font-size: 0.8rem;
+            color: var(--text-sub);
+            font-weight: normal;
+        }
+        .team-member-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .team-member-list li {
+            padding: 0.25rem 0;
+            font-size: 0.95rem;
+            color: var(--text-main);
+            border-bottom: 1px solid #f8fafc;
+        }
+        .team-member-list li:last-child {
+            border-bottom: none;
+        }
+
+        /* 우측 사이드바: 인기 계산기 TOP 5 */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .popular-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 5rem;
+        }
+        .popular-card h3 {
+            font-size: 1.1rem;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-main);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+        }
+        .popular-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .popular-item a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 10px;
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            text-decoration: none;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .popular-item a:hover {
+            background-color: var(--accent-bg);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        .popular-badge {
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 800;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        /* SEO 상세 설명 및 아코디언 FAQ */
+        .seo-content {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+        }
+        .seo-content h2 {
+            font-size: 1.25rem;
+            border-left: 4px solid var(--primary-color);
+            padding-left: 0.75rem;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            color: #0f172a;
+        }
+
+        /* 아코디언 FAQ 스타일 */
+        .faq-accordion {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+        .accordion-item {
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            overflow: hidden;
+            background: white;
+        }
+        .accordion-header {
+            width: 100%;
+            background: none;
+            border: none;
+            padding: 1rem;
+            text-align: left;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-main);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .accordion-header:hover {
+            background: var(--bg-color);
+        }
+        .accordion-header i {
+            transition: transform 0.3s;
+            color: var(--text-sub);
+        }
+        .accordion-item.active .accordion-header i {
+            transform: rotate(180deg);
+            color: var(--primary-color);
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+            padding: 0 1rem;
+            background: var(--bg-color);
+            color: var(--text-sub);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        .accordion-item.active .accordion-content {
+            padding: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: var(--text-sub);
+            font-size: 0.875rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 4rem;
+            background: var(--card-bg);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="logo"><i class="fa-solid fa-toolbox"></i> 미소툴킷</a>
+        <a href="index.html" class="all-tools-btn"><i class="fa-solid fa-grip"></i> 전체 보기</a>
+    </header>
+
+    <div class="container">
+        
+        <!-- 좌측 메인 영역 -->
+        <main>
+            <div class="tool-card">
+                <h1><i class="fa-solid fa-users-viewfinder" style="color: var(--primary-color);"></i> 랜덤 팀 나누기</h1>
+                <p class="subtitle">참여 명단을 입력하고 원하는 팀 수나 인원수에 맞춰 무작위로 조를 나눕니다.</p>
+
+                <!-- 자주 쓰이는 프리셋 퀵 버튼 -->
+                <label>자주 쓰이는 명단 예시 퀵선택</label>
+                <div class="quick-btn-group">
+                    <button class="quick-btn" onclick="setPreset('project')">🎓 대학 조별 과제 (12명)</button>
+                    <button class="quick-btn" onclick="setPreset('futsal')">⚽ 풋살/모임 경기 (10명)</button>
+                    <button class="quick-btn" onclick="setPreset('workshop')">🏢 회사 워크숍 (16명)</button>
+                </div>
+
+                <div class="input-group">
+                    <label for="memberList">참여 인원 명단 (줄바꿈 또는 쉼표로 구분)</label>
+                    <textarea id="memberList" placeholder="예시:&#10;김철수&#10;이영희&#10;박민수&#10;정수진&#10;최동현&#10;강지은"></textarea>
+                </div>
+
+                <div class="option-row">
+                    <div>
+                        <label for="splitMode">나누기 기준 방식</label>
+                        <select id="splitMode" onchange="updateModeLabel()">
+                            <option value="teamCount" selected>총 팀 수 기준 (예: N개 팀으로 생성)</option>
+                            <option value="memberCount">팀당 인원 기준 (예: 1팀당 N명씩)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="targetValue" id="targetLabel">생성할 팀 수</label>
+                        <input type="number" id="targetValue" value="2" min="1" max="50">
+                    </div>
+                </div>
+
+                <button class="action-btn" onclick="divideTeams()">
+                    <i class="fa-solid fa-diagram-project"></i> 무작위 팀 나누기 시작
+                </button>
+
+                <!-- 결과 영역 -->
+                <div class="result-box" id="resultBox">
+                    <div class="result-header">
+                        <div class="result-title">🎉 무작위 팀 편성 결과 (총 <span id="totalMembers">0</span>명)</div>
+                        <button class="copy-btn" onclick="copyResult()">
+                            <i class="fa-regular fa-copy"></i> 전체 결과 복사
+                        </button>
+                    </div>
+                    <div class="teams-grid" id="teamsContainer"></div>
+                </div>
+            </div>
+
+            <!-- SEO 상세 설명 및 아코디언 FAQ -->
+            <div class="seo-content">
+                <h2>📖 도구 상세 설명</h2>
+                <p>본 랜덤 팀 나누기 계산기는 동호회 스포츠 경기(축구, 풋살, 농구), 대학 수업 조별 과제, 회사 워크숍 및 야유회 팀구성 시 **사람들을 공정하게 무작위 조로 배정**해 주는 스마트 유틸리티입니다.</p>
+                <p>원하는 총 팀 개수나 1개 팀당 인원수를 설정하면, **피셔-예이츠(Fisher-Yates) 난수 알고리즘**을 통해 치우침 없이 균등하게 인원이 분배됩니다.</p>
+
+                <h2 style="margin-top: 2rem;">❓ 자주 하는 질문 (FAQ)</h2>
+                
+                <div class="faq-accordion">
+                    <!-- 첫 번째 아코디언 (자동 열림) -->
+                    <div class="accordion-item active">
+                        <button class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>Q. 총 인원수가 정확히 나누어 떨어지지 않으면 어떻게 되나요?</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div class="accordion-content">
+                            A. 남는 인원은 앞쪽 팀부터 순차적으로 1명씩 균등하게 추가 배정됩니다. (예: 10명을 3개 팀으로 나누면 4명, 3명, 3명으로 편성됩니다.)
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <button class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>Q. 명단은 어떤 방식으로 구분해서 입력해야 하나요?</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div class="accordion-content">
+                            A. 엔터(줄바꿈) 키를 눌러 한 줄에 한 명씩 입력하시거나, 쉼표(`,`)로 이름들을 구분해서 작성하시면 자동으로 파싱됩니다.
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <button class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>Q. 나누어진 팀 결과를 메신저로 보낼 수 있나요?</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div class="accordion-content">
+                            A. 네, 상단의 **'전체 결과 복사'** 버튼을 클릭하시면 1팀, 2팀 형태의 텍스트로 자동 복사되어 카카오톡, 라인, 메일 등에 쉽게 붙여넣으실 수 있습니다.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- 우측 사이드바: 인기 계산기 TOP 5 -->
+        <aside class="sidebar">
+            <div class="popular-card">
+                <h3><i class="fa-solid fa-fire" style="color: #f59e0b;"></i> 인기 계산기 TOP 5</h3>
+                <ul class="popular-list">
+                    <li class="popular-item">
+                        <a href="./business-days.html">
+                            <span class="popular-badge">1</span>
+                            <span>영업일 계산기</span>
+                        </a>
+                    </li>
+                    <li class="popular-item">
+                        <a href="./month-calculator.html">
+                            <span class="popular-badge">2</span>
+                            <span>개월 수 계산기</span>
+                        </a>
+                    </li>
+                    <li class="popular-item">
+                        <a href="./national-pension-calculator.html">
+                            <span class="popular-badge">3</span>
+                            <span>국민연금 수급나이 계산기</span>
+                        </a>
+                    </li>
+                    <li class="popular-item">
+                        <a href="./d-day-calculator.html">
+                            <span class="popular-badge">4</span>
+                            <span>D-Day 디데이 계산기</span>
+                        </a>
+                    </li>
+                    <li class="popular-item">
+                        <a href="./age-calculator.html">
+                            <span class="popular-badge">5</span>
+                            <span>만나이 계산기</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+
+    </div>
+
+   <footer>
+    <p>&copy; 2026 misopick.kr. All rights reserved.</p>
+    <p>본 사이트에서 제공하는 모든 변환, 추첨, 번호 생성 및 팀 편성 기능은 사용자 편의를 위한 시뮬레이션 및 무작위 연산 결과로 제공되며, 사용 결과에 대한 법적 책임은 지지 않습니다.</p>
+        <p style="margin-top: 8px;"><a href="../privacy.html">개인정보처리방침</a></p>
+  </footer>
+
+    <script>
+        let generatedTeams = [];
+
+        // 페이지 로드 시 초기 세팅
+        window.onload = function() {
+            setPreset('project');
+
+            // 첫 번째 아코디언 높이 세팅 (자동 열림)
+            const firstActive = document.querySelector('.accordion-item.active .accordion-content');
+            if (firstActive) {
+                firstActive.style.maxHeight = firstActive.scrollHeight + "px";
+            }
+        };
+
+        // 기준 방식 변경 시 라벨 텍스트 변경
+        function updateModeLabel() {
+            const mode = document.getElementById('splitMode').value;
+            const label = document.getElementById('targetLabel');
+            if (mode === 'teamCount') {
+                label.innerText = '생성할 팀 수';
+            } else {
+                label.innerText = '팀당 목표 인원수';
+            }
+        }
+
+        // 프리셋 명단 입력
+        function setPreset(type) {
+            const input = document.getElementById('memberList');
+            if (type === 'project') {
+                input.value = "김철수\n이영희\n박민수\n정수진\n최동현\n강지은\n윤서준\n임아름\n한지민\n오성민\n송지원\n배현우";
+                document.getElementById('splitMode').value = 'teamCount';
+                document.getElementById('targetValue').value = 3;
+            } else if (type === 'futsal') {
+                input.value = "손흥민\n김민재\n이강인\n황희찬\n조규성\n황인범\n이재성\n김영권\n조현우\n설영우";
+                document.getElementById('splitMode').value = 'teamCount';
+                document.getElementById('targetValue').value = 2;
+            } else if (type === 'workshop') {
+                input.value = "강팀장\n김과장\n이대리\n박사원\n최차장\n정주임\n윤과장\n임대리\n한사원\n오팀장\n송차장\n배주임\n류과장\n신대리\n서사원\n권주임";
+                document.getElementById('splitMode').value = 'memberCount';
+                document.getElementById('targetValue').value = 4;
+            }
+            updateModeLabel();
+            divideTeams();
+        }
+
+        // 피셔-예이츠 셔플
+        function shuffle(array) {
+            let arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        // 팀 나누기 연산
+        function divideTeams() {
+            const rawText = document.getElementById('memberList').value.trim();
+            if (!rawText) {
+                alert('참여 명단을 최소 1명 이상 입력해 주세요.');
+                return;
+            }
+
+            let members = rawText.split(/[\n,]+/).map(m => m.trim()).filter(m => m.length > 0);
+
+            if (members.length === 0) {
+                alert('올바른 명단을 입력해 주세요.');
+                return;
+            }
+
+            const mode = document.getElementById('splitMode').value;
+            const targetVal = parseInt(document.getElementById('targetValue').value, 10);
+
+            if (isNaN(targetVal) || targetVal < 1) {
+                alert('올바른 수치를 입력해 주세요.');
+                return;
+            }
+
+            let numTeams = 1;
+            if (mode === 'teamCount') {
+                numTeams = targetVal;
+            } else {
+                numTeams = Math.ceil(members.length / targetVal);
+            }
+
+            if (numTeams < 1) numTeams = 1;
+
+            // 무작위 셔플
+            const shuffledMembers = shuffle(members);
+
+            // 팀 배열 생성
+            generatedTeams = Array.from({ length: numTeams }, () => []);
+
+            // 순차 라운드 로빈 방식으로 인원 분배
+            shuffledMembers.forEach((member, idx) => {
+                const teamIdx = idx % numTeams;
+                generatedTeams[teamIdx].push(member);
+            });
+
+            // 화면 렌더링
+            const resultBox = document.getElementById('resultBox');
+            const container = document.getElementById('teamsContainer');
+            document.getElementById('totalMembers').innerText = members.length;
+
+            container.innerHTML = '';
+
+            generatedTeams.forEach((team, idx) => {
+                const card = document.createElement('div');
+                card.className = 'team-card-item';
+                
+                const memberListHtml = team.map(m => `<li>${escapeHtml(m)}</li>`).join('');
+
+                card.innerHTML = `
+                    <h4>
+                        <span>${idx + 1}팀 (조)</span>
+                        <span class="count">${team.length}명</span>
+                    </h4>
+                    <ul class="team-member-list">
+                        ${memberListHtml}
+                    </ul>
+                `;
+                container.appendChild(card);
+            });
+
+            resultBox.style.display = 'block';
+        }
+
+        // 결과 복사 기능
+        function copyResult() {
+            if (!generatedTeams || generatedTeams.length === 0) return;
+
+            let text = `[랜덤 팀 나누기 결과]\n\n`;
+            generatedTeams.forEach((team, idx) => {
+                text += `${idx + 1}팀 (${team.length}명): ${team.join(', ')}\n`;
+            });
+
+            navigator.clipboard.writeText(text).then(() => {
+                alert('팀 구성 결과가 클립보드에 복사되었습니다!');
+            }).catch(() => {
+                alert('복사에 실패했습니다. 수동으로 선택해 복사해 주세요.');
+            });
+        }
+
+        // HTML 이스케이프
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+
+        // 아코디언 토글
+        function toggleAccordion(headerBtn) {
+            const item = headerBtn.parentElement;
+            const content = item.querySelector('.accordion-content');
+            const isActive = item.classList.contains('active');
+
+            if (isActive) {
+                item.classList.remove('active');
+                content.style.maxHeight = null;
+            } else {
+                item.classList.add('active');
+                content.style.maxHeight = content.scrollHeight + "px";
+            }
+        }
+    </script>
+</body>
+</html>

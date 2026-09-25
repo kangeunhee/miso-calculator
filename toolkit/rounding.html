@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>반올림 계산기 - 미소툴킷</title>
+    <meta name="description" content="소수점 반올림, 올림, 버림(절사)을 클릭 한 번으로 빠르게 계산하세요. 자릿수별(소수점/일의 자리/십의 자리) 정밀 처리를 지원합니다.">
+    
+    <!-- 폰트 및 아이콘 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #10b981;       /* 메인 초록색 (Emerald) */
+            --primary-hover: #059669;       /* 버튼 호버 시 짙은 초록색 */
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;           /* 본문 텍스트 */
+            --text-sub: #64748b;
+            --border-color: #e2e8f0;
+            --accent-bg: #ecfdf5;           /* 결과창 연한 초록색 배경 */
+            --accent-border: #a7f3d0;       /* 결과창 연한 초록색 테두리 */
+        }
+        body {
+            font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        header {
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        header .logo {
+            text-decoration: none;
+            color: var(--primary-color);
+            font-weight: 800;
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .all-tools-btn {
+            background-color: #f1f5f9;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.2s;
+        }
+        .all-tools-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        /* 메인 레이아웃 (좌측 콘텐트 + 우측 인기 계산기 사이드바) */
+        .container {
+            max-width: 1100px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            display: grid;
+            grid-template-columns: 1fr 310px;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 868px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* 메인 영역 카드 */
+        .tool-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+        }
+        h1 {
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #0f172a;
+        }
+          footer {
+      border-top: 1px solid var(--border);
+      padding: 30px 20px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      background-color: var(--bg-green);
+    }
+
+    footer p {
+      margin: 4px 0;
+      color: var(--text-muted);
+    }
+
+    footer a {
+      color: var(--text-muted);
+      text-decoration: underline;
+    }
+        .subtitle {
+            color: var(--text-sub);
+            margin-bottom: 2rem;
+            font-size: 1.05rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.25rem;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-main);
+            font-size: 0.95rem;
+        }
+        input[type="number"], select {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            background-color: white;
+            font-family: inherit;
+        }
+        input[type="number"]:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+        }
+
+        button.action-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.875rem 1.5rem;
+            font-size: 1.05rem;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s;
+            margin-top: 0.5rem;
+        }
+        button.action-btn:hover {
+            background-color: var(--primary-hover);
+        }
+        
+        /* 결과 출력 박스 */
+        .result-box {
+            margin-top: 1.5rem;
+            background: var(--accent-bg);
+            border: 1px solid var(--accent-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: none;
+        }
+        .result-title {
+            font-size: 0.95rem;
+            color: #047857;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            border-bottom: 1px dashed var(--accent-border);
+            padding-bottom: 0.5rem;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        .result-card-item {
+            background: white;
+            border: 1px solid var(--accent-border);
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+        }
+        .result-card-item label {
+            font-size: 0.85rem;
+            color: var(--text-sub);
+            margin-bottom: 0.25rem;
+        }
+        .result-card-item .val {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+        }
+
+        /* 우측 사이드바: 인기 계산기 TOP 5 */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .popular-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 5rem;
+        }
+        .popular-card h3 {
+            font-size: 1.1rem;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-main);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+        }
+        .popular-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .popular-item a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 10px;
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            text-decoration: none;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .popular-item a:hover {
+            background-color: var(--accent-bg);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        .popular-badge {
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 800;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        /* SEO 상세 설명 및 아코디언 FAQ */
+        .seo-content {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+        }
+        .seo-content h2 {
+            font-size: 1.25rem;
+            border-left: 4px solid var(--primary-color);
+            padding-left: 0.75rem;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            color: #0f172a;
+        }
+
+        /* 아코디언 FAQ 스타일 */
+        .faq-accordion {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+        .accordion-item {
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            overflow: hidden;
+            background: white;
+        }
+        .accordion-header {
+            width: 100%;
+            background: none;
+            border: none;
+            padding: 1rem;
+            text-align: left;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-main);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .accordion-header:hover {
+            background: var(--bg-color);
+        }
+        .accordion-header i {
+            transition: transform 0.3s;
+            color: var(--text-sub);
+        }
+        .accordion-item.active .accordion-header i {
+            transform: rotate(180deg);
+            color: var(--primary-color);
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+            padding: 0 1rem;
+            background: var(--bg-color);
+            color: var(--text-sub);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        .accordion-item.active .accordion-content {
+            padding: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: var(--text-sub);
+            font-size: 0.875rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 4rem;
+            background: var(--card-bg);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="logo"><i class="fa-solid fa-toolbox"></i> 미소툴킷</a>
+        <a href="index.html" class="all-tools-btn"><i class="fa-solid fa-grip"></i> 전체 보기</a>
+    </header>
+
+    <div class="container">
+        
+        <!-- 좌측 메인 영역 -->
+        <main>
+            <div class="tool-card">
+                <h1><i class="fa-solid fa-arrow-up-right-dots" style="color: var(--primary-color);"></i> 반올림 계산기</h1>
+                <p class="subtitle">원본 숫자를 입력하고 자릿수를 지정하여 반올림, 올림, 버림 결과를 한눈에 확인하세요.</p>
+
+                <div class="input-group">
+                    <label for="numInput">계산할 숫자 입력</label>
+                    <input type="number" step="any" id="numInput" placeholder="예: 123.4567" value="123.4567">
+                </div>
+
+                <div class="input-group">
+                    <label for="precisionSelect">적용할 자릿수 선택</label>
+                    <select id="precisionSelect">
+                        <option value="2">소수점 셋째 자리에서 반올림 (소수점 둘째 자리까지 표기: 0.01)</option>
+                        <option value="1" selected>소수점 둘째 자리에서 반올림 (소수점 첫째 자리까지 표기: 0.1)</option>
+                        <option value="0">소수점 첫째 자리에서 반올림 (정수 단위 표기: 1)</option>
+                        <option value="-1">일의 자리에서 반올림 (십 단위 표기: 10)</option>
+                        <option value="-2">십의 자리에서 반올림 (백 단위 표기: 100)</option>
+                        <option value="-3">백의 자리에서 반올림 (천 단위 표기: 1,000)</option>
+                    </select>
+                </div>
+
+                <button class="action-btn" onclick="calculateRounding()">계산 실행하기</button>
+
+                <!-- 결과 영역 -->
+                <div class="result-box" id="resultBox">
+                    <div class="result-title" id="resTitle">계산 결과</div>
+                    <div class="result-grid">
+                        <div class="result-card-item">
+                            <label>🔄 반올림 (Round)</label>
+                            <div class="val" id="resRound">-</div>
+                        </div>
+                        <div class="result-card-item">
+                            <label>⬆️ 올림 (Ceil)</label>
+                            <div class="val" style="color: #047857;" id="resCeil">-</div>
+                        </div>
+                        <div class="result-card-item">
+                            <label>⬇️ 버림/절사 (Floor)</label>
+                            <div class="val" style="color: #64748b;" id="resFloor">-</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEO 상세 설명 및 아코디언 FAQ -->
+            <div class="seo-content">
+                <h2>📖 도구 상세 설명</h2>
+                <p>본 반올림 계산기는 업무 정산, 성적 집계, 정밀 수치 통계, 가격 절사 등에서 자주 쓰이는 <strong>반올림(Round), 올림(Ceil), 버림/절사(Floor)</strong>를 한번에 계산해 주는 도구입니다.</p>
+                <p>소수점 자리 처리뿐만 아니라 십의 자리, 백의 자리, 천의 자리 등 원하시는 단위를 자유롭게 지정하여 정확한 근사치를 얻으실 수 있습니다.</p>
+
+                <h2 style="margin-top: 2rem;">❓ 자주 하는 질문 (FAQ)</h2>
+                
+                <div class="faq-accordion">
+                    <!-- 첫 번째 아코디언 (자동 열림) -->
+                    <div class="accordion-item active">
+                        <button class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>Q. 반올림, 올림, 버림의 처리 기준은 무엇인가요?</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div class="accordion-content">
+                            A. **반올림**은 구하려는 자릿수 바로 뒷자리의 숫자가 5 이상이면 올리고 4 이하이면 버립니다.<br>
+                            **올림**은 구하려는 자릿수 뒤에 0이 아닌 수자가 존재하면 무조건 1을 올려줍니다.<br>
+                            **버림(절사)**은 지정한 자릿수 미만의 수치를 모두 0으로 버립니다.
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <button class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>Q. 백 원 단위/천 원 단위 절사는 어떻게 선택하나요?</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div class="accordion-content">
+                            A. 옵션에서 '십의 자리에서 반올림(백 단위)' 또는 '백의 자리에서 반올림(천 단위)'을 선택하신 후 **버림(절사)** 항목의 결과를 확인하시면 원하시는 절사 금액을 바로 얻을 수 있습니다.
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <button class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>Q. 음수 수치도 계산이 가능한가요?</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div class="accordion-content">
+                            A. 네, 음수(-) 입력 역시 표준 수학적 규칙 및 자바스크립트 `Math.round`, `Math.ceil`, `Math.floor` 표준 동작 알고리즘에 맞춰 안전하게 계산됩니다.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- 우측 사이드바: 인기 계산기 TOP 5 -->
+        <aside class="sidebar">
+            <div class="popular-card">
+                <h3><i class="fa-solid fa-fire" style="color: #f59e0b;"></i> 인기 계산기 TOP 5</h3>
+                <ul class="popular-list">
+                    <li class="popular-item">
+                        <a href="./business-days.html">
+                            <span class="popular-badge">1</span>
+                            <span>영업일 계산기</span>
+                        </a>
+                    </li>
+                    <li class="popular-item">
+                        <a href="./month-calculator.html">
+                            <span class="popular-badge">2</span>
+                            <span>개월 수 계산기</span>
+                        </a>
+                    </li>
+                    <li class="popular-item">
+                        <a href="./national-pension-calculator.html">
+                            <span class="popular-badge">3</span>
+                            <span>국민연금 수급나이 계산기</span>
+                        </a>
+                    </li>
+                    <li class="popular-item">
+                        <a href="./d-day-calculator.html">
+                            <span class="popular-badge">4</span>
+                            <span>D-Day 디데이 계산기</span>
+                        </a>
+                    </li>
+                    <li class="popular-item">
+                        <a href="./age-calculator.html">
+                            <span class="popular-badge">5</span>
+                            <span>만나이 계산기</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+
+    </div>
+
+    <footer>
+    <p>&copy; 2026 misopick.kr. All rights reserved.</p>
+    <p>본 사이트에서 제공하는 모든 변환, 추첨, 번호 생성 및 팀 편성 기능은 사용자 편의를 위한 시뮬레이션 및 무작위 연산 결과로 제공되며, 사용 결과에 대한 법적 책임은 지지 않습니다.</p>
+        <p style="margin-top: 8px;"><a href="../privacy.html">개인정보처리방침</a></p>
+  </footer>
+
+    <script>
+        // 페이지 로드 시 초기 계산 실행
+        window.onload = function() {
+            calculateRounding();
+
+            // 첫 번째 아코디언 높이 세팅 (자동 열림)
+            const firstActive = document.querySelector('.accordion-item.active .accordion-content');
+            if (firstActive) {
+                firstActive.style.maxHeight = firstActive.scrollHeight + "px";
+            }
+        };
+
+        // 숫자에 천 단위 콤마 추가
+        function formatNum(num) {
+            if (isNaN(num)) return '-';
+            const parts = num.toString().split(".");
+            parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            return parts.join(".");
+        }
+
+        // 반올림/올림/버림 계산
+        function calculateRounding() {
+            const rawVal = document.getElementById('numInput').value;
+            const p = parseInt(document.getElementById('precisionSelect').value, 10);
+
+            if (rawVal === "" || isNaN(rawVal)) {
+                alert('유효한 숫자를 입력해 주세요.');
+                return;
+            }
+
+            const num = parseFloat(rawVal);
+            const factor = Math.pow(10, p);
+
+            // 1. 반올림 (Round)
+            const roundRes = Math.round(num * factor) / factor;
+            
+            // 2. 올림 (Ceil)
+            const ceilRes = Math.ceil(num * factor) / factor;
+
+            // 3. 버림 (Floor)
+            const floorRes = Math.floor(num * factor) / factor;
+
+            // 소수점 자리수 고정 포맷팅 (p > 0 인 경우)
+            const formatWithDecimals = (val) => {
+                if (p > 0) {
+                    return formatNum(val.toFixed(p));
+                }
+                return formatNum(val);
+            };
+
+            document.getElementById('resRound').innerText = formatWithDecimals(roundRes);
+            document.getElementById('resCeil').innerText = formatWithDecimals(ceilRes);
+            document.getElementById('resFloor').innerText = formatWithDecimals(floorRes);
+
+            document.getElementById('resultBox').style.display = 'block';
+        }
+
+        // 아코디언 토글 함수
+        function toggleAccordion(headerBtn) {
+            const item = headerBtn.parentElement;
+            const content = item.querySelector('.accordion-content');
+            const isActive = item.classList.contains('active');
+
+            if (isActive) {
+                item.classList.remove('active');
+                content.style.maxHeight = null;
+            } else {
+                item.classList.add('active');
+                content.style.maxHeight = content.scrollHeight + "px";
+            }
+        }
+    </script>
+</body>
+</html>
