@@ -188,7 +188,10 @@
 
             resultBox.innerHTML = '<span class="text-xs text-slate-500 py-2"><i class="fa-solid fa-spinner fa-spin mr-1"></i> 국립국어원 서버에서 데이터를 불러오는 중입니다...</span>';
 
-            const url = `https://krdict.korean.go.kr/api/search?key=${API_KEY}&type_search=search&part=word&q=&sort=dict`;
+           
+
+            const targetUrl = encodeURIComponent(`https://krdict.korean.go.kr/api/search?key=${API_KEY}&type_search=search&part=word&q=&sort=dict`);
+               const url = `https://corsproxy.io/?${targetUrl}`
 
             try {
                 const response = await fetch(url);
