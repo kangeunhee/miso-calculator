@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>캐릭터 이름/닉네임 생성기 - 미소픽 (MisoPick)</title>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2888840483385554"
+     crossorigin="anonymous"></script>
+    <!-- 구글 애드센스 승인용 스크립트 (주석 처리됨) -->
+    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 50: '#f0fdf4', 100: '#dcfce7', 500: '#22c55e', 600: '#16a34a', 700: '#15803d' }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white">
+
+    <!-- 상단 네비게이션바 -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <!-- 왼쪽 상단: misopick.kr 로고 -->
+            <a href="https://misopick.kr" class="flex items-center space-x-2">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-emerald-400 flex items-center justify-center text-white font-bold text-lg shadow-md shadow-brand-500/20">
+                    M
+                </div>
+                <span class="text-xl font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span>
+            </a>
+
+            <!-- 오른쪽 상단: 전체보기 버튼 -->
+            <div>
+                <a href="https://misopick.kr/index.html" class="inline-flex items-center space-x-1.5 px-4 py-2 rounded-full bg-slate-100 text-slate-700 hover:bg-brand-50 hover:text-brand-700 text-sm font-semibold transition">
+                    <i class="fa-solid fa-grid-2"></i>
+                    <span>전체보기</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 메인 컨텐츠 영역 -->
+    <main class="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+        
+        <!-- 툴 실행 영역 (캐릭터 이름/닉네임 생성기) -->
+        <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+            <div>
+                <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 bg-brand-50 text-brand-700 rounded-md">Tool #13</span>
+                <h1 class="text-2xl font-black text-slate-900 mt-2 mb-1">캐릭터 이름/닉네임 생성기</h1>
+                <p class="text-sm text-slate-500">게임, 소설, 커뮤니티 등에서 활용할 수 있는 개성 있고 유니크한 닉네임을 생성합니다.</p>
+            </div>
+
+            <!-- 스타일 선택 및 생성 버튼 -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">닉네임 스타일 선택</label>
+                    <select id="nicknameStyle" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:bg-white focus:border-brand-500 outline-none transition">
+                        <option value="fantasy">판타지 RPG (기사/마법사풍)</option>
+                        <option value="cute">귀여운 감성 (몽글몽글/포근한풍)</option>
+                        <option value="cool">시크/다크 (강렬하고 멋진풍)</option>
+                        <option value="funny">재미있는 밈 (유쾌한풍)</option>
+                    </select>
+                </div>
+                <div class="flex items-end">
+                    <button onclick="generateNicknames()" class="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm rounded-2xl transition shadow-md">
+                        닉네임 생성하기
+                    </button>
+                </div>
+            </div>
+
+            <!-- 결과 출력 박스 -->
+            <div class="space-y-2">
+                <div class="flex items-center justify-between">
+                    <label class="block text-xs font-bold text-slate-700">생성된 닉네임 추천 목록</label>
+                    <span class="text-xs text-slate-400">원하는 닉네임을 클릭하면 복사됩니다.</span>
+                </div>
+                <div id="nicknameResultBox" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm min-h-[160px] max-h-[240px] overflow-y-auto flex flex-wrap gap-2 items-start content-start">
+                    <span class="text-xs text-slate-400 py-2">버튼을 눌러 닉네임을 생성해보세요!</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 애드센스 광고 영역 (주석 처리됨) -->
+        <!-- 
+        <div class="w-full bg-slate-100 border border-slate-200 rounded-2xl p-6 text-center text-slate-400 flex flex-col items-center justify-center min-h-[90px]">
+            <span class="text-xs uppercase tracking-widest font-bold text-slate-400 mb-1"><i class="fa-solid fa-rectangle-ad mr-1"></i> Google AdSense 광고 영역</span>
+            <p class="text-xs text-slate-400">반응형 디스플레이 광고 단위 공간입니다.</p>
+        </div>
+        -->
+
+        <!-- 서비스 설명 및 자주 하는 질문 (아코디언) 섹션 -->
+        <section class="bg-white rounded-3xl border border-slate-200 p-8 shadow-sm space-y-8">
+            <div>
+                <h2 class="text-xl font-bold text-slate-900 mb-2">서비스 소개 및 이용 가이드</h2>
+                <p class="text-sm text-slate-600 leading-relaxed">
+                    <strong>misopick.kr</strong>의 캐릭터 이름 및 닉네임 생성기는 판타지 게임 캐릭터, 소설 속 주인공, 각종 커뮤니티나 SNS 프로필에 어울리는 감각적이고 매력적인 이름을 쉽고 빠르게 추천해 주는 유틸리티 도구입니다.
+                </p>
+            </div>
+
+            <!-- 자주 하는 질문 (아코디언) -->
+            <div class="space-y-4">
+                <h3 class="text-lg font-bold text-slate-900 flex items-center">
+                    <i class="fa-solid fa-circle-question text-brand-600 mr-2"></i> 자주 하는 질문 (FAQ)
+                </h3>
+                <div class="space-y-3" id="faqContainer">
+                    
+                    <!-- FAQ 1 (처음에 열려 있는 아코디언) -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q1. 어떤 종류의 닉네임 스타일을 지원하나요?</span>
+                            <i class="fa-solid fa-chevron-down transform rotate-180 transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 block">
+                            판타지 RPG, 귀여운 감성, 시크/다크, 유쾌한 밈 등 다양한 분위기와 콘셉트에 맞춘 조합형 명칭들을 스타일별로 다양하게 제공합니다.
+                        </div>
+                    </div>
+
+                    <!-- FAQ 2 -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q2. 생성된 닉네임이나 데이터가 서버에 저장되나요?</span>
+                            <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
+                            아니요, 전혀 저장되지 않습니다. 사용자의 브라우저 내부에서 자바스크립트 알고리즘에 의해 실시간으로 무작위 조합되어 안전하게 이용할 수 있습니다.
+                        </div>
+                    </div>
+
+                    <!-- FAQ 3 -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q3. 모바일 환경에서도 원활하게 이용할 수 있나요?</span>
+                            <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
+                            네, 모바일 기기와 태블릿 환경에서도 반응형 UI로 최적화되어 있어 터치 한 번으로 간편하게 닉네임을 생성하고 복사할 수 있습니다.
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="bg-white border-t border-slate-200 py-10 mt-auto">
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-xl bg-brand-600 flex items-center justify-center text-white font-bold text-sm">M</div>
+                
+                    <a href="index.html" class="flex items-center space-x-2">
+                <span class="text-lg font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span></a>
+            </div>
+            <p class="text-sm text-slate-500 text-center md:text-left">
+               <strong>이용 안내:</strong> 본 사이트에서 제공하는 모든 툴과 기능은 지속적으로 업데이트되며, 누구나 무료로 자유롭게 이용할 수 있습니다. 
+               <br>서비스 이용 중 불편한 점이나 추가가 필요한 유틸리티 제안은 고객 피드백 채널을 통해 남겨주시기 바랍니다.<br>   
+               
+            </p>
+             <p style="margin-top: 8px;"><a href="../privacy.html" style="color: var(--text-muted); text-decoration: none;">개인정보처리방침보기</a></p>
+        </div>
+    </footer>
+
+    <!-- 닉네임 생성 및 아코디언 동작 스크립트 -->
+    <script>
+        const namePools = {
+            fantasy: ['아르테미스', '루미너스', '다크로드', '발키리', '섀도우헌터', '칼리버', '제우스', '아레스', '실버팡', '헬파이어', '블레이드', '포세이돈', '아이온', '템페스트', '벨로체'],
+            cute: ['말랑복숭아', '구름이솜솜', '초코마카롱', '딸기우유', '별빛모과', '젤리뽀짝', '모찌앙금', '삐약이', '체리콕', '뒹굴레', '토끼인형', '감자빵', '오디너리', '푸딩카파', '꼬맹이'],
+            cool: ['앱솔루트', '블랙맘바', '팬텀나이트', '옵티머스', '사라센', '나이트메어', '베놈스트라이크', '인피니티', '그레이브', '다크나이트', '킬러웨이브', '스파르타', '네메시스', '제네시스', '불사조'],
+            funny: ['내일부터다이어트', '롤은트롤이지', '잠만보주인공', '주식대박기원', '피곤한직장인', '김수한무거북이', '치킨은살안쪄', '게임하다지움', '주말만 기다려', '밥버거특대', '사막의오아시스', '마감의신', '프로참석러', '소파와일체형', '아무말대잔치']
+        };
+
+        function generateNicknames() {
+            const style = document.getElementById('nicknameStyle').value;
+            const resultBox = document.getElementById('nicknameResultBox');
+            const pool = namePools[style] || namePools.fantasy;
+
+            // 무작위로 12개 추출
+            let shuffled = [...pool].sort(() => 0.5 - Math.random());
+            let selected = shuffled.slice(0, 12);
+
+            resultBox.innerHTML = '';
+            selected.forEach(nickname => {
+                const span = document.createElement('span');
+                span.className = 'px-3.5 py-2 bg-slate-100 hover:bg-brand-50 hover:text-brand-700 text-slate-700 font-bold text-xs rounded-xl border border-slate-200/85 transition cursor-pointer shadow-2xs';
+                span.textContent = nickname;
+                span.title = '클릭하여 복사';
+                span.onclick = () => {
+                    navigator.clipboard.writeText(nickname);
+                    alert(`닉네임 "${nickname}"이(가) 클립보드에 복사되었습니다.`);
+                };
+                resultBox.appendChild(span);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // 초기 로드시 판타지 닉네임 생성 실행
+            generateNicknames();
+
+            // FAQ 아코디언 동작 로직
+            const faqItems = document.querySelectorAll('.faq-item');
+
+            faqItems.forEach(item => {
+                const btn = item.querySelector('.faq-btn');
+                const content = item.querySelector('.faq-content');
+                const icon = item.querySelector('.fa-chevron-down');
+
+                btn.addEventListener('click', () => {
+                    const isOpen = !content.classList.contains('hidden');
+
+                    faqItems.forEach(otherItem => {
+                        otherItem.querySelector('.faq-content').classList.add('hidden');
+                        otherItem.querySelector('.fa-chevron-down').classList.remove('rotate-180');
+                    });
+
+                    if (isOpen) {
+                        content.classList.add('hidden');
+                        icon.classList.remove('rotate-180');
+                    } else {
+                        content.classList.remove('hidden');
+                        icon.classList.add('rotate-180');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

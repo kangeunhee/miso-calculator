@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>랜덤 숫자 추첨기 - 미소픽 (MisoPick)</title>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2888840483385554"
+     crossorigin="anonymous"></script>
+    <!-- 구글 애드센스 승인용 스크립트 (주석 처리됨) -->
+    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 50: '#f0fdf4', 100: '#dcfce7', 500: '#22c55e', 600: '#16a34a', 700: '#15803d' }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white">
+
+    <!-- 상단 네비게이션바 -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <!-- 왼쪽 상단: misopick.kr 로고 -->
+            <a href="https://misopick.kr" class="flex items-center space-x-2">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-emerald-400 flex items-center justify-center text-white font-bold text-lg shadow-md shadow-brand-500/20">
+                    M
+                </div>
+                <span class="text-xl font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span>
+            </a>
+
+            <!-- 오른쪽 상단: 전체보기 버튼 -->
+            <div>
+                <a href="https://misopick.kr/index.html" class="inline-flex items-center space-x-1.5 px-4 py-2 rounded-full bg-slate-100 text-slate-700 hover:bg-brand-50 hover:text-brand-700 text-sm font-semibold transition">
+                    <i class="fa-solid fa-grid-2"></i>
+                    <span>전체보기</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 메인 컨텐츠 영역 -->
+    <main class="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+        
+        <!-- 툴 실행 영역 (랜덤 숫자 추첨기) -->
+        <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-8">
+            <div>
+                <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 bg-brand-50 text-brand-700 rounded-md">Tool #21</span>
+                <h1 class="text-2xl font-black text-slate-900 mt-2 mb-1">랜덤 숫자 추첨기</h1>
+                <p class="text-sm text-slate-500">지정한 범위 내에서 무작위 숫자를 공정하게 추출하거나 행운의 로또 번호를 생성합니다.</p>
+            </div>
+
+            <!-- 탭 전환 버튼 -->
+            <div class="flex space-x-2 border-b border-slate-200 pb-4">
+                <button onclick="switchTab('custom')" id="tabCustom" class="px-5 py-2.5 rounded-2xl text-sm font-bold bg-brand-600 text-white transition shadow-sm">
+                    범위 지정 숫자 추첨
+                </button>
+                <button onclick="switchTab('lotto')" id="tabLotto" class="px-5 py-2.5 rounded-2xl text-sm font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 transition">
+                    로또 번호 생성기 (1~45)
+                </button>
+            </div>
+
+            <!-- 커스텀 범위 추첨 패널 -->
+            <div id="panelCustom" class="space-y-6">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold text-slate-700">최소값 (From)</label>
+                        <input type="number" id="minValue" value="1" class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:bg-white focus:border-brand-500 outline-none transition">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold text-slate-700">최대값 (To)</label>
+                        <input type="number" id="maxValue" value="45" class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:bg-white focus:border-brand-500 outline-none transition">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold text-slate-700">추첨 개수</label>
+                        <input type="number" id="countValue" min="1" max="50" value="1" class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:bg-white focus:border-brand-500 outline-none transition">
+                    </div>
+                </div>
+                <div class="flex items-center justify-between pt-2">
+                    <button onclick="generateCustomRandom()" class="px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm rounded-2xl transition shadow-md">
+                        랜덤 숫자 추첨하기
+                    </button>
+                    <button id="copyCustomBtn" class="text-xs text-brand-600 font-bold hover:underline hidden">
+                        <i class="fa-regular fa-copy mr-1"></i> 결과 복사하기
+                    </button>
+                </div>
+            </div>
+
+            <!-- 로또 번호 생성 패널 -->
+            <div id="panelLotto" class="space-y-6 hidden">
+                <div class="p-4 bg-brand-50/60 border border-brand-100 rounded-2xl text-xs text-slate-600 flex items-center justify-between">
+                    <span><i class="fa-solid fa-circle-info text-brand-600 mr-1.5"></i> 1부터 45까지의 숫자 중 무작위로 6개의 번호를 추출합니다.</span>
+                </div>
+                <div class="flex items-center justify-between pt-2">
+                    <button onclick="generateLottoNumbers()" class="px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm rounded-2xl transition shadow-md">
+                        행운의 로또 번호 생성
+                    </button>
+                    <button id="copyLottoBtn" class="text-xs text-brand-600 font-bold hover:underline hidden">
+                        <i class="fa-regular fa-copy mr-1"></i> 로또 번호 복사하기
+                    </button>
+                </div>
+            </div>
+
+            <!-- 결과 출력 박스 -->
+            <div class="space-y-2 pt-4 border-t border-slate-100">
+                <label class="block text-xs font-bold text-slate-700">추첨 결과</label>
+                <div id="resultBox" class="w-full p-6 bg-slate-50 border border-slate-200 rounded-2xl min-h-[120px] flex items-center justify-center text-center text-slate-800 font-black text-xl tracking-wider">
+                    <span class="text-xs text-slate-400 font-normal">추첨 버튼을 눌러주세요.</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 애드센스 광고 영역 (주석 처리됨) -->
+        <!-- 
+        <div class="w-full bg-slate-100 border border-slate-200 rounded-2xl p-6 text-center text-slate-400 flex flex-col items-center justify-center min-h-[90px]">
+            <span class="text-xs uppercase tracking-widest font-bold text-slate-400 mb-1"><i class="fa-solid fa-rectangle-ad mr-1"></i> Google AdSense 광고 영역</span>
+            <p class="text-xs text-slate-400">반응형 디스플레이 광고 단위 공간입니다.</p>
+        </div>
+        -->
+
+        <!-- 서비스 설명 및 자주 하는 질문 (아코디언) 섹션 -->
+        <section class="bg-white rounded-3xl border border-slate-200 p-8 shadow-sm space-y-8">
+            <div>
+                <h2 class="text-xl font-bold text-slate-900 mb-2">서비스 소개 및 이용 가이드</h2>
+                <p class="text-sm text-slate-600 leading-relaxed">
+                    <strong>misopick.kr</strong>의 랜덤 숫자 추첨기는 원하는 최소 및 최대 범위 안에서 공정하고 무작위적인 숫자를 즉시 뽑아주며, 간편하게 로또 번호(1~45)를 조합하여 확인할 수 있는 실용적인 유틸리티 도구입니다.
+                </p>
+            </div>
+
+            <!-- 자주 하는 질문 (아코디언) -->
+            <div class="space-y-4">
+                <h3 class="text-lg font-bold text-slate-900 flex items-center">
+                    <i class="fa-solid fa-circle-question text-brand-600 mr-2"></i> 자주 하는 질문 (FAQ)
+                </h3>
+                <div class="space-y-3" id="faqContainer">
+                    
+                    <!-- FAQ 1 (처음에 열려 있는 아코디언) -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q1. 무작위 숫자는 어떤 방식으로 추출되나요?</span>
+                            <i class="fa-solid fa-chevron-down transform rotate-180 transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 block">
+                            자바스크립트의 표준 난수 생성 알고리즘과 수학 함수(Math.random)를 기반으로 사용자가 지정한 범위 내에서 중복 없이 또는 허용된 조건에 맞춰 공정하게 숫자를 추출합니다.
+                        </div>
+                    </div>
+
+                    <!-- FAQ 2 -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q2. 추첨 결과나 기록이 서버에 저장되나요?</span>
+                            <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
+                            아니요, 전혀 저장되지 않습니다. 모든 연산은 사용자의 브라우저 내부에서 실시간으로 처리되므로 프라이버시가 완벽하게 보장됩니다.
+                        </div>
+                    </div>
+
+                    <!-- FAQ 3 -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q3. 모바일 스마트폰에서도 간편하게 이용할 수 있나요?</span>
+                            <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
+                            네, 반응형 디자인이 적용되어 모바일 기기에서도 터치 한 번으로 간편하게 번호를 추첨하고 복사할 수 있습니다.
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="bg-white border-t border-slate-200 py-10 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-xl bg-brand-600 flex items-center justify-center text-white font-bold text-sm">M</div>
+                <a href="index.html" class="flex items-center space-x-2">
+                <span class="text-lg font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span></a>
+            </div>
+            <p class="text-sm text-slate-500 text-center md:text-left">
+               <strong>이용 안내:</strong> 본 사이트에서 제공하는 모든 툴과 기능은 지속적으로 업데이트되며, 누구나 무료로 자유롭게 이용할 수 있습니다. 
+               <br>서비스 이용 중 불편한 점이나 추가가 필요한 유틸리티 제안은 고객 피드백 채널을 통해 남겨주시기 바랍니다.<br>   
+            </p>
+             <p style="margin-top: 8px;"><a href="../privacy.html" style="color: var(--text-muted); text-decoration: none;">개인정보처리방침보기</a></p>
+        </div>
+    </footer>
+
+    <!-- 랜덤 숫자 추첨 및 아코디언 동작 스크립트 -->
+    <script>
+        function switchTab(type) {
+            const tabCustom = document.getElementById('tabCustom');
+            const tabLotto = document.getElementById('tabLotto');
+            const panelCustom = document.getElementById('panelCustom');
+            const panelLotto = document.getElementById('panelLotto');
+            const resultBox = document.getElementById('resultBox');
+
+            if (type === 'custom') {
+                tabCustom.className = 'px-5 py-2.5 rounded-2xl text-sm font-bold bg-brand-600 text-white transition shadow-sm';
+                tabLotto.className = 'px-5 py-2.5 rounded-2xl text-sm font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 transition';
+                panelCustom.classList.remove('hidden');
+                panelLotto.classList.add('hidden');
+                resultBox.innerHTML = '<span class="text-xs text-slate-400 font-normal">추첨 버튼을 눌러주세요.</span>';
+                document.getElementById('copyCustomBtn').classList.add('hidden');
+                document.getElementById('copyLottoBtn').classList.add('hidden');
+            } else {
+                tabLotto.className = 'px-5 py-2.5 rounded-2xl text-sm font-bold bg-brand-600 text-white transition shadow-sm';
+                tabCustom.className = 'px-5 py-2.5 rounded-2xl text-sm font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 transition';
+                panelLotto.classList.remove('hidden');
+                panelCustom.classList.add('hidden');
+                resultBox.innerHTML = '<span class="text-xs text-slate-400 font-normal">로또 번호 생성 버튼을 눌러주세요.</span>';
+                document.getElementById('copyCustomBtn').classList.add('hidden');
+                document.getElementById('copyLottoBtn').classList.add('hidden');
+            }
+        }
+
+        function generateCustomRandom() {
+            const min = parseInt(document.getElementById('minValue').value);
+            const max = parseInt(document.getElementById('maxValue').value);
+            const count = parseInt(document.getElementById('countValue').value);
+            const resultBox = document.getElementById('resultBox');
+            const copyCustomBtn = document.getElementById('copyCustomBtn');
+
+            if (isNaN(min) || isNaN(max) || isNaN(count)) {
+                alert('모든 입력값을 올바르게 입력해주세요.');
+                return;
+            }
+
+            if (min > max) {
+                alert('최소값은 최대값보다 클 수 없습니다.');
+                return;
+            }
+
+            const rangeSize = (max - min) + 1;
+            if (count > rangeSize) {
+                alert('추첨 개수가 전체 범위 크기보다 클 수 없습니다.');
+                return;
+            }
+
+            let numbers = [];
+            let pool = [];
+            for (let i = min; i <= max; i++) {
+                pool.push(i);
+            }
+
+            for (let i = 0; i < count; i++) {
+                const randomIndex = Math.floor(Math.random() * pool.length);
+                numbers.push(pool.splice(randomIndex, 1)[0]);
+            }
+
+            // 정렬 여부 선택 가능하나 기본 오름차순 정렬 또는 순서대로
+            numbers.sort((a, b) => a - b);
+
+            const resultText = numbers.join(', ');
+            resultBox.textContent = resultText;
+            copyCustomBtn.classList.remove('hidden');
+
+            copyCustomBtn.onclick = () => {
+                navigator.clipboard.writeText(resultText).then(() => {
+                    alert('추첨된 숫자가 클립보드에 복사되었습니다.');
+                });
+            };
+        }
+
+        function generateLottoNumbers() {
+            const resultBox = document.getElementById('resultBox');
+            const copyLottoBtn = document.getElementById('copyLottoBtn');
+
+            let pool = [];
+            for (let i = 1; i <= 45; i++) {
+                pool.push(i);
+            }
+
+            let lottoNums = [];
+            for (let i = 0; i < 6; i++) {
+                const randomIndex = Math.floor(Math.random() * pool.length);
+                lottoNums.push(pool.splice(randomIndex, 1)[0]);
+            }
+
+            lottoNums.sort((a, b) => a - b);
+
+            // 로또 공 형태의 시각적 디자인 적용
+            resultBox.innerHTML = '';
+            const container = document.createElement('div');
+            container.className = 'flex flex-wrap items-center justify-center gap-3';
+
+            lottoNums.forEach(num => {
+                const ball = document.createElement('div');
+                ball.className = 'w-12 h-12 rounded-full bg-gradient-to-tr from-brand-600 to-emerald-400 text-white flex items-center justify-center font-black text-lg shadow-md';
+                ball.textContent = num;
+                container.appendChild(ball);
+            });
+
+            resultBox.appendChild(container);
+            copyLottoBtn.classList.remove('hidden');
+
+            const resultText = lottoNums.join(', ');
+            copyLottoBtn.onclick = () => {
+                navigator.clipboard.writeText(resultText).then(() => {
+                    alert('로또 번호가 클립보드에 복사되었습니다.');
+                });
+            };
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // FAQ 아코디언 동작 로직
+            const faqItems = document.querySelectorAll('.faq-item');
+
+            faqItems.forEach(item => {
+                const btn = item.querySelector('.faq-btn');
+                const content = item.querySelector('.faq-content');
+                const icon = item.querySelector('.fa-chevron-down');
+
+                btn.addEventListener('click', () => {
+                    const isOpen = !content.classList.contains('hidden');
+
+                    faqItems.forEach(otherItem => {
+                        otherItem.querySelector('.faq-content').classList.add('hidden');
+                        otherItem.querySelector('.fa-chevron-down').classList.remove('rotate-180');
+                    });
+
+                    if (isOpen) {
+                        content.classList.add('hidden');
+                        icon.classList.remove('rotate-180');
+                    } else {
+                        content.classList.remove('hidden');
+                        icon.classList.add('rotate-180');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

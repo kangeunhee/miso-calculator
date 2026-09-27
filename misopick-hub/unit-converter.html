@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>단위 환산기 - 미소픽 (MisoPick)</title>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2888840483385554"
+     crossorigin="anonymous"></script>
+    <!-- 구글 애드센스 승인용 스크립트 (주석 처리됨) -->
+    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 50: '#f0fdf4', 100: '#dcfce7', 500: '#22c55e', 600: '#16a34a', 700: '#15803d' }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white">
+
+    <!-- 상단 네비게이션바 -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <!-- 왼쪽 상단: misopick.kr 로고 -->
+            <a href="https://misopick.kr" class="flex items-center space-x-2">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-emerald-400 flex items-center justify-center text-white font-bold text-lg shadow-md shadow-brand-500/20">
+                    M
+                </div>
+                <span class="text-xl font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span>
+            </a>
+
+            <!-- 오른쪽 상단: 전체보기 버튼 -->
+            <div>
+                <a href="https://misopick.kr/index.html" class="inline-flex items-center space-x-1.5 px-4 py-2 rounded-full bg-slate-100 text-slate-700 hover:bg-brand-50 hover:text-brand-700 text-sm font-semibold transition">
+                    <i class="fa-solid fa-grid-2"></i>
+                    <span>전체보기</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 메인 컨텐츠 영역 -->
+    <main class="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+        
+        <!-- 툴 실행 영역 (단위 환산기) -->
+        <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-8">
+            <div>
+                <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 bg-brand-50 text-brand-700 rounded-md">Tool #25</span>
+                <h1 class="text-2xl font-black text-slate-900 mt-2 mb-1">단위 환산기</h1>
+                <p class="text-sm text-slate-500">길이, 무게, 넓이, 온도 등 일상생활 및 업무에 자주 쓰이는 각종 도량형 단위를 간편하게 변환합니다.</p>
+            </div>
+
+            <!-- 단위 카테고리 탭 -->
+            <div class="flex flex-wrap gap-2 border-b border-slate-200 pb-4">
+                <button onclick="setCategory('length')" id="cat-length" class="px-4 py-2 rounded-xl text-xs font-bold bg-brand-600 text-white transition shadow-sm">길이 (Length)</button>
+                <button onclick="setCategory('weight')" id="cat-weight" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 transition">무게 (Weight)</button>
+                <button onclick="setCategory('area')" id="cat-area" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 transition">넓이 (Area)</button>
+                <button onclick="setCategory('temperature')" id="cat-temperature" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 transition">온도 (Temp)</button>
+            </div>
+
+            <!-- 환산 입력 및 선택 영역 -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 items-center">
+                <!-- 입력 박스 -->
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold text-slate-700">변환할 값</label>
+                    <div class="flex space-x-2">
+                        <input type="number" id="inputValue" value="1" oninput="convertUnits()" class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:bg-white focus:border-brand-500 outline-none transition font-bold">
+                        <select id="fromUnit" onchange="convertUnits()" class="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:bg-white focus:border-brand-500 outline-none transition font-bold text-slate-700">
+                            <!-- JS로 동적 생성 -->
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 출력 박스 -->
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold text-slate-700">환산 결과</label>
+                    <div class="flex space-x-2">
+                        <input type="text" id="outputValue" readonly class="w-full p-3.5 bg-slate-100 border border-slate-200 rounded-2xl text-sm outline-none font-black text-brand-600">
+                        <select id="toUnit" onchange="convertUnits()" class="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:bg-white focus:border-brand-500 outline-none transition font-bold text-slate-700">
+                            <!-- JS로 동적 생성 -->
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 애드센스 광고 영역 (주석 처리됨) -->
+        <!-- 
+        <div class="w-full bg-slate-100 border border-slate-200 rounded-2xl p-6 text-center text-slate-400 flex flex-col items-center justify-center min-h-[90px]">
+            <span class="text-xs uppercase tracking-widest font-bold text-slate-400 mb-1"><i class="fa-solid fa-rectangle-ad mr-1"></i> Google AdSense 광고 영역</span>
+            <p class="text-xs text-slate-400">반응형 디스플레이 광고 단위 공간입니다.</p>
+        </div>
+        -->
+
+        <!-- 서비스 설명 및 자주 하는 질문 (아코디언) 섹션 -->
+        <section class="bg-white rounded-3xl border border-slate-200 p-8 shadow-sm space-y-8">
+            <div>
+                <h2 class="text-xl font-bold text-slate-900 mb-2">서비스 소개 및 이용 가이드</h2>
+                <p class="text-sm text-slate-600 leading-relaxed">
+                    <strong>misopick.kr</strong>의 단위 환산기는 일상생활이나 요리, 인테리어, 학업 및 업무 중에 자주 접하는 길이, 무게, 넓이, 온도 등의 단위를 빠르고 정확하게 상호 변환해 주는 실용적인 유틸리티입니다.
+                </p>
+            </div>
+
+            <!-- 자주 하는 질문 (아코디언) -->
+            <div class="space-y-4">
+                <h3 class="text-lg font-bold text-slate-900 flex items-center">
+                    <i class="fa-solid fa-circle-question text-brand-600 mr-2"></i> 자주 하는 질문 (FAQ)
+                </h3>
+                <div class="space-y-3" id="faqContainer">
+                    
+                    <!-- FAQ 1 (처음에 열려 있는 아코디언) -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q1. 어떤 단위들을 지원하나요?</span>
+                            <i class="fa-solid fa-chevron-down transform rotate-180 transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 block">
+                            길이(mm, cm, m, km, 인치, 피트), 무게(g, kg, 톤, 온스, 파운드), 넓이(제곱미터, 평, 제곱킬로미터, 에이커), 온도(섭씨, 화씨, 켈빈) 등 실생활에서 가장 많이 쓰이는 표준 단위를 폭넓게 지원합니다.
+                        </div>
+                    </div>
+
+                    <!-- FAQ 2 -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q2. 입력한 환산 데이터가 서버에 저장되나요?</span>
+                            <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
+                            아니요, 전혀 저장되지 않습니다. 사용자의 브라우저 내에서 자바스크립트 수식으로 실시간 계산되므로 안심하고 이용하실 수 있습니다.
+                        </div>
+                    </div>
+
+                    <!-- FAQ 3 -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q3. 스마트폰에서도 편리하게 사용할 수 있나요?</span>
+                            <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
+                            네, 모바일 기기의 터치 환경과 반응형 레이아웃에 맞춰 최적화되어 있어 언제 어디서나 간편하게 단위를 변환할 수 있습니다.
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="bg-white border-t border-slate-200 py-10 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-xl bg-brand-600 flex items-center justify-center text-white font-bold text-sm">M</div>
+                <a href="index.html" class="flex items-center space-x-2">
+                <span class="text-lg font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span></a>
+            </div>
+            <p class="text-sm text-slate-500 text-center md:text-left">
+               <strong>이용 안내:</strong> 본 사이트에서 제공하는 모든 툴과 기능은 지속적으로 업데이트되며, 누구나 무료로 자유롭게 이용할 수 있습니다. 
+               <br>서비스 이용 중 불편한 점이나 추가가 필요한 유틸리티 제안은 고객 피드백 채널을 통해 남겨주시기 바랍니다.<br>   
+            </p>
+             <p style="margin-top: 8px;"><a href="../privacy.html" style="color: var(--text-muted); text-decoration: none;">개인정보처리방침보기</a></p>
+        </div>
+    </footer>
+
+    <!-- 단위 환산 로직 및 아코디언 동작 스크립트 -->
+    <script>
+        const unitData = {
+            length: {
+                name: '길이',
+                units: {
+                    mm: { name: '밀리미터 (mm)', ratio: 0.001 },
+                    cm: { name: '센티미터 (cm)', ratio: 0.01 },
+                    m: { name: '미터 (m)', ratio: 1 },
+                    km: { name: '킬로미터 (km)', ratio: 1000 },
+                    in: { name: '인치 (in)', ratio: 0.0254 },
+                    ft: { name: '피트 (ft)', ratio: 0.3048 }
+                }
+            },
+            weight: {
+                name: '무게',
+                units: {
+                    mg: { name: '밀리그램 (mg)', ratio: 0.000001 },
+                    g: { name: '그램 (g)', ratio: 0.001 },
+                    kg: { name: '킬로그램 (kg)', ratio: 1 },
+                    t: { name: '톤 (t)', ratio: 1000 },
+                    oz: { name: '온스 (oz)', ratio: 0.0283495 },
+                    lb: { name: '파운드 (lb)', ratio: 0.453592 }
+                }
+            },
+            area: {
+                name: '넓이',
+                units: {
+                    m2: { name: '제곱미터 (m²)', ratio: 1 },
+                    py: { name: '평', ratio: 3.305785 },
+                    km2: { name: '제곱킬로미터 (km²)', ratio: 1000000 },
+                    ft2: { name: '제곱피트 (ft²)', ratio: 0.092903 },
+                    ac: { name: '에이커 (ac)', ratio: 4046.86 }
+                }
+            },
+            temperature: {
+                name: '온도',
+                units: {
+                    C: { name: '섭씨 (°C)' },
+                    F: { name: '화씨 (°F)' },
+                    K: { name: '켈빈 (K)' }
+                }
+            }
+        };
+
+        let currentCategory = 'length';
+
+        window.onload = () => {
+            setCategory('length');
+        };
+
+        function setCategory(category) {
+            currentCategory = category;
+
+            // 탭 스타일 변경
+            ['length', 'weight', 'area', 'temperature'].forEach(cat => {
+                const btn = document.getElementById(`cat-${cat}`);
+                if (cat === category) {
+                    btn.className = 'px-4 py-2 rounded-xl text-xs font-bold bg-brand-600 text-white transition shadow-sm';
+                } else {
+                    btn.className = 'px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 transition';
+                }
+            });
+
+            // 셀렉트 박스 옵션 채우기
+            const fromSelect = document.getElementById('fromUnit');
+            const toSelect = document.getElementById('toUnit');
+            fromSelect.innerHTML = '';
+            toSelect.innerHTML = '';
+
+            const units = unitData[category].units;
+            const keys = Object.keys(units);
+
+            keys.forEach((key, idx) => {
+                fromSelect.add(new Option(units[key].name, key));
+                toSelect.add(new Option(units[key].name, key));
+            });
+
+            if (keys.length > 1) {
+                toSelect.selectedIndex = 1; // 기본 두 번째 단위 선택
+            }
+
+            convertUnits();
+        }
+
+        function convertUnits() {
+            const val = parseFloat(document.getElementById('inputValue').value);
+            const from = document.getElementById('fromUnit').value;
+            const to = document.getElementById('toUnit').value;
+            const outputField = document.getElementById('outputValue');
+
+            if (isNaN(val)) {
+                outputField.value = '';
+                return;
+            }
+
+            if (currentCategory === 'temperature') {
+                // 온도 변환 로직 별도 처리
+                let celsius = val;
+                if (from === 'F') celsius = (val - 32) * 5 / 9;
+                if (from === 'K') celsius = val - 273.15;
+
+                let result = celsius;
+                if (to === 'F') result = celsius * 9 / 5 + 32;
+                if (to === 'K') result = celsius + 273.15;
+
+                outputField.value = Number(result.toFixed(4));
+            } else {
+                // 일반 도량형 변환 로직 (기준 단위 환산)
+                const units = unitData[currentCategory].units;
+                const baseValue = val * units[from].ratio;
+                const result = baseValue / units[to].ratio;
+
+                outputField.value = Number(result.toFixed(6));
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // FAQ 아코디언 동작 로직
+            const faqItems = document.querySelectorAll('.faq-item');
+
+            faqItems.forEach(item => {
+                const btn = item.querySelector('.faq-btn');
+                const content = item.querySelector('.faq-content');
+                const icon = item.querySelector('.fa-chevron-down');
+
+                btn.addEventListener('click', () => {
+                    const isOpen = !content.classList.contains('hidden');
+
+                    faqItems.forEach(otherItem => {
+                        otherItem.querySelector('.faq-content').classList.add('hidden');
+                        otherItem.querySelector('.fa-chevron-down').classList.remove('rotate-180');
+                    });
+
+                    if (isOpen) {
+                        content.classList.add('hidden');
+                        icon.classList.remove('rotate-180');
+                    } else {
+                        content.classList.remove('hidden');
+                        icon.classList.add('rotate-180');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

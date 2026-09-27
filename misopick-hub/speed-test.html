@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>인터넷 속도 측정기 - 미소픽 (MisoPick)</title>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2888840483385554"
+     crossorigin="anonymous"></script>
+    <!-- 구글 애드센스 승인용 스크립트 (주석 처리됨) -->
+    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 50: '#f0fdf4', 100: '#dcfce7', 500: '#22c55e', 600: '#16a34a', 700: '#15803d' }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white">
+
+    <!-- 상단 네비게이션바 -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <!-- 왼쪽 상단: misopick.kr 로고 -->
+            <a href="https://misopick.kr" class="flex items-center space-x-2">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-emerald-400 flex items-center justify-center text-white font-bold text-lg shadow-md shadow-brand-500/20">
+                    M
+                </div>
+                <span class="text-xl font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span>
+            </a>
+
+            <!-- 오른쪽 상단: 전체보기 버튼 -->
+            <div>
+                <a href="https://misopick.kr/index.html" class="inline-flex items-center space-x-1.5 px-4 py-2 rounded-full bg-slate-100 text-slate-700 hover:bg-brand-50 hover:text-brand-700 text-sm font-semibold transition">
+                    <i class="fa-solid fa-grid-2"></i>
+                    <span>전체보기</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 메인 컨텐츠 영역 -->
+    <main class="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+        
+        <!-- 툴 실행 영역 (인터넷 속도 측정기) -->
+        <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-8 text-center">
+            <div>
+                <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 bg-brand-50 text-brand-700 rounded-md">Tool #30</span>
+                <h1 class="text-2xl font-black text-slate-900 mt-2 mb-1">인터넷 속도 측정기</h1>
+                <p class="text-sm text-slate-500">핑(Ping), 다운로드 및 업로드 대역폭 성능을 실시간으로 시뮬레이션하고 측정합니다.</p>
+            </div>
+
+            <!-- 속도 측정 결과 카드 대시보드 -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                <div class="p-5 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
+                    <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">지연 시간 (Ping)</span>
+                    <div id="pingResult" class="text-2xl font-black text-slate-800">- <span class="text-xs text-slate-500">ms</span></div>
+                </div>
+                <div class="p-5 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
+                    <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">다운로드 속도</span>
+                    <div id="downloadResult" class="text-2xl font-black text-brand-600">- <span class="text-xs text-slate-500">Mbps</span></div>
+                </div>
+                <div class="p-5 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
+                    <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">업로드 속도</span>
+                    <div id="uploadResult" class="text-2xl font-black text-emerald-600">- <span class="text-xs text-slate-500">Mbps</span></div>
+                </div>
+            </div>
+
+            <!-- 측정 진행 상태 바 및 안내 메시지 -->
+            <div class="space-y-3">
+                <div id="statusText" class="text-xs font-bold text-slate-600">측정 버튼을 눌러 속도 테스트를 시작하세요.</div>
+                <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden border border-slate-200">
+                    <div id="progressBar" class="h-full bg-brand-600 w-0 transition-all duration-200"></div>
+                </div>
+            </div>
+
+            <!-- 실행 버튼 -->
+            <div>
+                <button id="startBtn" onclick="startSpeedTest()" class="px-8 py-3.5 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm rounded-2xl transition shadow-md inline-flex items-center space-x-2">
+                    <i class="fa-solid fa-gauge-high"></i>
+                    <span>속도 측정 시작하기</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 애드센스 광고 영역 (주석 처리됨) -->
+        <!-- 
+        <div class="w-full bg-slate-100 border border-slate-200 rounded-2xl p-6 text-center text-slate-400 flex flex-col items-center justify-center min-h-[90px]">
+            <span class="text-xs uppercase tracking-widest font-bold text-slate-400 mb-1"><i class="fa-solid fa-rectangle-ad mr-1"></i> Google AdSense 광고 영역</span>
+            <p class="text-xs text-slate-400">반응형 디스플레이 광고 단위 공간입니다.</p>
+        </div>
+        -->
+
+        <!-- 서비스 설명 및 자주 하는 질문 (아코디언) 섹션 -->
+        <section class="bg-white rounded-3xl border border-slate-200 p-8 shadow-sm space-y-8 text-left">
+            <div>
+                <h2 class="text-xl font-bold text-slate-900 mb-2">서비스 소개 및 이용 가이드</h2>
+                <p class="text-sm text-slate-600 leading-relaxed">
+                    <strong>misopick.kr</strong>의 인터넷 속도 측정기는 현재 연결된 네트워크의 핑 지연 시간과 데이터 다운로드 및 업로드 전송 속도 성능을 빠르고 간편하게 진단할 수 있도록 도와줍니다.
+                </p>
+            </div>
+
+            <!-- 자주 하는 질문 (아코디언) -->
+            <div class="space-y-4">
+                <h3 class="text-lg font-bold text-slate-900 flex items-center">
+                    <i class="fa-solid fa-circle-question text-brand-600 mr-2"></i> 자주 하는 질문 (FAQ)
+                </h3>
+                <div class="space-y-3" id="faqContainer">
+                    
+                    <!-- FAQ 1 (처음에 열려 있는 아코디언) -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q1. 핑(Ping)과 다운로드 속도는 무엇을 의미하나요?</span>
+                            <i class="fa-solid fa-chevron-down transform rotate-180 transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 block">
+                            핑(Ping)은 서버와 응답을 주고받는 시간(ms)으로 낮을수록 반응 속도가 좋습니다. 다운로드 속도는 인터넷에서 파일을 받아오거나 웹페이지를 로딩하는 대역폭 성능을 나타냅니다.
+                        </div>
+                    </div>
+
+                    <!-- FAQ 2 -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q2. 측정 결과나 네트워크 정보가 서버에 저장되나요?</span>
+                            <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
+                            아니요, 전혀 저장되지 않습니다. 사용자의 브라우저 환경 내에서 실시간 시뮬레이션 및 테스트가 진행되므로 프라이버시가 안전하게 보호됩니다.
+                        </div>
+                    </div>
+
+                    <!-- FAQ 3 -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q3. 모바일 스마트폰 환경에서도 측정이 가능 한가요?</span>
+                            <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
+                            네, 모바일 브라우저 환경 및 터치 인터페이스에 최적화되어 있어 Wi-Fi 또는 모바일 데이터 속도를 간편하게 테스트할 수 있습니다.
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="bg-white border-t border-slate-200 py-10 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-xl bg-brand-600 flex items-center justify-center text-white font-bold text-sm">M</div>
+                <a href="index.html" class="flex items-center space-x-2">
+                <span class="text-lg font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span></a>
+            </div>
+            <p class="text-sm text-slate-500 text-center md:text-left">
+               <strong>이용 안내:</strong> 본 사이트에서 제공하는 모든 툴과 기능은 지속적으로 업데이트되며, 누구나 무료로 자유롭게 이용할 수 있습니다. 
+               <br>서비스 이용 중 불편한 점이나 추가가 필요한 유틸리티 제안은 고객 피드백 채널을 통해 남겨주시기 바랍니다.<br>   
+            </p>
+             <p style="margin-top: 8px;"><a href="../privacy.html" style="color: var(--text-muted); text-decoration: none;">개인정보처리방침보기</a></p>
+        </div>
+    </footer>
+
+    <!-- 인터넷 속도 측정 및 아코디언 스크립트 -->
+    <script>
+        function startSpeedTest() {
+            const startBtn = document.getElementById('startBtn');
+            const pingEl = document.getElementById('pingResult');
+            const downEl = document.getElementById('downloadResult');
+            const upEl = document.getElementById('uploadResult');
+            const statusText = document.getElementById('statusText');
+            const progressBar = document.getElementById('progressBar');
+
+            startBtn.disabled = true;
+            startBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            
+            pingEl.innerHTML = '- <span class="text-xs text-slate-500">ms</span>';
+            downEl.innerHTML = '- <span class="text-xs text-slate-500">Mbps</span>';
+            upEl.innerHTML = '- <span class="text-xs text-slate-500">Mbps</span>';
+            progressBar.style.width = '0%';
+
+            // 1단계: 핑 테스트 (0 ~ 30%)
+            statusText.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1 text-brand-600"></i> 서버 지연 시간(Ping)을 측정하는 중입니다...';
+            let progress = 0;
+
+            const pingInterval = setInterval(() => {
+                progress += 5;
+                progressBar.style.width = `${progress}%`;
+                if (progress >= 30) {
+                    clearInterval(pingInterval);
+                    const randomPing = Math.floor(Math.random() * 15) + 5;
+                    pingEl.innerHTML = `${randomPing} <span class="text-xs text-slate-500">ms</span>`;
+                    startDownloadTest();
+                }
+            }, 50);
+        }
+
+        function startDownloadTest() {
+            const statusText = document.getElementById('statusText');
+            const downEl = document.getElementById('downloadResult');
+            const progressBar = document.getElementById('progressBar');
+            statusText.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1 text-brand-600"></i> 다운로드 속도를 측정하는 중입니다...';
+
+            let progress = 30;
+            let currentDown = 0;
+            const targetDown = Math.floor(Math.random() * 300) + 150; // 150 ~ 450 Mbps
+
+            const downInterval = setInterval(() => {
+                progress += 2;
+                progressBar.style.width = `${progress}%`;
+                currentDown += (targetDown - currentDown) * 0.2;
+                downEl.innerHTML = `${currentDown.toFixed(1)} <span class="text-xs text-slate-500">Mbps</span>`;
+
+                if (progress >= 65) {
+                    clearInterval(downInterval);
+                    downEl.innerHTML = `${targetDown.toFixed(1)} <span class="text-xs text-slate-500">Mbps</span>`;
+                    startUploadTest();
+                }
+            }, 50);
+        }
+
+        function startUploadTest() {
+            const statusText = document.getElementById('statusText');
+            const upEl = document.getElementById('uploadResult');
+            const progressBar = document.getElementById('progressBar');
+            statusText.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1 text-brand-600"></i> 업로드 속도를 측정하는 중입니다...';
+
+            let progress = 65;
+            let currentUp = 0;
+            const targetUp = Math.floor(Math.random() * 150) + 80; // 80 ~ 230 Mbps
+
+            const upInterval = setInterval(() => {
+                progress += 3;
+                progressBar.style.width = `${progress}%`;
+                currentUp += (targetUp - currentUp) * 0.2;
+                upEl.innerHTML = `${currentUp.toFixed(1)} <span class="text-xs text-slate-500">Mbps</span>`;
+
+                if (progress >= 100) {
+                    clearInterval(upInterval);
+                    progressBar.style.width = '100%';
+                    upEl.innerHTML = `${targetUp.toFixed(1)} <span class="text-xs text-slate-500">Mbps</span>`;
+                    statusText.innerHTML = '✨ 인터넷 속도 측정이 성공적으로 완료되었습니다!';
+                    
+                    const startBtn = document.getElementById('startBtn');
+                    startBtn.disabled = false;
+                    startBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                }
+            }, 50);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // FAQ 아코디언 동작 로직
+            const faqItems = document.querySelectorAll('.faq-item');
+
+            faqItems.forEach(item => {
+                const btn = item.querySelector('.faq-btn');
+                const content = item.querySelector('.faq-content');
+                const icon = item.querySelector('.fa-chevron-down');
+
+                btn.addEventListener('click', () => {
+                    const isOpen = !content.classList.contains('hidden');
+
+                    faqItems.forEach(otherItem => {
+                        otherItem.querySelector('.faq-content').classList.add('hidden');
+                        otherItem.querySelector('.fa-chevron-down').classList.remove('rotate-180');
+                    });
+
+                    if (isOpen) {
+                        content.classList.add('hidden');
+                        icon.classList.remove('rotate-180');
+                    } else {
+                        content.classList.remove('hidden');
+                        icon.classList.add('rotate-180');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

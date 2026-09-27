@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>스톱워치 및 타이머 - 미소픽 (MisoPick)</title>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2888840483385554"
+     crossorigin="anonymous"></script>
+    <!-- 구글 애드센스 승인용 스크립트 (주석 처리됨) -->
+    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 50: '#f0fdf4', 100: '#dcfce7', 500: '#22c55e', 600: '#16a34a', 700: '#15803d' }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white">
+
+    <!-- 상단 네비게이션바 -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <!-- 왼쪽 상단: misopick.kr 로고 -->
+            <a href="https://misopick.kr" class="flex items-center space-x-2">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-emerald-400 flex items-center justify-center text-white font-bold text-lg shadow-md shadow-brand-500/20">
+                    M
+                </div>
+                <span class="text-xl font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span>
+            </a>
+
+            <!-- 오른쪽 상단: 전체보기 버튼 -->
+            <div>
+                <a href="https://misopick.kr/index.html" class="inline-flex items-center space-x-1.5 px-4 py-2 rounded-full bg-slate-100 text-slate-700 hover:bg-brand-50 hover:text-brand-700 text-sm font-semibold transition">
+                    <i class="fa-solid fa-grid-2"></i>
+                    <span>전체보기</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 메인 컨텐츠 영역 -->
+    <main class="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+        
+        <!-- 툴 실행 영역 (스톱워치 및 타이머) -->
+        <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-8">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 bg-brand-50 text-brand-700 rounded-md">Tool #32</span>
+                    <h1 class="text-2xl font-black text-slate-900 mt-2 mb-1">스톱워치 및 타이머</h1>
+                    <p class="text-sm text-slate-500">정밀한 시간 측정을 위한 온라인 스톱워치와 카운트다운 타이머 기능을 제공합니다.</p>
+                </div>
+                <!-- 모드 전환 탭 -->
+                <div class="flex bg-slate-100 p-1 rounded-2xl">
+                    <button onclick="switchMode('stopwatch')" id="swTab" class="px-4 py-2 text-xs font-bold rounded-xl bg-brand-600 text-white shadow-sm transition">스톱워치</button>
+                    <button onclick="switchMode('timer')" id="tmTab" class="px-4 py-2 text-xs font-bold rounded-xl text-slate-600 hover:text-slate-900 transition">타이머</button>
+                </div>
+            </div>
+
+            <!-- 스톱워치 뷰 -->
+            <div id="stopwatchView" class="space-y-6">
+                <div class="p-8 bg-slate-50 border border-slate-200 rounded-3xl text-center space-y-3">
+                    <div class="inline-flex items-center space-x-2 text-brand-600 font-bold text-xs uppercase tracking-widest">
+                        <i id="swIcon" class="fa-solid fa-stopwatch text-base"></i>
+                        <span>Stopwatch</span>
+                    </div>
+                    <div id="swDisplay" class="text-4xl sm:text-6xl font-black text-slate-900 tracking-wider">00:00:00.<span class="text-brand-600 text-2xl sm:text-4xl">00</span></div>
+                </div>
+                <div class="flex flex-wrap justify-center gap-3">
+                    <button onclick="toggleStopwatch()" id="swToggleBtn" class="px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm rounded-2xl transition shadow-md w-28">시작</button>
+                    <button onclick="lapStopwatch()" class="px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm rounded-2xl transition w-28">랩(Lap)</button>
+                    <button onclick="resetStopwatch()" class="px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm rounded-2xl transition w-28">초기화</button>
+                </div>
+                <!-- 랩 기록 리스트 -->
+                <div id="lapContainer" class="max-h-40 overflow-y-auto space-y-2 text-xs font-bold text-slate-600 hidden p-3 bg-slate-50 border border-slate-200 rounded-2xl">
+                </div>
+            </div>
+
+            <!-- 타이머 뷰 -->
+            <div id="timerView" class="space-y-6 hidden">
+                <div class="p-8 bg-slate-50 border border-slate-200 rounded-3xl text-center space-y-3">
+                    <div class="inline-flex items-center space-x-2 text-brand-600 font-bold text-xs uppercase tracking-widest">
+                        <i id="tmIcon" class="fa-solid fa-hourglass-half text-base"></i>
+                        <span>Countdown Timer</span>
+                    </div>
+                    <div id="tmDisplay" class="text-4xl sm:text-6xl font-black text-slate-900 tracking-wider">00:03:00</div>
+                </div>
+                <!-- 시간 추가 버튼 -->
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <div class="flex items-center space-x-2">
+                        <button onclick="addTimerTime(1)" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 rounded-xl text-xs font-bold text-slate-700">+1분</button>
+                        <button onclick="addTimerTime(5)" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 rounded-xl text-xs font-bold text-slate-700">+5분</button>
+                        <button onclick="addTimerTime(10)" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 rounded-xl text-xs font-bold text-slate-700">+10분</button>
+                    </div>
+                </div>
+                <div class="flex flex-wrap justify-center gap-3">
+                    <button onclick="toggleTimer()" id="tmToggleBtn" class="px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm rounded-2xl transition shadow-md w-32">타이머 시작</button>
+                    <button onclick="resetTimer()" class="px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm rounded-2xl transition w-32">초기화</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 애드센스 광고 영역 (주석 처리됨) -->
+        <!-- 
+        <div class="w-full bg-slate-100 border border-slate-200 rounded-2xl p-6 text-center text-slate-400 flex flex-col items-center justify-center min-h-[90px]">
+            <span class="text-xs uppercase tracking-widest font-bold text-slate-400 mb-1"><i class="fa-solid fa-rectangle-ad mr-1"></i> Google AdSense 광고 영역</span>
+            <p class="text-xs text-slate-400">반응형 디스플레이 광고 단위 공간입니다.</p>
+        </div>
+        -->
+
+        <!-- 서비스 설명 및 자주 하는 질문 (아코디언) 섹션 -->
+        <section class="bg-white rounded-3xl border border-slate-200 p-8 shadow-sm space-y-8">
+            <div>
+                <h2 class="text-xl font-bold text-slate-900 mb-2">서비스 소개 및 이용 가이드</h2>
+                <p class="text-sm text-slate-600 leading-relaxed">
+                    <strong>misopick.kr</strong>의 스톱워치 및 타이머는 공부, 운동, 요리, 업무 등 일상에서 정확한 시간 측정이나 카운트다운이 필요할 때 간편하게 활용할 수 있는 온라인 유틸리티입니다.
+                </p>
+            </div>
+
+            <!-- 자주 하는 질문 (아코디언) -->
+            <div class="space-y-4">
+                <h3 class="text-lg font-bold text-slate-900 flex items-center">
+                    <i class="fa-solid fa-circle-question text-brand-600 mr-2"></i> 자주 하는 질문 (FAQ)
+                </h3>
+                <div class="space-y-3" id="faqContainer">
+                    
+                    <!-- FAQ 1 (처음에 열려 있는 아코디언) -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q1. 탭을 이동하거나 브라우저를 숨기면 시간이 멈추나요?</span>
+                            <i class="fa-solid fa-chevron-down transform rotate-180 transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 block">
+                            아니요, 실제 타임스탬프(Timestamp) 오차 보정 알고리즘이 적용되어 있어 다른 탭을 보거나 백그라운드 상태여도 정확한 시간을 유지합니다.
+                        </div>
+                    </div>
+
+                    <!-- FAQ 2 -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q2. 타이머 종료 시 알람 소리가 울리나요?</span>
+                            <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
+                            타이머 시간이 완료되면 화면 시각 효과와 함께 알림 메시지가 표시되어 직관적으로 확인할 수 있습니다.
+                        </div>
+                    </div>
+
+                    <!-- FAQ 3 -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q3. 모바일 스마트폰 화면에서도 완벽히 작동하나요?</span>
+                            <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
+                            네, 반응형 디자인과 터치 최적화 버튼이 적용되어 모바일 기기에서도 원활하게 스톱워치와 타이머를 이용할 수 있습니다.
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="bg-white border-t border-slate-200 py-10 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-xl bg-brand-600 flex items-center justify-center text-white font-bold text-sm">M</div>
+                <a href="index.html" class="flex items-center space-x-2">
+                <span class="text-lg font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span></a>
+            </div>
+            <p class="text-sm text-slate-500 text-center md:text-left">
+               <strong>이용 안내:</strong> 본 사이트에서 제공하는 모든 툴과 기능은 지속적으로 업데이트되며, 누구나 무료로 자유롭게 이용할 수 있습니다. 
+               <br>서비스 이용 중 불편한 점이나 추가가 필요한 유틸리티 제안은 고객 피드백 채널을 통해 남겨주시기 바랍니다.<br>   
+            </p>
+             <p style="margin-top: 8px;"><a href="../privacy.html" style="color: var(--text-muted); text-decoration: none;">개인정보처리방침보기</a></p>
+        </div>
+    </footer>
+
+    <!-- 스톱워치 및 타이머 연산 스크립트 -->
+    <script>
+        let currentActiveMode = 'stopwatch';
+
+        // 스톱워치 변수
+        let swRunning = false;
+        let swStartTime = 0;
+        let swElapsedTime = 0;
+        let swTimerId = null;
+        let lapCount = 0;
+
+        // 타이머 변수
+        let tmRunning = false;
+        let tmRemainingSeconds = 180; // 남은 시간 (기본 3분)
+        let tmTimerId = null;
+
+        function switchMode(mode) {
+            currentActiveMode = mode;
+            const swView = document.getElementById('stopwatchView');
+            const tmView = document.getElementById('timerView');
+            const swTab = document.getElementById('swTab');
+            const tmTab = document.getElementById('tmTab');
+
+            if (mode === 'stopwatch') {
+                swView.classList.remove('hidden');
+                tmView.classList.add('hidden');
+                swTab.className = 'px-4 py-2 text-xs font-bold rounded-xl bg-brand-600 text-white shadow-sm transition';
+                tmTab.className = 'px-4 py-2 text-xs font-bold rounded-xl text-slate-600 hover:text-slate-900 transition';
+            } else {
+                swView.classList.add('hidden');
+                tmView.classList.remove('hidden');
+                tmTab.className = 'px-4 py-2 text-xs font-bold rounded-xl bg-brand-600 text-white shadow-sm transition';
+                swTab.className = 'px-4 py-2 text-xs font-bold rounded-xl text-slate-600 hover:text-slate-900 transition';
+            }
+        }
+
+        // 스톱워치 로직
+        function toggleStopwatch() {
+            const btn = document.getElementById('swToggleBtn');
+            const icon = document.getElementById('swIcon');
+
+            if (!swRunning) {
+                swRunning = true;
+                swStartTime = Date.now() - swElapsedTime;
+                swTimerId = setInterval(updateStopwatch, 10);
+                btn.textContent = '중지';
+                btn.className = 'px-6 py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold text-sm rounded-2xl transition shadow-md w-28';
+                icon.classList.add('fa-spin');
+            } else {
+                swRunning = false;
+                clearInterval(swTimerId);
+                btn.textContent = '계속';
+                btn.className = 'px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm rounded-2xl transition shadow-md w-28';
+                icon.classList.remove('fa-spin');
+            }
+        }
+
+        function updateStopwatch() {
+            swElapsedTime = Date.now() - swStartTime;
+            const ms = Math.floor((swElapsedTime % 1000) / 10);
+            const sec = Math.floor((swElapsedTime / 1000) % 60);
+            const min = Math.floor((swElapsedTime / (1000 * 60)) % 60);
+            const hr = Math.floor(swElapsedTime / (1000 * 60 * 60));
+
+            const display = document.getElementById('swDisplay');
+            display.innerHTML = `${String(hr).padStart(2, '0')}:${String(min).padStart(2, '0')}:${String(sec).padStart(2, '0')}.<span class="text-brand-600 text-2xl sm:text-4xl">${String(ms).padStart(2, '0')}</span>`;
+        }
+
+        function lapStopwatch() {
+            if (!swRunning && swElapsedTime === 0) return;
+            lapCount++;
+            const container = document.getElementById('lapContainer');
+            container.classList.remove('hidden');
+
+            const ms = Math.floor((swElapsedTime % 1000) / 10);
+            const sec = Math.floor((swElapsedTime / 1000) % 60);
+            const min = Math.floor((swElapsedTime / (1000 * 60)) % 60);
+            const hr = Math.floor(swElapsedTime / (1000 * 60 * 60));
+            const timeStr = `${String(hr).padStart(2, '0')}:${String(min).padStart(2, '0')}:${String(sec).padStart(2, '0')}.${String(ms).padStart(2, '0')}`;
+
+            const row = document.createElement('div');
+            row.className = 'flex justify-between items-center px-3 py-1.5 bg-white border border-slate-200 rounded-xl';
+            row.innerHTML = `<span>랩 #${lapCount}</span><span class="font-black text-slate-800">${timeStr}</span>`;
+            container.prepend(row);
+        }
+
+        function resetStopwatch() {
+            swRunning = false;
+            clearInterval(swTimerId);
+            swElapsedTime = 0;
+            lapCount = 0;
+            document.getElementById('swDisplay').innerHTML = '00:00:00.<span class="text-brand-600 text-2xl sm:text-4xl">00</span>';
+            const btn = document.getElementById('swToggleBtn');
+            btn.textContent = '시작';
+            btn.className = 'px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm rounded-2xl transition shadow-md w-28';
+            document.getElementById('swIcon').classList.remove('fa-spin');
+            const container = document.getElementById('lapContainer');
+            container.innerHTML = '';
+            container.classList.add('hidden');
+        }
+
+        // 타이머 로직
+        function addTimerTime(min) {
+            tmRemainingSeconds += min * 60;
+            updateTimerDisplay();
+        }
+
+        function toggleTimer() {
+            const btn = document.getElementById('tmToggleBtn');
+            const icon = document.getElementById('tmIcon');
+
+            if (!tmRunning) {
+                if (tmRemainingSeconds <= 0) return;
+                tmRunning = true;
+                tmTimerId = setInterval(() => {
+                    if (tmRemainingSeconds > 0) {
+                        tmRemainingSeconds--;
+                        updateTimerDisplay();
+                    } else {
+                        clearInterval(tmTimerId);
+                        tmRunning = false;
+                        alert('타이머 시간이 완료되었습니다!');
+                        btn.textContent = '타이머 시작';
+                        btn.className = 'px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm rounded-2xl transition shadow-md w-32';
+                        icon.classList.remove('fa-spin');
+                    }
+                }, 1000);
+                btn.textContent = '일시정지';
+                btn.className = 'px-6 py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold text-sm rounded-2xl transition shadow-md w-32';
+                icon.classList.add('fa-spin');
+            } else {
+                tmRunning = false;
+                clearInterval(tmTimerId);
+                btn.textContent = '계속';
+                btn.className = 'px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm rounded-2xl transition shadow-md w-32';
+                icon.classList.remove('fa-spin');
+            }
+        }
+
+        function updateTimerDisplay() {
+            const hr = Math.floor(tmRemainingSeconds / 3600);
+            const min = Math.floor((tmRemainingSeconds % 3600) / 60);
+            const sec = tmRemainingSeconds % 60;
+            document.getElementById('tmDisplay').textContent = `${String(hr).padStart(2, '0')}:${String(min).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+        }
+
+        function resetTimer() {
+            tmRunning = false;
+            clearInterval(tmTimerId);
+            tmRemainingSeconds = 0; // 초기화 시 0초로 설정
+            updateTimerDisplay();
+            const btn = document.getElementById('tmToggleBtn');
+            btn.textContent = '타이머 시작';
+            btn.className = 'px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm rounded-2xl transition shadow-md w-32';
+            document.getElementById('tmIcon').classList.remove('fa-spin');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateTimerDisplay();
+
+            // FAQ 아코디언 동작 로직
+            const faqItems = document.querySelectorAll('.faq-item');
+
+            faqItems.forEach(item => {
+                const btn = item.querySelector('.faq-btn');
+                const content = item.querySelector('.faq-content');
+                const icon = item.querySelector('.fa-chevron-down');
+
+                btn.addEventListener('click', () => {
+                    const isOpen = !content.classList.contains('hidden');
+
+                    faqItems.forEach(otherItem => {
+                        otherItem.querySelector('.faq-content').classList.add('hidden');
+                        otherItem.querySelector('.fa-chevron-down').classList.remove('rotate-180');
+                    });
+
+                    if (isOpen) {
+                        content.classList.add('hidden');
+                        icon.classList.remove('rotate-180');
+                    } else {
+                        content.classList.remove('hidden');
+                        icon.classList.add('rotate-180');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

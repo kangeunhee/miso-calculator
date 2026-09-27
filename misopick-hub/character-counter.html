@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>글자수/공백 계산기 - 미소픽 (MisoPick)</title>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2888840483385554"
+     crossorigin="anonymous"></script>
+    <!-- 구글 애드센스 승인용 스크립트 (주석 처리됨) -->
+    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 50: '#f0fdf4', 100: '#dcfce7', 500: '#22c55e', 600: '#16a34a', 700: '#15803d' }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white">
+
+    <!-- 상단 네비게이션바 -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <!-- 왼쪽 상단: misopick.kr 로고 -->
+            <a href="https://misopick.kr" class="flex items-center space-x-2">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-emerald-400 flex items-center justify-center text-white font-bold text-lg shadow-md shadow-brand-500/20">
+                    M
+                </div>
+                <span class="text-xl font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span>
+            </a>
+
+            <!-- 오른쪽 상단: 전체보기 버튼 -->
+            <div>
+                <a href="https://misopick.kr/index.html" class="inline-flex items-center space-x-1.5 px-4 py-2 rounded-full bg-slate-100 text-slate-700 hover:bg-brand-50 hover:text-brand-700 text-sm font-semibold transition">
+                    <i class="fa-solid fa-grid-2"></i>
+                    <span>전체보기</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 메인 컨텐츠 영역 -->
+    <main class="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+        
+        <!-- 툴 실행 영역 (글자수/공백 계산기) -->
+        <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+            <div>
+                <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 bg-brand-50 text-brand-700 rounded-md">Tool #2</span>
+                <h1 class="text-2xl font-black text-slate-900 mt-2 mb-1">글자수/공백 계산기</h1>
+                <p class="text-sm text-slate-500">작성 중인 글의 공백 포함/제외 글자수, 단어수, 줄 수를 실시간으로 측정합니다.</p>
+            </div>
+
+            <!-- 통계 요약 카드 -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div class="bg-slate-50 border border-slate-200/80 rounded-2xl p-4 text-center">
+                    <div class="text-xs text-slate-400 font-bold mb-1">공백 포함 글자수</div>
+                    <div id="charWithSpace" class="text-xl font-black text-slate-900">0</div>
+                </div>
+                <div class="bg-slate-50 border border-slate-200/80 rounded-2xl p-4 text-center">
+                    <div class="text-xs text-slate-400 font-bold mb-1">공백 제외 글자수</div>
+                    <div id="charWithoutSpace" class="text-xl font-black text-brand-600">0</div>
+                </div>
+                <div class="bg-slate-50 border border-slate-200/80 rounded-2xl p-4 text-center">
+                    <div class="text-xs text-slate-400 font-bold mb-1">단어 수</div>
+                    <div id="wordCount" class="text-xl font-black text-slate-900">0</div>
+                </div>
+                <div class="bg-slate-50 border border-slate-200/80 rounded-2xl p-4 text-center">
+                    <div class="text-xs text-slate-400 font-bold mb-1">줄 수</div>
+                    <div id="lineCount" class="text-xl font-black text-slate-900">0</div>
+                </div>
+            </div>
+
+            <!-- 입력 텍스트 영역 -->
+            <div class="space-y-3">
+                <textarea id="textInput" rows="6" placeholder="여기에 텍스트를 입력하거나 붙여넣으세요..." class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:bg-white focus:border-brand-500 outline-none transition"></textarea>
+                <div class="flex justify-end">
+                    <button id="clearBtn" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs rounded-xl transition">
+                        내용 지우기
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 애드센스 광고 영역 (주석 처리됨) -->
+        <!-- 
+        <div class="w-full bg-slate-100 border border-slate-200 rounded-2xl p-6 text-center text-slate-400 flex flex-col items-center justify-center min-h-[90px]">
+            <span class="text-xs uppercase tracking-widest font-bold text-slate-400 mb-1"><i class="fa-solid fa-rectangle-ad mr-1"></i> Google AdSense 광고 영역</span>
+            <p class="text-xs text-slate-400">반응형 디스플레이 광고 단위 공간입니다.</p>
+        </div>
+        -->
+
+        <!-- 서비스 설명 및 자주 하는 질문 (아코디언) 섹션 -->
+        <section class="bg-white rounded-3xl border border-slate-200 p-8 shadow-sm space-y-8">
+            <div>
+                <h2 class="text-xl font-bold text-slate-900 mb-2">서비스 소개 및 이용 가이드</h2>
+                <p class="text-sm text-slate-600 leading-relaxed">
+                    <strong>misopick.kr</strong>의 글자수 계산기는 이력서, 자기소개서, 블로그 포스팅, 과제 작성 시 글자 제한을 정확하게 맞출 수 있도록 도와주는 실시간 유틸리티 도구입니다.
+                </p>
+            </div>
+
+            <!-- 자주 하는 질문 (아코디언) -->
+            <div class="space-y-4">
+                <h3 class="text-lg font-bold text-slate-900 flex items-center">
+                    <i class="fa-solid fa-circle-question text-brand-600 mr-2"></i> 자주 하는 질문 (FAQ)
+                </h3>
+                <div class="space-y-3" id="faqContainer">
+                    
+                    <!-- FAQ 1 (처음에 열려 있는 아코디언) -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q1. 공백 포함과 제외는 어떤 차이가 있나요?</span>
+                            <i class="fa-solid fa-chevron-down transform rotate-180 transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 block">
+                            공백 포함은 띄어쓰기를 글자 수에 포함하며, 공백 제외는 순수 문자의 개수만 카운트합니다. 대기업 자소서나 공공기관 이력서 제출 시 요구하는 기준에 맞춰 확인하실 수 있습니다.
+                        </div>
+                    </div>
+
+                    <!-- FAQ 2 -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q2. 작성 중인 내용이 외부 서버에 저장되나요?</span>
+                            <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
+                            아니요, 전혀 저장되지 않습니다. 입력하신 모든 텍스트는 브라우저 내부에서만 실시간 계산되므로 개인정보 및 비밀 유지가 철저하게 보장됩니다.
+                        </div>
+                    </div>
+
+                    <!-- FAQ 3 -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q3. 모바일 환경에서도 원활하게 쓸 수 있나요?</span>
+                            <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
+                            네, 반응형 디자인으로 제작되어 스마트폰이나 태블릿에서도 간편하게 글자 수를 실시간으로 체크하실 수 있습니다.
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="bg-white border-t border-slate-200 py-10 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-xl bg-brand-600 flex items-center justify-center text-white font-bold text-sm">M</div>
+                <a href="index.html" class="flex items-center space-x-2">
+                    <span class="text-lg font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span>
+                </a>
+            </div>
+            <p class="text-sm text-slate-500 text-center md:text-left">
+                <strong>이용 안내:</strong> 본 사이트에서 제공하는 모든 툴과 기능은 지속적으로 업데이트되며, 누구나 무료로 자유롭게 이용할 수 있습니다. 
+                <br>서비스 이용 중 불편한 점이나 추가가 필요한 유틸리티 제안은 고객 피드백 채널을 통해 남겨주시기 바랍니다.
+            </p>
+            <p style="margin-top: 8px;"><a href="../privacy.html" style="color: var(--text-muted); text-decoration: none;">개인정보처리방침보기</a></p>
+        </div>
+    </footer>
+
+    <!-- 글자수 계산 및 아코디언 동작 스크립트 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. 글자수 계산 기능 로직
+            const textInput = document.getElementById('textInput');
+            const charWithSpace = document.getElementById('charWithSpace');
+            const charWithoutSpace = document.getElementById('charWithoutSpace');
+            const wordCount = document.getElementById('wordCount');
+            const lineCount = document.getElementById('lineCount');
+            const clearBtn = document.getElementById('clearBtn');
+
+            textInput.addEventListener('input', () => {
+                const text = textInput.value;
+
+                // 공백 포함 글자수
+                charWithSpace.textContent = text.length;
+
+                // 공백 제외 글자수 (모든 공백 문자 제거)
+                charWithoutSpace.textContent = text.replace(/\s/g, '').length;
+
+                // 단어 수 (공백 기준으로 분리하되 빈 문자열 제외)
+                const words = text.trim() === '' ? [] : text.trim().split(/\s+/);
+                wordCount.textContent = words.length;
+
+                // 줄 수 (엔터 기준)
+                const lines = text === '' ? 0 : text.split('\n').length;
+                lineCount.textContent = lines;
+            });
+
+            clearBtn.addEventListener('click', () => {
+                textInput.value = '';
+                charWithSpace.textContent = '0';
+                charWithoutSpace.textContent = '0';
+                wordCount.textContent = '0';
+                lineCount.textContent = '0';
+                textInput.focus();
+            });
+
+            // 2. FAQ 아코디언 동작 로직
+            const faqItems = document.querySelectorAll('.faq-item');
+
+            faqItems.forEach(item => {
+                const btn = item.querySelector('.faq-btn');
+                const content = item.querySelector('.faq-content');
+                const icon = item.querySelector('.fa-chevron-down');
+
+                btn.addEventListener('click', () => {
+                    const isOpen = !content.classList.contains('hidden');
+
+                    faqItems.forEach(otherItem => {
+                        otherItem.querySelector('.faq-content').classList.add('hidden');
+                        otherItem.querySelector('.fa-chevron-down').classList.remove('rotate-180');
+                    });
+
+                    if (isOpen) {
+                        content.classList.add('hidden');
+                        icon.classList.remove('rotate-180');
+                    } else {
+                        content.classList.remove('hidden');
+                        icon.classList.add('rotate-180');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

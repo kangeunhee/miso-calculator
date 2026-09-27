@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>비만도(BMI) 계산기 - 미소픽 (MisoPick)</title>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2888840483385554"
+     crossorigin="anonymous"></script>
+    <meta name="description" content="신장과 체중을 입력하여 체질량지수(BMI)를 정확하게 측정하고, 저체중·정상·과체중·비만 단계를 애니메이션 게이지로 한눈에 확인하는 무료 비만도 계산기입니다.">
+    <!-- 구글 애드센스 승인용 스크립트 (승인 후 주석 해제) -->
+    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 50: '#f0fdf4', 100: '#dcfce7', 500: '#22c55e', 600: '#16a34a', 700: '#15803d' }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white">
+
+    <!-- 상단 네비게이션바 -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <a href="https://misopick.kr" class="flex items-center space-x-2">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-emerald-400 flex items-center justify-center text-white font-bold text-lg shadow-md shadow-brand-500/20">
+                    M
+                </div>
+                <span class="text-xl font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span>
+            </a>
+            <div>
+                <a href="https://misopick.kr/index.html" class="inline-flex items-center space-x-1.5 px-4 py-2 rounded-full bg-slate-100 text-slate-700 hover:bg-brand-50 hover:text-brand-700 text-sm font-semibold transition">
+                    <i class="fa-solid fa-grid-2"></i>
+                    <span>전체보기</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 메인 컨텐츠 영역 -->
+    <main class="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+        
+        <!-- 툴 실행 영역 (비만도(BMI) 계산기) -->
+        <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-8">
+            <div>
+                <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 bg-brand-50 text-brand-700 rounded-md">Tool #26</span>
+                <h1 class="text-2xl font-black text-slate-900 mt-2 mb-1">비만도(BMI) 계산기</h1>
+                <p class="text-sm text-slate-500">신장과 체중을 입력하면 건강 체질량 지수(BMI)를 측정하고 애니메이션과 함께 비만 단계를 판정합니다.</p>
+            </div>
+
+            <!-- 입력 설정 영역 -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold text-slate-700">신장 (cm)</label>
+                    <input type="number" id="heightInput" value="175" class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:bg-white focus:border-brand-500 outline-none transition font-bold">
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold text-slate-700">체중 (kg)</label>
+                    <input type="number" id="weightInput" value="70" class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:bg-white focus:border-brand-500 outline-none transition font-bold">
+                </div>
+            </div>
+
+            <!-- 실행 버튼 -->
+            <div class="flex items-center justify-between pt-2">
+                <button onclick="startBmiAnimation()" class="px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm rounded-2xl transition shadow-md flex items-center space-x-2">
+                    <i class="fa-solid fa-heart-pulse"></i>
+                    <span>BMI 측정 및 실행</span>
+                </button>
+            </div>
+
+            <!-- 캔버스 애니메이션 출력 영역 -->
+            <div class="space-y-3 pt-4 border-t border-slate-100">
+                <label class="block text-xs font-bold text-slate-700">BMI 게이지 시각화</label>
+                <div class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 overflow-x-auto flex flex-col items-center justify-center min-h-[220px]">
+                    <canvas id="bmiCanvas" width="700" height="180" class="bg-white rounded-xl shadow-xs border border-slate-100"></canvas>
+                    <div id="bmiResultText" class="mt-4 text-xs font-bold text-slate-600 text-center"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 애드센스 광고 영역 (상단 컨텐츠와 자연스럽게 어우러지는 위치) 
+        <div class="w-full bg-slate-100 border border-slate-200 rounded-2xl p-6 text-center text-slate-400 flex flex-col items-center justify-center min-h-[90px]">
+            <span class="text-xs uppercase tracking-widest font-bold text-slate-400 mb-1"><i class="fa-solid fa-rectangle-ad mr-1"></i> Google AdSense 광고 영역</span>
+            <p class="text-xs text-slate-400">반응형 디스플레이 광고 단위 공간입니다.</p>
+        </div>-->
+
+        <!-- 서비스 소개 및 애드센스 승인용 상세 정보 섹션 -->
+        <section class="bg-white rounded-3xl border border-slate-200 p-8 shadow-sm space-y-8">
+            <div>
+                <h2 class="text-xl font-bold text-slate-900 mb-3">건강 관리를 위한 체질량지수(BMI) 가이드</h2>
+                <div class="space-y-3 text-sm text-slate-600 leading-relaxed">
+                    <p>
+                        체질량지수(BMI, Body Mass Index)는 개인의 신장과 체중을 바탕으로 체내 지방 함유량을 추정하여 비만도를 판정하는 세계 공인 기준입니다. 자신의 신체 상태를 정기적으로 체크하는 것은 대사증후군 및 각종 성인병 예방의 첫걸음입니다.
+                    </p>
+                    <p>
+                        <strong>misopick.kr 비만도(BMI) 계산기</strong>는 입력 즉시 부드러운 애니메이션 게이지를 통해 저체중, 정상, 과체중, 경도비만, 고도비만 단계를 직관적으로 시각화하여 사용자가 건강 상태를 한눈에 파악할 수 있도록 돕습니다.
+                    </p>
+                </div>
+            </div>
+
+            <!-- 핵심 특징 요약 카드 -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100 space-y-2">
+                    <div class="w-8 h-8 rounded-lg bg-brand-100 text-brand-600 flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-900 text-sm">철저한 프라이버시</h3>
+                    <p class="text-xs text-slate-500 leading-relaxed">신체 측정 정보는 서버에 저장되지 않고 사용자 브라우저 내부에서만 안전하게 연산됩니다.</p>
+                </div>
+                <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100 space-y-2">
+                    <div class="w-8 h-8 rounded-lg bg-brand-100 text-brand-600 flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-gauge-high"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-900 text-sm">실시간 게이지 효과</h3>
+                    <p class="text-xs text-slate-500 leading-relaxed">마커가 움직이는 애니메이션을 통해 단계별 위험도를 흥미롭고 정확하게 전달합니다.</p>
+                </div>
+                <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100 space-y-2">
+                    <div class="w-8 h-8 rounded-lg bg-brand-100 text-brand-600 flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-mobile-screen"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-900 text-sm">모바일 친화적 인터페이스</h3>
+                    <p class="text-xs text-slate-500 leading-relaxed">PC와 모바일 환경 어디서나 손쉽게 키와 몸무게를 입력하고 결과를 조회할 수 있습니다.</p>
+                </div>
+            </div>
+
+            <!-- 자주 하는 질문 (아코디언) -->
+            <div class="space-y-4 pt-4 border-t border-slate-100">
+                <h3 class="text-lg font-bold text-slate-900 flex items-center">
+                    <i class="fa-solid fa-circle-question text-brand-600 mr-2"></i> 자주 하는 질문 (FAQ)
+                </h3>
+                <div class="space-y-3" id="faqContainer">
+                    
+                    <!-- FAQ 1 (처음에 열려 있는 아코디언) -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q1. BMI(체질량지수) 계산 공식은 어떻게 되나요?</span>
+                            <i class="fa-solid fa-chevron-down transform rotate-180 transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 block">
+                            체중(kg)을 키(m)의 제곱으로 나누어 계산합니다 (공식: 체중 ÷ (신장 × 신장)). 세계보건기구(WHO) 및 국내 기준에 따라 수치별 비만 단계를 판정합니다.
+                        </div>
+                    </div>
+
+                    <!-- FAQ 2 -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q2. BMI 수치에 따른 단계 기준은 무엇인가요?</span>
+                            <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
+                            일반적으로 18.5 미만은 저체중, 18.5 이상 23 미만은 정상, 23 이상 25 미만은 과체중, 25 이상 30 미만은 경도비만, 30 이상은 고도비만으로 분류됩니다.
+                        </div>
+                    </div>
+
+                    <!-- FAQ 3 -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q3. 측정된 건강 데이터가 서버에 저장되나요?</span>
+                            <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
+                            아니요, 전혀 저장되지 않습니다. 사용자의 브라우저 내부에서 실시간으로 연산되므로 개인정보가 완벽하게 보호됩니다.
+                        </div>
+                    </div>
+
+                    <!-- FAQ 4 -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q4. 모바일 환경에서도 간편하게 조회할 수 있나요?</span>
+                            <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
+                            네, 반응형 디자인과 터치 인터페이스가 적용되어 있어 스마트폰에서도 간편하게 입력하고 애니메이션 결과를 확인할 수 있습니다.
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="bg-white border-t border-slate-200 py-10 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-xl bg-brand-600 flex items-center justify-center text-white font-bold text-sm">M</div>
+                <a href="index.html" class="flex items-center space-x-2">
+                <span class="text-lg font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span></a>
+            </div>
+            <p class="text-sm text-slate-500 text-center md:text-left">
+               <strong>이용 안내:</strong> 본 사이트에서 제공하는 모든 툴과 기능은 지속적으로 업데이트되며, 누구나 무료로 자유롭게 이용할 수 있습니다. 
+               <br>서비스 이용 중 불편한 점이나 추가가 필요한 유틸리티 제안은 고객 피드백 채널을 통해 남겨주시기 바랍니다.<br>  
+            </p>
+             <p style="margin-top: 8px;"><a href="../privacy.html" style="color: var(--text-muted); text-decoration: none;">개인정보처리방침보기</a></p>
+        </div>
+    </footer>
+
+    <!-- BMI 계산 및 캔버스 애니메이션 스크립트 -->
+    <script>
+        let canvas, ctx;
+
+        window.onload = () => {
+            canvas = document.getElementById('bmiCanvas');
+            ctx = canvas.getContext('2d');
+            drawInitialMessage('신장과 체중을 입력하고 측정 버튼을 눌러주세요!');
+        };
+
+        function drawInitialMessage(msg) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = '14px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(msg, canvas.width / 2, canvas.height / 2);
+        }
+
+        function startBmiAnimation() {
+            const heightVal = parseFloat(document.getElementById('heightInput').value);
+            const weightVal = parseFloat(document.getElementById('weightInput').value);
+
+            if (isNaN(heightVal) || isNaN(weightVal) || heightVal <= 0 || weightVal <= 0) {
+                alert('올바른 신장과 체중을 입력해주세요.');
+                return;
+            }
+
+            const heightM = heightVal / 100;
+            const bmi = weightVal / (heightM * heightM);
+
+            let status = '';
+            let color = '';
+            if (bmi < 18.5) {
+                status = '저체중';
+                color = '#3b82f6';
+            } else if (bmi < 23) {
+                status = '정상';
+                color = '#22c55e';
+            } else if (bmi < 25) {
+                status = '과체중';
+                color = '#f59e0b';
+            } else if (bmi < 30) {
+                status = '경도비만';
+                color = '#f97316';
+            } else {
+                status = '고도비만';
+                color = '#ef4444';
+            }
+
+            runGaugeAnimation(bmi, status, color);
+        }
+
+        function runGaugeAnimation(targetBmi, status, color) {
+            let currentBmi = 0;
+            const speed = 0.4;
+            const resultTextDiv = document.getElementById('bmiResultText');
+            resultTextDiv.innerHTML = '<span class="text-brand-600"><i class="fa-solid fa-spinner fa-spin mr-1"></i> 체질량지수를 분석하는 중입니다...</span>';
+
+            function frame() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // 게이지 배경 바 그리기 (전체 길이 600px, 시작 X: 50, Y: 90)
+                const barX = 50;
+                const barY = 90;
+                const barWidth = 600;
+                const barHeight = 24;
+
+                // 구간별 색상 바 그리기
+                // 저체중 (< 18.5)
+                ctx.fillStyle = '#bfdbfe';
+                ctx.fillRect(barX, barY, barWidth * 0.185, barHeight);
+                // 정상 (18.5 ~ 23)
+                ctx.fillStyle = '#bbf7d0';
+                ctx.fillRect(barX + barWidth * 0.185, barY, barWidth * 0.09, barHeight);
+                // 과체중 (23 ~ 25)
+                ctx.fillStyle = '#fef08a';
+                ctx.fillRect(barX + barWidth * 0.275, barY, barWidth * 0.04, barHeight);
+                // 비만 (25 ~ 35 이상)
+                ctx.fillStyle = '#fecaca';
+                ctx.fillRect(barX + barWidth * 0.315, barY, barWidth * 0.685, barHeight);
+
+                // 테두리
+                ctx.strokeStyle = '#cbd5e1';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(barX, barY, barWidth, barHeight);
+
+                // 애니메이션 포인터 위치 계산 (BMI 10 ~ 40 기준 매핑)
+                let clampedBmi = Math.max(10, Math.min(40, currentBmi));
+                let ratio = (clampedBmi - 10) / 30;
+                let pointerX = barX + barWidth * ratio;
+
+                // 포인터(마커) 그리기
+                ctx.fillStyle = color;
+                ctx.beginPath();
+                ctx.moveTo(pointerX, barY - 12);
+                ctx.lineTo(pointerX - 8, barY - 2);
+                ctx.lineTo(pointerX + 8, barY - 2);
+                ctx.closePath();
+                ctx.fill();
+
+                // 수치 텍스트 표시
+                ctx.fillStyle = '#0f172a';
+                ctx.font = 'bold 16px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(`현재 BMI: ${currentBmi.toFixed(1)}`, pointerX, barY - 22);
+
+                if (currentBmi < targetBmi) {
+                    currentBmi += speed;
+                    if (currentBmi > targetBmi) currentBmi = targetBmi;
+                    requestAnimationFrame(frame);
+                } else {
+                    resultTextDiv.innerHTML = `
+                        <span class="px-4 py-2 rounded-xl text-xs font-bold text-white shadow-xs" style="background-color: ${color};">
+                            ✨ 측정 완료! 당신의 BMI는 <strong class="text-white underline">${targetBmi.toFixed(1)}</strong> 이며, <strong class="text-white underline">${status}</strong> 단계입니다.
+                        </span>
+                    `;
+                }
+            }
+
+            requestAnimationFrame(frame);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // FAQ 아코디언 동작 로직
+            const faqItems = document.querySelectorAll('.faq-item');
+
+            faqItems.forEach(item => {
+                const btn = item.querySelector('.faq-btn');
+                const content = item.querySelector('.faq-content');
+                const icon = item.querySelector('.fa-chevron-down');
+
+                btn.addEventListener('click', () => {
+                    const isOpen = !content.classList.contains('hidden');
+
+                    faqItems.forEach(otherItem => {
+                        otherItem.querySelector('.faq-content').classList.add('hidden');
+                        otherItem.querySelector('.fa-chevron-down').classList.remove('rotate-180');
+                    });
+
+                    if (isOpen) {
+                        content.classList.add('hidden');
+                        icon.classList.remove('rotate-180');
+                    } else {
+                        content.classList.remove('hidden');
+                        icon.classList.add('rotate-180');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>키워드 추출/태그 생성기 - 미소픽 (MisoPick)</title>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2888840483385554"
+     crossorigin="anonymous"></script>
+    <!-- 구글 애드센스 승인용 스크립트 (주석 처리됨) -->
+    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 50: '#f0fdf4', 100: '#dcfce7', 500: '#22c55e', 600: '#16a34a', 700: '#15803d' }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white">
+
+    <!-- 상단 네비게이션바 -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <!-- 왼쪽 상단: misopick.kr 로고 -->
+            <a href="https://misopick.kr" class="flex items-center space-x-2">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-emerald-400 flex items-center justify-center text-white font-bold text-lg shadow-md shadow-brand-500/20">
+                    M
+                </div>
+                <span class="text-xl font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span>
+            </a>
+
+            <!-- 오른쪽 상단: 전체보기 버튼 -->
+            <div>
+                <a href="https://misopick.kr/index.html" class="inline-flex items-center space-x-1.5 px-4 py-2 rounded-full bg-slate-100 text-slate-700 hover:bg-brand-50 hover:text-brand-700 text-sm font-semibold transition">
+                    <i class="fa-solid fa-grid-2"></i>
+                    <span>전체보기</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 메인 컨텐츠 영역 -->
+    <main class="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+        
+        <!-- 툴 실행 영역 (키워드 추출/태그 생성기) -->
+        <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+            <div>
+                <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 bg-brand-50 text-brand-700 rounded-md">Tool #14</span>
+                <h1 class="text-2xl font-black text-slate-900 mt-2 mb-1">키워드 추출/태그 생성기</h1>
+                <p class="text-sm text-slate-500">입력한 본문 텍스트에서 자주 등장하는 핵심 단어를 자동으로 분석하여 태그 형태로 추출합니다.</p>
+            </div>
+
+            <!-- 입력 영역 -->
+            <div class="space-y-2">
+                <label class="block text-xs font-bold text-slate-700">본문 텍스트 입력</label>
+                <textarea id="textInput" rows="6" placeholder="분석할 본문 내용을 입력하거나 붙여넣으세요. 블로그 포스팅, 글 내용 등에서 핵심 키워드를 자동으로 뽑아줍니다." class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:bg-white focus:border-brand-500 outline-none transition"></textarea>
+            </div>
+
+            <!-- 실행 버튼 -->
+            <div class="flex items-center justify-between">
+                <button onclick="extractKeywords()" class="px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm rounded-2xl transition shadow-md">
+                    키워드 태그 추출하기
+                </button>
+                <button id="copyTagsBtn" class="text-xs text-brand-600 font-bold hover:underline hidden">
+                    <i class="fa-regular fa-copy mr-1"></i> 전체 해시태그 복사
+                </button>
+            </div>
+
+            <!-- 결과 출력 박스 -->
+            <div class="space-y-2">
+                <label class="block text-xs font-bold text-slate-700">추출된 키워드 태그 결과</label>
+                <div id="keywordResultBox" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm min-h-[140px] max-h-[220px] overflow-y-auto flex flex-wrap gap-2 items-start content-start">
+                    <span class="text-xs text-slate-400 py-2">텍스트를 입력하고 추출 버튼을 눌러주세요.</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 애드센스 광고 영역 (주석 처리됨) -->
+        <!-- 
+        <div class="w-full bg-slate-100 border border-slate-200 rounded-2xl p-6 text-center text-slate-400 flex flex-col items-center justify-center min-h-[90px]">
+            <span class="text-xs uppercase tracking-widest font-bold text-slate-400 mb-1"><i class="fa-solid fa-rectangle-ad mr-1"></i> Google AdSense 광고 영역</span>
+            <p class="text-xs text-slate-400">반응형 디스플레이 광고 단위 공간입니다.</p>
+        </div>
+        -->
+
+        <!-- 서비스 설명 및 자주 하는 질문 (아코디언) 섹션 -->
+        <section class="bg-white rounded-3xl border border-slate-200 p-8 shadow-sm space-y-8">
+            <div>
+                <h2 class="text-xl font-bold text-slate-900 mb-2">서비스 소개 및 이용 가이드</h2>
+                <p class="text-sm text-slate-600 leading-relaxed">
+                    <strong>misopick.kr</strong>의 키워드 추출 및 태그 생성기 도구는 블로그 글, 에세이, 문서 등의 본문에서 출현 빈도가 높은 핵심 단어들을 분석하여 SEO 최적화용 해시태그나 키워드로 즉시 전환해 주는 유틸리티 서비스입니다.
+                </p>
+            </div>
+
+            <!-- 자주 하는 질문 (아코디언) -->
+            <div class="space-y-4">
+                <h3 class="text-lg font-bold text-slate-900 flex items-center">
+                    <i class="fa-solid fa-circle-question text-brand-600 mr-2"></i> 자주 하는 질문 (FAQ)
+                </h3>
+                <div class="space-y-3" id="faqContainer">
+                    
+                    <!-- FAQ 1 (처음에 열려 있는 아코디언) -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q1. 키워드는 어떤 방식으로 추출되나요?</span>
+                            <i class="fa-solid fa-chevron-down transform rotate-180 transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 block">
+                            본문 내 단어들의 빈도수를 분석하여 의미 있는 명사 및 단어 위주로 정렬하고, 중복을 제거하여 상위 핵심 키워드들을 태그 형태로 추출합니다.
+                        </div>
+                    </div>
+
+                    <!-- FAQ 2 -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q2. 입력한 본문 내용이 서버에 저장되나요?</span>
+                            <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
+                            아니요, 전혀 저장되지 않습니다. 사용자의 브라우저 내부에서 자바스크립트 연산으로만 처리되므로 개인정보 및 작성 중인 문 내용이 안전하게 보호됩니다.
+                        </div>
+                    </div>
+
+                    <!-- FAQ 3 -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q3. 모바일 환경에서도 간편하게 이용할 수 있나요?</span>
+                            <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
+                            네, 모바일과 태블릿 화면에서도 완벽하게 반응형으로 동작하여 언제 어디서나 스마트폰으로 태그를 생성할 수 있습니다.
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="bg-white border-t border-slate-200 py-10 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-xl bg-brand-600 flex items-center justify-center text-white font-bold text-sm">M</div>
+                <a href="index.html" class="flex items-center space-x-2">
+                    <span class="text-lg font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span></a>
+            </div>
+            <p class="text-sm text-slate-500 text-center md:text-left">
+               <strong>이용 안내:</strong> 본 사이트에서 제공하는 모든 툴과 기능은 지속적으로 업데이트되며, 누구나 무료로 자유롭게 이용할 수 있습니다. 
+               <br>서비스 이용 중 불편한 점이나 추가가 필요한 유틸리티 제안은 고객 피드백 채널을 통해 남겨주시기 바랍니다.<br>   
+            </p>
+             <p style="margin-top: 8px;"><a href="../privacy.html" style="color: var(--text-muted); text-decoration: none;">개인정보처리방침보기</a></p>
+        </div>
+    </footer>
+
+    <!-- 키워드 추출 및 아코디언 동작 스크립트 -->
+    <script>
+        function extractKeywords() {
+            const text = document.getElementById('textInput').value;
+            const resultBox = document.getElementById('keywordResultBox');
+            const copyTagsBtn = document.getElementById('copyTagsBtn');
+
+            if (!text.trim()) {
+                alert('분석할 본문 텍스트를 입력해주세요.');
+                resultBox.innerHTML = '<span class="text-xs text-slate-400 py-2">텍스트를 입력하고 추출 버튼을 눌러주세요.</span>';
+                copyTagsBtn.classList.add('hidden');
+                return;
+            }
+
+            // 의미 없는 조사/단어 필터링을 위한 불용어 세트 (예시)
+            const stopWords = new Set(['은', '는', '이', '가', '을', '를', '의', '에', '와', '과', '도', '로', '으로', '에서', '에서도', '부터', '까지', '그', '저', '것', '수', '등', '들', '및', '하', '고', '하 다', '한', '대한', '위한']);
+
+            // 한글, 영문 단어 추출 (2글자 이상)
+            const words = text.match(/[가-힣a-zA-Z]{2,}/g) || [];
+            
+            const freqMap = {};
+            words.forEach(word => {
+                if (!stopWords.has(word)) {
+                    freqMap[word] = (freqMap[word] || 0) + 1;
+                }
+            });
+
+            // 빈도수 높은 순으로 정렬
+            const sortedKeywords = Object.keys(freqMap).sort((a, b) => freqMap[b] - freqMap[a]).slice(0, 20);
+
+            if (sortedKeywords.length === 0) {
+                resultBox.innerHTML = '<span class="text-xs text-slate-400 py-2">추출된 유효한 키워드가 없습니다. 더 많은 내용을 입력해 보세요.</span>';
+                copyTagsBtn.classList.add('hidden');
+                return;
+            }
+
+            resultBox.innerHTML = '';
+            sortedKeywords.forEach(keyword => {
+                const tag = document.createElement('span');
+                tag.className = 'px-3 py-1.5 bg-slate-100 hover:bg-brand-50 hover:text-brand-700 text-slate-700 font-medium text-xs rounded-xl border border-slate-200/80 transition cursor-pointer';
+                tag.textContent = `#${keyword}`;
+                tag.title = '클릭하여 복사';
+                tag.onclick = () => {
+                    navigator.clipboard.writeText(`#${keyword}`);
+                    alert(`태그 "#${keyword}"가 클립보드에 복사되었습니다.`);
+                };
+                resultBox.appendChild(tag);
+            });
+
+            copyTagsBtn.classList.remove('hidden');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // 전체 해시태그 복사 버튼
+            const copyTagsBtn = document.getElementById('copyTagsBtn');
+            copyTagsBtn.addEventListener('click', () => {
+                const tags = Array.from(document.querySelectorAll('#keywordResultBox span')).map(el => el.textContent);
+                if (tags.length === 0) {
+                    alert('복사할 태그가 없습니다.');
+                    return;
+                }
+                navigator.clipboard.writeText(tags.join(' ')).then(() => {
+                    alert('모든 해시태그가 클립보드에 복사되었습니다.');
+                });
+            });
+
+            // FAQ 아코디언 동작 로직
+            const faqItems = document.querySelectorAll('.faq-item');
+
+            faqItems.forEach(item => {
+                const btn = item.querySelector('.faq-btn');
+                const content = item.querySelector('.faq-content');
+                const icon = item.querySelector('.fa-chevron-down');
+
+                btn.addEventListener('click', () => {
+                    const isOpen = !content.classList.contains('hidden');
+
+                    faqItems.forEach(otherItem => {
+                        otherItem.querySelector('.faq-content').classList.add('hidden');
+                        otherItem.querySelector('.fa-chevron-down').classList.remove('rotate-180');
+                    });
+
+                    if (isOpen) {
+                        content.classList.add('hidden');
+                        icon.classList.remove('rotate-180');
+                    } else {
+                        content.classList.remove('hidden');
+                        icon.classList.add('rotate-180');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>색상 팔레트 추천기 - 미소픽 (MisoPick)</title>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2888840483385554"
+     crossorigin="anonymous"></script>
+    <!-- 구글 애드센스 승인용 스크립트 (주석 처리됨) -->
+    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 50: '#f0fdf4', 100: '#dcfce7', 500: '#22c55e', 600: '#16a34a', 700: '#15803d' }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white">
+
+    <!-- 상단 네비게이션바 -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <!-- 왼쪽 상단: misopick.kr 로고 -->
+            <a href="https://misopick.kr" class="flex items-center space-x-2">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-emerald-400 flex items-center justify-center text-white font-bold text-lg shadow-md shadow-brand-500/20">
+                    M
+                </div>
+                <span class="text-xl font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span>
+            </a>
+
+            <!-- 오른쪽 상단: 전체보기 버튼 -->
+            <div>
+                <a href="https://misopick.kr/index.html" class="inline-flex items-center space-x-1.5 px-4 py-2 rounded-full bg-slate-100 text-slate-700 hover:bg-brand-50 hover:text-brand-700 text-sm font-semibold transition">
+                    <i class="fa-solid fa-grid-2"></i>
+                    <span>전체보기</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 메인 컨텐츠 영역 -->
+    <main class="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+        
+        <!-- 툴 실행 영역 (색상 팔레트 추천기) -->
+        <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 bg-brand-50 text-brand-700 rounded-md">Tool #34</span>
+                    <h1 class="text-2xl font-black text-slate-900 mt-2 mb-1">색상 팔레트 추천기</h1>
+                    <p class="text-sm text-slate-500">웹 디자인 및 UI 개발에 조화로운 감각적 컬러 조합을 추출하고 복사합니다.</p>
+                </div>
+                <!-- 생성 버튼 -->
+                <button onclick="generatePalette()" class="px-5 py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs rounded-2xl transition shadow-md shadow-brand-600/20 flex items-center justify-center space-x-2 transform active:scale-95">
+                    <i class="fa-solid fa-rotate animate-spin-slow"></i>
+                    <span>새로운 팔레트 조합</span>
+                </button>
+            </div>
+
+            <!-- 팔레트 카드 그리드 -->
+            <div id="paletteGrid" class="grid grid-cols-1 sm:grid-cols-5 gap-4 py-4">
+                <!-- JS 동적 생성 -->
+            </div>
+
+            <!-- 안내 메시지 -->
+            <div class="text-center text-xs font-bold text-slate-400">
+                <i class="fa-solid fa-hand-pointer mr-1"></i> 색상 카드를 클릭하면 HEX 코드가 클립보드에 즉시 복사됩니다.
+            </div>
+        </div>
+
+        <!-- 애드센스 광고 영역 (주석 처리됨) -->
+        <!-- 
+        <div class="w-full bg-slate-100 border border-slate-200 rounded-2xl p-6 text-center text-slate-400 flex flex-col items-center justify-center min-h-[90px]">
+            <span class="text-xs uppercase tracking-widest font-bold text-slate-400 mb-1"><i class="fa-solid fa-rectangle-ad mr-1"></i> Google AdSense 광고 영역</span>
+            <p class="text-xs text-slate-400">반응형 디스플레이 광고 단위 공간입니다.</p>
+        </div>
+        -->
+
+        <!-- 서비스 설명 및 자주 하는 질문 (아코디언) 섹션 -->
+        <section class="bg-white rounded-3xl border border-slate-200 p-8 shadow-sm space-y-8">
+            <div>
+                <h2 class="text-xl font-bold text-slate-900 mb-2">서비스 소개 및 이용 가이드</h2>
+                <p class="text-sm text-slate-600 leading-relaxed">
+                    <strong>misopick.kr</strong>의 색상 팔레트 추천기는 웹사이트 디자인, UI/UX 프로토타이핑, 일러스트레이션 등 시각적 조화가 필요한 작업에서 영감을 얻을 수 있도록 트렌디한 컬러 조합을 즉시 생성해 주는 유틸리티입니다.
+                </p>
+            </div>
+
+            <!-- 자주 하는 질문 (아코디언) -->
+            <div class="space-y-4">
+                <h3 class="text-lg font-bold text-slate-900 flex items-center">
+                    <i class="fa-solid fa-circle-question text-brand-600 mr-2"></i> 자주 하는 질문 (FAQ)
+                </h3>
+                <div class="space-y-3" id="faqContainer">
+                    
+                    <!-- FAQ 1 (처음에 열려 있는 아코디언) -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q1. 추출된 색상 코드는 어떻게 활용하나요?</span>
+                            <i class="fa-solid fa-chevron-down transform rotate-180 transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 block">
+                            원하는 색상 카드를 클릭하기만 하면 HEX 코드가 클립보드에 복사되며, CSS, Tailwind 설정 또는 디자인 툴(Figma, Photoshop 등)에 곧바로 붙여넣어 사용할 수 있습니다.
+                        </div>
+                    </div>
+
+                    <!-- FAQ 2 -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q2. 색상 조합은 어떤 기준으로 생성되나요?</span>
+                            <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
+                            웹 디자인과 UI 가독성에서 가장 선호되는 모던하고 조화로운 색상 배색 알고리즘과 트렌디한 톤앤매너를 기반으로 무작위 조합을 구성합니다.
+                        </div>
+                    </div>
+
+                    <!-- FAQ 3 -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q3. 모바일 기기에서도 간편하게 이용할 수 있나요?</span>
+                            <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
+                            네, 모바일 화면 환경에 맞추어 카드 레이아웃이 자동 정렬되며, 터치 한 번으로 손쉽게 컬러 코드를 복사할 수 있습니다.
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="bg-white border-t border-slate-200 py-10 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-xl bg-brand-600 flex items-center justify-center text-white font-bold text-sm">M</div>
+                <a href="index.html" class="flex items-center space-x-2">
+                <span class="text-lg font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span></a>
+            </div>
+            <p class="text-sm text-slate-500 text-center md:text-left">
+               <strong>이용 안내:</strong> 본 사이트에서 제공하는 모든 툴과 기능은 지속적으로 업데이트되며, 누구나 무료로 자유롭게 이용할 수 있습니다. 
+               <br>서비스 이용 중 불편한 점이나 추가가 필요한 유틸리티 제안은 고객 피드백 채널을 통해 남겨주시기 바랍니다.<br>   
+            </p>
+             <p style="margin-top: 8px;"><a href="../privacy.html" style="color: var(--text-muted); text-decoration: none;">개인정보처리방침보기</a></p>
+        </div>
+    </footer>
+
+    <!-- 색상 조합 생성 및 애니메이션 스크립트 -->
+    <script>
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        function generatePalette() {
+            const grid = document.getElementById('paletteGrid');
+            grid.innerHTML = '';
+
+            // 5개의 조화로운 컬러 카드 생성
+            for (let i = 0; i < 5; i++) {
+                const hex = getRandomColor();
+                
+                const card = document.createElement('div');
+                card.className = 'group relative bg-white border border-slate-200 rounded-2xl p-4 flex flex-col items-center space-y-4 shadow-sm transition transform hover:-translate-y-1 hover:shadow-md cursor-pointer';
+                card.onclick = () => {
+                    navigator.clipboard.writeText(hex).then(() => {
+                        const toast = card.querySelector('.copy-toast');
+                        toast.classList.remove('opacity-0', 'scale-95');
+                        toast.classList.add('opacity-100', 'scale-100');
+                        setTimeout(() => {
+                            toast.classList.remove('opacity-100', 'scale-100');
+                            toast.classList.add('opacity-0', 'scale-95');
+                        }, 1200);
+                    });
+                };
+
+                card.innerHTML = `
+                    <div class="w-full h-32 rounded-xl shadow-inner transition-transform duration-300 group-hover:scale-105" style="background-color: ${hex};"></div>
+                    <div class="text-center space-y-1 w-full">
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Color #${i+1}</span>
+                        <div class="text-sm font-black text-slate-800">${hex}</div>
+                    </div>
+                    <div class="copy-toast absolute inset-0 bg-slate-900/80 backdrop-blur-sm rounded-2xl flex flex-col items-center justify-center text-white text-xs font-bold opacity-0 scale-95 transition-all duration-200 pointer-events-none">
+                        <i class="fa-solid fa-check text-brand-400 text-lg mb-1"></i>
+                        <span>복사 완료!</span>
+                    </div>
+                `;
+                grid.appendChild(card);
+            }
+        }
+
+        window.onload = () => {
+            generatePalette();
+
+            // FAQ 아코디언 동작 로직
+            const faqItems = document.querySelectorAll('.faq-item');
+
+            faqItems.forEach(item => {
+                const btn = item.querySelector('.faq-btn');
+                const content = item.querySelector('.faq-content');
+                const icon = item.querySelector('.fa-chevron-down');
+
+                btn.addEventListener('click', () => {
+                    const isOpen = !content.classList.contains('hidden');
+
+                    faqItems.forEach(otherItem => {
+                        otherItem.querySelector('.faq-content').classList.add('hidden');
+                        otherItem.querySelector('.fa-chevron-down').classList.remove('rotate-180');
+                    });
+
+                    if (isOpen) {
+                        content.classList.add('hidden');
+                        icon.classList.remove('rotate-180');
+                    } else {
+                        content.classList.remove('hidden');
+                        icon.classList.add('rotate-180');
+                    }
+                });
+            });
+        };
+    </script>
+</body>
+</html>

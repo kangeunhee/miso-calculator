@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>브라우저 임시 메모장 - 미소픽 (MisoPick)</title>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2888840483385554"
+     crossorigin="anonymous"></script>
+    <!-- 구글 애드센스 승인용 스크립트 (주석 처리됨) -->
+    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 50: '#f0fdf4', 100: '#dcfce7', 500: '#22c55e', 600: '#16a34a', 700: '#15803d' }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white">
+
+    <!-- 상단 네비게이션바 -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <!-- 왼쪽 상단: misopick.kr 로고 -->
+            <a href="https://misopick.kr" class="flex items-center space-x-2">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-emerald-400 flex items-center justify-center text-white font-bold text-lg shadow-md shadow-brand-500/20">
+                    M
+                </div>
+                <span class="text-xl font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span>
+            </a>
+
+            <!-- 오른쪽 상단: 전체보기 버튼 -->
+            <div>
+                <a href="https://misopick.kr/index.html" class="inline-flex items-center space-x-1.5 px-4 py-2 rounded-full bg-slate-100 text-slate-700 hover:bg-brand-50 hover:text-brand-700 text-sm font-semibold transition">
+                    <i class="fa-solid fa-grid-2"></i>
+                    <span>전체보기</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 메인 컨텐츠 영역 -->
+    <main class="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+        
+        <!-- 툴 실행 영역 (브라우저 임시 메모장) -->
+        <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 bg-brand-50 text-brand-700 rounded-md">Tool #33</span>
+                    <h1 class="text-2xl font-black text-slate-900 mt-2 mb-1">브라우저 임시 메모장</h1>
+                    <p class="text-sm text-slate-500">브라우저 내에 가볍게 텍스트를 작성하고 실시간 자동 저장 및 보관합니다.</p>
+                </div>
+                <!-- 글자수 / 단어수 상태 표시 -->
+                <div class="flex items-center space-x-3 px-4 py-2 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-500">
+                    <span>글자: <strong id="charCount" class="text-slate-800">0</strong>자</span>
+                    <span class="text-slate-300">|</span>
+                    <span>단어: <strong id="wordCount" class="text-slate-800">0</strong>개</span>
+                </div>
+            </div>
+
+            <!-- 메모 입력 편집기 영역 -->
+            <div class="space-y-3">
+                <textarea id="memoArea" placeholder="이곳에 메모를 자유롭게 작성하세요. 입력하는 즉시 브라우저에 자동 저장됩니다." oninput="updateMemoStats()" class="w-full h-80 p-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm text-slate-800 focus:bg-white focus:border-brand-500 outline-none resize-none transition leading-relaxed"></textarea>
+            </div>
+
+            <!-- 하단 컨트롤 버튼 영역 -->
+            <div class="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-slate-100">
+                <div class="flex items-center space-x-2 text-xs font-bold text-brand-600">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <span id="saveStatus">실시간 자동 저장 활성화됨</span>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="copyMemo()" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition flex items-center space-x-1.5">
+                        <i class="fa-solid fa-copy"></i>
+                        <span>복사하기</span>
+                    </button>
+                    <button onclick="downloadMemo()" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition flex items-center space-x-1.5">
+                        <i class="fa-solid fa-download"></i>
+                        <span>파일 다운로드</span>
+                    </button>
+                    <button onclick="clearMemo()" class="px-4 py-2.5 bg-red-50 hover:bg-red-100 text-red-600 font-bold text-xs rounded-xl transition flex items-center space-x-1.5">
+                        <i class="fa-solid fa-trash-can"></i>
+                        <span>전체 삭제</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 애드센스 광고 영역 (주석 처리됨) -->
+        <!-- 
+        <div class="w-full bg-slate-100 border border-slate-200 rounded-2xl p-6 text-center text-slate-400 flex flex-col items-center justify-center min-h-[90px]">
+            <span class="text-xs uppercase tracking-widest font-bold text-slate-400 mb-1"><i class="fa-solid fa-rectangle-ad mr-1"></i> Google AdSense 광고 영역</span>
+            <p class="text-xs text-slate-400">반응형 디스플레이 광고 단위 공간입니다.</p>
+        </div>
+        -->
+
+        <!-- 서비스 설명 및 자주 하는 질문 (아코디언) 섹션 -->
+        <section class="bg-white rounded-3xl border border-slate-200 p-8 shadow-sm space-y-8">
+            <div>
+                <h2 class="text-xl font-bold text-slate-900 mb-2">서비스 소개 및 이용 가이드</h2>
+                <p class="text-sm text-slate-600 leading-relaxed">
+                    <strong>misopick.kr</strong>의 브라우저 임시 메모장은 별도의 로그인이나 회원가입 없이 현재 사용 중인 기기의 웹 브라우저 내에 가볍게 텍스트를 기록하고 보관할 수 있는 실용적인 유틸리티입니다.
+                </p>
+            </div>
+
+            <!-- 자주 하는 질문 (아코디언) -->
+            <div class="space-y-4">
+                <h3 class="text-lg font-bold text-slate-900 flex items-center">
+                    <i class="fa-solid fa-circle-question text-brand-600 mr-2"></i> 자주 하는 질문 (FAQ)
+                </h3>
+                <div class="space-y-3" id="faqContainer">
+                    
+                    <!-- FAQ 1 (처음에 열려 있는 아코디언) -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q1. 작성한 메모가 외부 서버나 인터넷에 저장되나요?</span>
+                            <i class="fa-solid fa-chevron-down transform rotate-180 transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 block">
+                            아니요, 전혀 저장되지 않습니다. 사용자의 브라우저 내부 로컬 스토리지(LocalStorage)에만 안전하게 저장되므로 외부 유출 염려가 없습니다.
+                        </div>
+                    </div>
+
+                    <!-- FAQ 2 -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q2. 브라우저 창을 닫거나 컴퓨터를 재부팅해도 메모가 남아있나요?</span>
+                            <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
+                            네, 브라우저 저장소 특성상 사용자가 직접 삭제하거나 브라우저 캐시를 청소하기 전까지는 작성한 내용이 안전하게 유지됩니다.
+                        </div>
+                    </div>
+
+                    <!-- FAQ 3 -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q3. 작성한 메모를 파일로 저장할 수 있나요?</span>
+                            <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
+                            네, 상단 또는 하단의 '파일 다운로드' 버튼을 누르면 텍스트 파일(.txt) 형태로 PC나 스마트폰에 간편하게 저장할 수 있습니다.
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="bg-white border-t border-slate-200 py-10 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-xl bg-brand-600 flex items-center justify-center text-white font-bold text-sm">M</div>
+                <a href="index.html" class="flex items-center space-x-2">
+                <span class="text-lg font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span></a>
+            </div>
+            <p class="text-sm text-slate-500 text-center md:text-left">
+               <strong>이용 안내:</strong> 본 사이트에서 제공하는 모든 툴과 기능은 지속적으로 업데이트되며, 누구나 무료로 자유롭게 이용할 수 있습니다. 
+               <br>서비스 이용 중 불편한 점이나 추가가 필요한 유틸리티 제안은 고객 피드백 채널을 통해 남겨주시기 바랍니다.<br>   
+            </p>
+             <p style="margin-top: 8px;"><a href="../privacy.html" style="color: var(--text-muted); text-decoration: none;">개인정보처리방침보기</a></p>
+        </div>
+    </footer>
+
+    <!-- 메모장 연산 및 아코디언 스크립트 -->
+    <script>
+        const STORAGE_KEY = 'misopick_browser_notepad_content';
+
+        window.onload = () => {
+            const savedMemo = localStorage.getItem(STORAGE_KEY);
+            const memoArea = document.getElementById('memoArea');
+            if (savedMemo !== null) {
+                memoArea.value = savedMemo;
+            }
+            updateMemoStats();
+        };
+
+        function updateMemoStats() {
+            const memoArea = document.getElementById('memoArea');
+            const text = memoArea.value;
+
+            // 글자수
+            document.getElementById('charCount').textContent = text.length;
+
+            // 단어수 (공백 기준 분할)
+            const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
+            document.getElementById('wordCount').textContent = words;
+
+            // 로컬 스토리지 실시간 자동 저장
+            localStorage.setItem(STORAGE_KEY, text);
+
+            const status = document.getElementById('saveStatus');
+            status.textContent = '저장됨';
+            setTimeout(() => {
+                status.textContent = '실시간 자동 저장 활성화됨';
+            }, 1000);
+        }
+
+        function copyMemo() {
+            const memoArea = document.getElementById('memoArea');
+            if (!memoArea.value) {
+                alert('복사할 메모 내용이 없습니다.');
+                return;
+            }
+            navigator.clipboard.writeText(memoArea.value).then(() => {
+                alert('메모 내용이 클립보드에 복사되었습니다.');
+            });
+        }
+
+        function downloadMemo() {
+            const memoArea = document.getElementById('memoArea');
+            const text = memoArea.value;
+            if (!text) {
+                alert('다운로드할 메모 내용이 없습니다.');
+                return;
+            }
+
+            const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'misopick_memo.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function clearMemo() {
+            if (confirm('작성 중인 메모를 모두 삭제하시겠습니까?')) {
+                const memoArea = document.getElementById('memoArea');
+                memoArea.value = '';
+                localStorage.removeItem(STORAGE_KEY);
+                updateMemoStats();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // FAQ 아코디언 동작 로직
+            const faqItems = document.querySelectorAll('.faq-item');
+
+            faqItems.forEach(item => {
+                const btn = item.querySelector('.faq-btn');
+                const content = item.querySelector('.faq-content');
+                const icon = item.querySelector('.fa-chevron-down');
+
+                btn.addEventListener('click', () => {
+                    const isOpen = !content.classList.contains('hidden');
+
+                    faqItems.forEach(otherItem => {
+                        otherItem.querySelector('.faq-content').classList.add('hidden');
+                        otherItem.querySelector('.fa-chevron-down').classList.remove('rotate-180');
+                    });
+
+                    if (isOpen) {
+                        content.classList.add('hidden');
+                        icon.classList.remove('rotate-180');
+                    } else {
+                        content.classList.remove('hidden');
+                        icon.classList.add('rotate-180');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

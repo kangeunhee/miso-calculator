@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>미소픽 (MisoPick) - 프리미엄 온라인 유틸리티 허브</title>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2888840483385554"
+     crossorigin="anonymous"></script>
+    <!-- Google AdSense 승인용 메타 및 스크립트 가이드 주석 -->
+    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 50: '#f0fdf4', 100: '#dcfce7', 500: '#22c55e', 600: '#16a34a', 700: '#15803d' }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white">
+
+    <!-- 상단 네비게이션바 -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <!-- 햄버거 메뉴 버튼 -->
+                <button id="hamburgerBtn" class="p-2 rounded-lg text-slate-600 hover:bg-slate-100 focus:outline-none transition" aria-label="메뉴 열기">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+                <a href="https://misopick.kr" class="flex items-center space-x-2">
+                    <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-emerald-400 flex items-center justify-center text-white font-bold text-lg shadow-md shadow-brand-500/20">
+                        M
+                    </div>
+                    <span class="text-xl font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span>
+                </a>
+            </div>
+
+            <!-- 검색바 (데스크탑) -->
+            <div class="hidden md:flex flex-1 max-w-md mx-8">
+                <div class="relative w-full">
+                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <i class="fa-solid fa-search"></i>
+                    </span>
+                    <input type="text" id="searchInput" placeholder="필요한 툴 이름이나 기능을 검색하세요..." class="w-full pl-10 pr-4 py-2 bg-slate-100 border border-transparent rounded-full text-sm focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 outline-none transition">
+                </div>
+            </div>
+
+            <!-- 우측 액션 버튼 (즐겨찾기 모달 트리거) -->
+            <div class="flex items-center space-x-2">
+                <button id="favoritesBtn" class="relative inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-full border border-slate-200 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition shadow-sm">
+                    <i class="fa-solid fa-star text-amber-400"></i>
+                    <span class="hidden sm:inline">즐겨찾기</span>
+                    <span id="favCount" class="ml-1 px-1.5 py-0.5 text-xs font-bold bg-amber-100 text-amber-700 rounded-full">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 모바일 검색바 영역 -->
+    <div class="md:hidden px-4 py-3 bg-white border-b border-slate-200">
+        <div class="relative w-full">
+            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                <i class="fa-solid fa-search"></i>
+            </span>
+            <input type="text" id="searchInputMobile" placeholder="필요한 툴 검색..." class="w-full pl-10 pr-4 py-2 bg-slate-100 border border-transparent rounded-full text-sm focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 outline-none transition">
+        </div>
+    </div>
+
+    <!-- 햄버거 메뉴 사이드 드로어 -->
+    <div id="drawerOverlay" class="fixed inset-0 bg-slate-900/50 z-50 hidden backdrop-blur-sm transition-opacity opacity-0"></div>
+    <aside id="sidebarDrawer" class="fixed top-0 left-0 bottom-0 w-80 bg-white z-50 shadow-2xl transform -translate-x-full transition-transform duration-300 flex flex-col">
+        <div class="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+            <div class="flex items-center space-x-2">
+                <div class="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center text-white font-bold">M</div>
+                <span class="font-bold text-slate-900">misopick.kr 메뉴</span>
+            </div>
+            <button id="drawerCloseBtn" class="p-2 text-slate-400 hover:text-slate-600 rounded-lg">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+        </div>
+        <div class="flex-1 overflow-y-auto p-4 space-y-6">
+            <div>
+                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 px-2">카테고리 바로가기</h3>
+                <nav class="space-y-1">
+                    <a href="#category-text" class="drawer-link flex items-center px-3 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-brand-50 hover:text-brand-700 transition">
+                        <i class="fa-solid fa-font w-7 text-brand-600"></i> 문자 및 텍스트 편집
+                    </a>
+                    <a href="#category-word" class="drawer-link flex items-center px-3 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-brand-50 hover:text-brand-700 transition">
+                        <i class="fa-solid fa-book w-7 text-brand-600"></i> 단어 및 언어 분석
+                    </a>
+                    <a href="#category-math" class="drawer-link flex items-center px-3 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-brand-50 hover:text-brand-700 transition">
+                        <i class="fa-solid fa-calculator w-7 text-brand-600"></i> 수학·생활 편의 및 생성
+                    </a>
+                </nav>
+            </div>
+            <div class="pt-4 border-t border-slate-100">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 px-2">사이트 정보</h3>
+                <div class="px-2 text-xs text-slate-500 space-y-2 leading-relaxed">
+                    <p><strong>misopick.kr</strong>은 브라우저에서 즉시 실행되는 필수 온라인 유틸리티를 무료로 제공합니다.</p>
+                    <p>© 2026 MisoPick All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- 메인 컨텐츠 영역 -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- 히어로 섹션 -->
+        <div class="text-center max-w-3xl mx-auto mb-12">
+            <span class="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-brand-100 text-brand-700 mb-4">
+                <i class="fa-solid fa-bolt"></i> <span>Online Web Utilities Hub</span>
+            </span>
+            <h1 class="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight mb-4">
+                필요한 모든 웹 유틸리티를 한 곳에서
+            </h1>
+            <p class="text-base text-slate-600 leading-relaxed">
+                문자 편집, 단어 분석, 생활 편의 계산기까지 <strong class="text-slate-900">misopick.kr</strong>에서 빠르고 간편하게 이용하세요. 별도의 프로그램 설치 없이 웹에서 바로 실행됩니다.
+            </p>
+        </div>
+
+        <!-- 상단 애드센스 광고 배너 영역 
+        <div class="w-full bg-slate-200/70 border border-slate-300/60 rounded-2xl p-6 text-center text-slate-500 mb-12 flex flex-col items-center justify-center min-h-[100px]">
+            <span class="text-xs uppercase tracking-widest font-bold text-slate-400 mb-1"><i class="fa-solid fa-rectangle-ad mr-1"></i> Google AdSense 광고 영역</span>
+            <p class="text-xs text-slate-400">여기에 애드센스 반응형 광고 코드를 삽입하세요.</p>
+        </div>  -->
+
+        <!-- 카테고리별 툴 그리드 컨테이너 -->
+        <div id="toolCategoriesContainer" class="space-y-16">
+            <!-- JavaScript로 동적 렌더링 -->
+        </div>
+
+        <!-- 하단 애드센스 광고 배너 영역 
+        <div class="w-full bg-slate-200/70 border border-slate-300/60 rounded-2xl p-6 text-center text-slate-500 my-16 flex flex-col items-center justify-center min-h-[100px]">
+            <span class="text-xs uppercase tracking-widest font-bold text-slate-400 mb-1"><i class="fa-solid fa-rectangle-ad mr-1"></i> Google AdSense 광고 영역</span>
+            <p class="text-xs text-slate-400">콘텐츠 하단 반응형 광고 단위 공간입니다.</p>
+        </div>  -->
+
+        <!-- SEO 및 애드센스 승인용 상세 설명 섹션 -->
+        <section class="bg-white rounded-3xl border border-slate-200 p-8 sm:p-10 shadow-sm mb-12 space-y-6">
+            <div class="border-b border-slate-100 pb-4">
+                <h2 class="text-xl font-bold text-slate-900 flex items-center">
+                    <i class="fa-solid fa-circle-info text-brand-600 mr-2.5"></i> misopick.kr 유틸리티 허브 서비스 안내 및 활용 백서
+                </h2>
+                <p class="text-sm text-slate-500 mt-1">웹 기반 디지털 작업 효율을 극대화하는 전문 도구 모음</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm text-slate-600">
+                <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 space-y-2">
+                    <div class="w-10 h-10 rounded-xl bg-brand-100 text-brand-700 flex items-center justify-center font-bold text-lg mb-3">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-900 text-base">초고속 클라이언트 처리</h3>
+                    <p class="leading-relaxed">
+                        모든 연산과 데이터 처리는 사용자의 웹브라우저(Client-side) 환경에서 실시간으로 안전하게 수행됩니다. 서버로 데이터가 전송되지 않아 보안이 철저하며 지연 시간 없이 즉각적인 결과를 확인할 수 있습니다.
+                    </p>
+                </div>
+
+                <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 space-y-2">
+                    <div class="w-10 h-10 rounded-xl bg-brand-100 text-brand-700 flex items-center justify-center font-bold text-lg mb-3">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-900 text-base">완벽한 무설치 및 반응형</h3>
+                    <p class="leading-relaxed">
+                        PC, 태블릿, 스마트폰 등 어떤 기기에서든 <a href="https://misopick.kr" class="text-brand-600 underline font-medium">misopick.kr</a>에 접속하면 별도의 프로그램 다운로드나 회원가입 절차 없이 언제 어디서나 편리하게 필요한 기능을 활용할 수 있습니다.
+                    </p>
+                </div>
+
+                <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 space-y-2">
+                    <div class="w-10 h-10 rounded-xl bg-brand-100 text-brand-700 flex items-center justify-center font-bold text-lg mb-3">
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-900 text-base">스마트 즐겨찾기 시스템</h3>
+                    <p class="leading-relaxed">
+                        자주 사용하는 툴은 카드 상단의 별표 아이콘을 눌러 즐겨찾기에 추가할 수 있습니다. 상단 즐겨찾기 버튼을 통해 언제든지 원클릭으로 나만의 맞춤형 유틸리티 목록에 빠르게 접근하세요.
+                    </p>
+                </div>
+            </div>
+
+            <div class="pt-4 text-xs text-slate-500 leading-relaxed space-y-2 border-t border-slate-100">
+                <p><strong>이용 안내:</strong> 본 사이트에서 제공하는 모든 툴과 기능은 지속적으로 업데이트되며, 누구나 무료로 자유롭게 이용할 수 있습니다. 서비스 이용 중 불편한 점이나 추가가 필요한 유틸리티 제안은 고객 피드백 채널을 통해 남겨주시기 바랍니다.</p>
+                <p>© 2026 <strong>misopick.kr</strong> All Rights Reserved.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="bg-white border-t border-slate-200 py-10 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-xl bg-brand-600 flex items-center justify-center text-white font-bold text-sm">M</div>
+                
+                    <a href="https://misopick.kr" class="flex items-center space-x-2">
+                <span class="text-lg font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span></a>
+            </div>
+            <p class="text-sm text-slate-500 text-center md:text-left">
+                대한민국 대표 프리미엄 온라인 유틸리티 및 도구 허브 서비스
+            </p>
+             <p style="margin-top: 8px;"><a href="../privacy.html" style="color: var(--text-muted); text-decoration: none;">개인정보처리방침</a></p>
+        </div>
+    </footer>
+
+    <!-- 즐겨찾기 모달/드로어 -->
+    <div id="favoritesModal" class="fixed inset-0 bg-slate-900/50 z-50 hidden backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden transform scale-95 transition-transform duration-300" id="favModalContent">
+            <div class="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-star text-amber-400 text-lg"></i>
+                    <h3 class="font-bold text-slate-900 text-lg">나의 즐겨찾기 툴</h3>
+                </div>
+                <button id="closeFavModal" class="p-2 text-slate-400 hover:text-slate-600 rounded-lg">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <div class="p-6 overflow-y-auto flex-1 space-y-3" id="favListContainer">
+                <!-- 즐겨찾기 목록 동적 삽입 -->
+            </div>
+            <div class="p-4 bg-slate-50 border-t border-slate-100 text-center text-xs text-slate-500">
+                카드의 별 아이콘을 클릭하여 즐겨찾기를 추가하거나 해제할 수 있습니다.
+            </div>
+        </div>
+    </div>
+
+    <!-- 스크립트 및 툴 데이터 정의 (변환 및 인코딩 카테고리 제외) -->
+    <script>
+        const toolsData = [
+            // 카테고리 1: 문자 및 텍스트 편집
+            {
+                categoryKey: 'category-text',
+                categoryName: '문자 및 텍스트 편집',
+                categoryDesc: 'HTML 태그 제거, 글자수 계산, 대소문자 변환 등 기초 텍스트 가공 도구',
+                icon: 'fa-font',
+                tools: [
+                    { id: 1, name: 'HTML 태그 제거기', desc: '본문 속 HTML 코드를 깔끔하게 없애줍니다.', href: 'https://misopick.kr/html-tag-remover.html' },
+                    { id: 2, name: '글자수/공백 계산기', desc: '글의 글자수, 공백 포함 글자수, 단어수를 측정합니다.', href: 'https://misopick.kr/character-counter.html' },
+                    { id: 3, name: '영어 대소문자 변환기', desc: 'UPPERCASE, lowercase, Title Case로 일괄 변환합니다.', href: 'https://misopick.kr/case-converter.html' },
+                    { id: 4, name: '단어/글자 문자 정렬기', desc: '가나다순, 알파벳순, 역순으로 줄 단위 정렬을 수행합니다.', href: 'https://misopick.kr/line-sorter.html' },
+                    { id: 5, name: '중복 줄 제거기', desc: '텍스트 내 중복되는 줄 항목들을 일괄 삭제합니다.', href: 'https://misopick.kr/duplicate-line-remover.html' },
+                    { id: 6, name: '줄 바꿈 제거기', desc: '불필요한 엔터(줄바꿈) 기호를 공백으로 변환합니다.', href: 'https://misopick.kr/line-break-remover.html' },
+                    { id: 7, name: '빈줄 삭제기', desc: '텍스트 사이의 빈 공백 줄을 한 번에 제거합니다.', href: 'https://misopick.kr/empty-line-remover.html' },
+                    { id: 8, name: '글자 뒤집기/좌우반전', desc: '입력한 텍스트를 거꾸로 뒤집어 출력합니다.', href: 'https://misopick.kr/text-reverse.html' },
+                    { id: 9, name: '특수문자/이모지 제거기', desc: '텍스트 속 이모지와 특수 기호만 골라 삭제합니다.', href: 'https://misopick.kr/emoji-remover.html' },
+                    { id: 10, name: '마크다운 미리보기 뷰어', desc: '마크다운 문법을 실시간 HTML 렌더링으로 확인합니다.', href: 'https://misopick.kr/markdown-viewer.html' }
+                ]
+            },
+            // 카테고리 2: 단어 및 언어 분석
+            {
+                categoryKey: 'category-word',
+                categoryName: '단어 및 언어 분석',
+                categoryDesc: '어휘 목록 생성, 닉네임 추천, 키워드 추출 및 텍스트 통계 분석 도구',
+                icon: 'fa-book',
+                tools: [
+                    { id: 11, name: '글자수별 영어 단어 목록', desc: '특정 길이에 맞는 영어 단어를 추출합니다.', href: 'https://misopick.kr/english-word-list.html' },
+                    { id: 12, name: '글자수별 한국어 단어 목록', desc: '글자 수별 한국어 어휘 및 명사를 검색합니다.', href: 'https://misopick.kr/korean-word-list.html' },
+                    { id: 13, name: '캐릭터 이름/닉네임 생성기', desc: '게임이나 소설용 개성 있는 닉네임을 추천합니다.', href: 'https://misopick.kr/nickname-generator.html' },
+                    { id: 14, name: '키워드 추출/태그 생성기', desc: '본문에서 핵심 단어를 자동으로 뽑아 태그화합니다.', href: 'https://misopick.kr/keyword-extractor.html' },
+                    { id: 15, name: '단어 빈도수 측정기', desc: '문장 속 단어 등장 횟수와 통계를 분석합니다.', href: 'https://misopick.kr/word-frequency.html' },
+                    { id: 16, name: '금칙어/비속어 필터링 툴', desc: '특정 단어 포함 여부 확인 및 마스킹 처리합니다.', href: 'https://misopick.kr/profanity-filter.html' },
+                    { id: 17, name: '초성 추출기', desc: '한글 문장에서 자음 초성만 깔끔하게 추출합니다.', href: 'https://misopick.kr/chosung-extractor.html' },
+                    { id: 18, name: '타자 연습/타속 측정기', desc: '분당 타자 수(WPM)와 정확도를 측정합니다.', href: 'https://misopick.kr/typing-test.html' },
+                    { id: 19, name: '받침/맞춤법 자가 진단', desc: '간단한 한글 오탈자 및 맞춤법을 체크합니다.', href: 'https://misopick.kr/spell-checker.html' },
+                    { id: 20, name: '로렘 입숨 더미 텍스트', desc: '디자인 및 퍼블리싱 시안용 임시 텍스트를 생성합니다.', href: 'https://misopick.kr/lorem-ipsum.html' }
+                ]
+            },
+            // 카테고리 3: 수학·생활 편의 및 생성
+            {
+                categoryKey: 'category-math',
+                categoryName: '수학·생활 편의 및 생성',
+                categoryDesc: '로또 번호, 디데이, 단위 환산, 비밀번호 생성 및 일상 유틸리티 도구',
+                icon: 'fa-calculator',
+                tools: [
+                    { id: 21, name: '랜덤 숫자 추첨기', desc: '지정 범위 내 무작위 숫자 및 로또 번호를 추출합니다.', href: 'https://misopick.kr/random-number.html' },
+                    { id: 22, name: '사다리 타기/제비뽑기', desc: '모임 및 회식용 순서 정하기 웹툴입니다.', href: 'https://misopick.kr/ladder-game.html' },
+                    { id: 23, name: 'D-Day 날짜 계산기', desc: '기념일 및 목표일까지 남은 기간을 계산합니다.', href: 'https://misopick.kr/dday-calculator.html' },
+                    { id: 24, name: '만 나이 계산기', desc: '생년월일 기준 정확한 만 나이와 연나이를 산출합니다.', href: 'https://misopick.kr/age-calculator.html' },
+                    { id: 25, name: '단위 환산기', desc: '길이, 무게, 넓이, 온도 등 각종 도량형을 변환합니다.', href: 'https://misopick.kr/unit-converter.html' },
+                    { id: 26, name: '비만도(BMI) 계산기', desc: '신장과 체중 기준 건강 체질량 지수를 측정합니다.', href: 'https://misopick.kr/bmi-calculator.html' },
+                    { id: 27, name: '퍼센트(%) 계산기', desc: '할인율, 증가폭, 비율을 쉽고 빠르게 계산합니다.', href: 'https://misopick.kr/percent-calculator.html' },
+                    { id: 28, name: '비밀번호 생성 및 검사', desc: '강력하고 안전한 보안 패스워드 조합을 제작합니다.', href: 'https://misopick.kr/password-generator.html' },
+                    { id: 29, name: '화면 해상도 테스트 툴', desc: '기기별 반응형 화면 비율 시뮬레이션을 제공합니다.', href: 'https://misopick.kr/resolution-tester.html' },
+                    { id: 30, name: '인터넷 속도 측정기', desc: '다운로드 및 업로드 대역폭 성능을 확인합니다.', href: 'https://misopick.kr/speed-test.html' },
+                    { id: 31, name: '세계 시간 비교기', desc: '국가별 현재 시각과 시차를 비교합니다.', href: 'https://misopick.kr/world-clock.html' },
+                    { id: 32, name: '스톱워치 및 타이머', desc: '온라인으로 정밀한 시간을 측정합니다.', href: 'https://misopick.kr/stopwatch.html' },
+                    { id: 33, name: '브라우저 임시 메모장', desc: '브라우저 내에 가볍게 메모를 작성하고 보관합니다.', href: 'https://misopick.kr/notepad.html' },
+                    { id: 34, name: '색상 팔레트 추천기', desc: '웹 디자인용 조화로운 컬러 조합을 추출합니다.', href: 'https://misopick.kr/color-palette.html' },
+                    { id: 35, name: '이미지 포맷 변환기', desc: 'PNG, JPG, WEBP 간 가벼운 그림 파일 형식을 변환합니다.', href: 'https://misopick.kr/image-converter.html' }
+                ]
+            }
+        ];
+
+        // 로컬스토리지 기반 즐겨찾기 관리
+        let favorites = JSON.parse(localStorage.getItem('misopick_favorites') || '[]');
+
+        function saveFavorites() {
+            localStorage.setItem('misopick_favorites', JSON.stringify(favorites));
+            updateFavCount();
+        }
+
+        function updateFavCount() {
+            document.getElementById('favCount').textContent = favorites.length;
+        }
+
+        function toggleFavorite(toolId, event) {
+            if (event) event.stopPropagation();
+            const index = favorites.indexOf(toolId);
+            if (index > -1) {
+                favorites.splice(index, 1);
+            } else {
+                favorites.push(toolId);
+            }
+            saveFavorites();
+            renderTools();
+            renderFavoritesList();
+        }
+
+        // 전체 툴 렌더링 함수
+        function renderTools(filterText = '') {
+            const container = document.getElementById('toolCategoriesContainer');
+            container.innerHTML = '';
+
+            let totalMatched = 0;
+
+            toolsData.forEach(cat => {
+                const filteredTools = cat.tools.filter(tool => 
+                    tool.name.toLowerCase().includes(filterText.toLowerCase()) || 
+                    tool.desc.toLowerCase().includes(filterText.toLowerCase())
+                );
+
+                if (filteredTools.length === 0) return;
+                totalMatched += filteredTools.length;
+
+                const categorySection = document.createElement('section');
+                categorySection.id = cat.categoryKey;
+                categorySection.className = 'space-y-6';
+
+                categorySection.innerHTML = `
+                    <div class="flex items-center space-x-3 border-b border-slate-200 pb-4">
+                        <div class="w-10 h-10 rounded-2xl bg-brand-500 text-white flex items-center justify-center text-lg shadow-md shadow-brand-500/20">
+                            <i class="fa-solid ${cat.icon}"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-extrabold text-slate-900">${cat.categoryName}</h2>
+                            <p class="text-xs text-slate-500">${cat.categoryDesc}</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                        ${filteredTools.map(tool => {
+                            const isFav = favorites.includes(tool.id);
+                            return `
+                                <a href="${tool.href}" class="group relative bg-white border border-slate-200/80 rounded-2xl p-5 hover:border-brand-500 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between">
+                                    <div>
+                                        <div class="flex items-start justify-between mb-3">
+                                            <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 bg-slate-100 text-slate-600 rounded-md group-hover:bg-brand-50 group-hover:text-brand-700 transition">Tool #${tool.id}</span>
+                                            <button onclick="toggleFavorite(${tool.id}, event)" class="text-slate-300 hover:text-amber-400 p-1 transition ${isFav ? 'text-amber-400' : ''}" aria-label="즐겨찾기">
+                                                <i class="${isFav ? 'fa-solid' : 'fa-regular'} fa-star text-base"></i>
+                                            </button>
+                                        </div>
+                                        <h3 class="font-bold text-slate-900 group-hover:text-brand-600 text-base mb-1.5 transition leading-snug">${tool.name}</h3>
+                                        <p class="text-xs text-slate-500 leading-relaxed line-clamp-2">${tool.desc}</p>
+                                    </div>
+                                    <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-brand-600">
+                                        <span>실행하기</span>
+                                        <i class="fa-solid fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+                                    </div>
+                                </a>
+                            `;
+                        }).join('')}
+                    </div>
+                `;
+                container.appendChild(categorySection);
+            });
+
+            if (totalMatched === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-20 bg-white rounded-3xl border border-slate-200">
+                        <i class="fa-solid fa-magnifying-glass text-4xl text-slate-300 mb-4"></i>
+                        <h3 class="text-lg font-bold text-slate-700 mb-1">검색 결과가 없습니다</h3>
+                        <p class="text-sm text-slate-400">다른 검색어로 다시 시도해 보세요.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // 즐겨찾기 모달 리스트 렌더링
+        function renderFavoritesList() {
+            const container = document.getElementById('favListContainer');
+            if (favorites.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-10 text-slate-400 text-sm">
+                        <i class="fa-regular fa-star text-3xl mb-2 text-slate-300"></i>
+                        <p>즐겨찾기에 등록된 툴이 없습니다.<br>각 툴 카드의 별 아이콘을 눌러 추가해보세요!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let allToolsFlat = [];
+            toolsData.forEach(c => allToolsFlat.push(...c.tools));
+
+            const favTools = allToolsFlat.filter(t => favorites.includes(t.id));
+
+            container.innerHTML = favTools.map(tool => `
+                <div class="flex items-center justify-between p-3.5 bg-slate-50 border border-slate-200/80 rounded-2xl hover:border-brand-500 transition">
+                    <a href="${tool.href}" class="flex-1 pr-4">
+                        <div class="text-xs text-brand-600 font-bold mb-0.5">Tool #${tool.id}</div>
+                        <div class="font-bold text-slate-900 text-sm">${tool.name}</div>
+                        <div class="text-xs text-slate-500 truncate">${tool.desc}</div>
+                    </a>
+                    <div class="flex items-center space-x-2">
+                        <a href="${tool.href}" class="px-3 py-1.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-semibold transition shadow-sm">실행</a>
+                        <button onclick="toggleFavorite(${tool.id}, event)" class="p-2 text-amber-400 hover:text-slate-400 transition" aria-label="삭제">
+                            <i class="fa-solid fa-trash-can text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 이벤트 리스너 설정
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTools();
+            updateFavCount();
+
+            // 검색 입력 핸들러 (데스크탑 & 모바일 연동)
+            const searchInput = document.getElementById('searchInput');
+            const searchInputMobile = document.getElementById('searchInputMobile');
+
+            function handleSearch(e) {
+                const val = e.target.value;
+                searchInput.value = val;
+                searchInputMobile.value = val;
+                renderTools(val);
+            }
+
+            searchInput.addEventListener('input', handleSearch);
+            searchInputMobile.addEventListener('input', handleSearch);
+
+            // 햄버거 사이드 메뉴 토글
+            const hamburgerBtn = document.getElementById('hamburgerBtn');
+            const sidebarDrawer = document.getElementById('sidebarDrawer');
+            const drawerOverlay = document.getElementById('drawerOverlay');
+            const drawerCloseBtn = document.getElementById('drawerCloseBtn');
+
+            function openDrawer() {
+                drawerOverlay.classList.remove('hidden');
+                setTimeout(() => {
+                    drawerOverlay.classList.remove('opacity-0');
+                    sidebarDrawer.classList.remove('-translate-x-full');
+                }, 10);
+            }
+
+            function closeDrawer() {
+                drawerOverlay.classList.add('opacity-0');
+                sidebarDrawer.classList.add('-translate-x-full');
+                setTimeout(() => {
+                    drawerOverlay.classList.add('hidden');
+                }, 300);
+            }
+
+            hamburgerBtn.addEventListener('click', openDrawer);
+            drawerCloseBtn.addEventListener('click', closeDrawer);
+            drawerOverlay.addEventListener('click', closeDrawer);
+
+            document.querySelectorAll('.drawer-link').forEach(link => {
+                link.addEventListener('click', closeDrawer);
+            });
+
+            // 즐겨찾기 모달 토글
+            const favoritesBtn = document.getElementById('favoritesBtn');
+            const favoritesModal = document.getElementById('favoritesModal');
+            const closeFavModal = document.getElementById('closeFavModal');
+            const favModalContent = document.getElementById('favModalContent');
+
+            function openFavModal() {
+                renderFavoritesList();
+                favoritesModal.classList.remove('hidden');
+                setTimeout(() => {
+                    favModalContent.classList.remove('scale-95');
+                    favModalContent.classList.add('scale-100');
+                }, 10);
+            }
+
+            function closeFavModalFunc() {
+                favModalContent.classList.remove('scale-100');
+                favModalContent.classList.add('scale-95');
+                setTimeout(() => {
+                    favoritesModal.classList.add('hidden');
+                }, 200);
+            }
+
+            favoritesBtn.addEventListener('click', openFavModal);
+            closeFavModal.addEventListener('click', closeFavModalFunc);
+            favoritesModal.addEventListener('click', (e) => {
+                if (e.target === favoritesModal) closeFavModalFunc();
+            });
+        });
+    </script>
+</body>
+</html>

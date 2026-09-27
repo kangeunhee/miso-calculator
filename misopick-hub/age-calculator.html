@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>만 나이 계산기 - 미소픽 (MisoPick)</title>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2888840483385554"
+     crossorigin="anonymous"></script>
+    <meta name="description" content="생년월일만 입력하면 만 나이, 연나이, 세는 나이를 한눈에 계산해 주는 무료 온라인 나이 계산기입니다. 법 개정에 따른 만 나이 계산법과 상세한 가이드를 확인하세요.">
+    <!-- 구글 애드센스 승인용 스크립트 (승인 후 주석 해제) -->
+    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 50: '#f0fdf4', 100: '#dcfce7', 500: '#22c55e', 600: '#16a34a', 700: '#15803d' }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white">
+
+    <!-- 상단 네비게이션바 -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <a href="https://misopick.kr" class="flex items-center space-x-2">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-emerald-400 flex items-center justify-center text-white font-bold text-lg shadow-md shadow-brand-500/20">
+                    M
+                </div>
+                <span class="text-xl font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span>
+            </a>
+            <div>
+                <a href="https://misopick.kr/index.html" class="inline-flex items-center space-x-1.5 px-4 py-2 rounded-full bg-slate-100 text-slate-700 hover:bg-brand-50 hover:text-brand-700 text-sm font-semibold transition">
+                    <i class="fa-solid fa-grid-2"></i>
+                    <span>전체보기</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 메인 컨텐츠 영역 -->
+    <main class="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+        
+        <!-- 툴 실행 영역 (만 나이 계산기 + 애니메이션) -->
+        <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-8">
+            <div>
+                <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 bg-brand-50 text-brand-700 rounded-md">Tool #24</span>
+                <h1 class="text-2xl font-black text-slate-900 mt-2 mb-1">만 나이 계산기</h1>
+                <p class="text-sm text-slate-500">생년월일을 입력하면 캐릭터가 계단을 뛰어올라가며 만 나이, 연나이, 세는 나이를 흥미롭게 보여줍니다.</p>
+            </div>
+
+            <!-- 입력 설정 영역 -->
+            <div class="space-y-4">
+                <label class="block text-xs font-bold text-slate-700">생년월일 선택</label>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <input type="date" id="birthDateInput" class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:bg-white focus:border-brand-500 outline-none transition">
+                    <button onclick="startAgeAnimation()" class="w-full px-6 py-3.5 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm rounded-2xl transition shadow-md flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-person-running"></i>
+                        <span>재미있는 나이 애니메이션 시작</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 캔버스 애니메이션 출력 영역 -->
+            <div class="space-y-3 pt-4 border-t border-slate-100">
+                <label class="block text-xs font-bold text-slate-700">나이 성장 애니메이션 시각화</label>
+                <div class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 overflow-x-auto flex flex-col items-center justify-center min-h-[300px]">
+                    <canvas id="ageCanvas" width="700" height="260" class="bg-white rounded-xl shadow-xs border border-slate-100"></canvas>
+                    <div id="ageResultText" class="mt-4 text-xs font-bold text-slate-600 text-center flex flex-wrap gap-2 justify-center"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 애드센스 광고 영역 (상단 콘텐츠와 자연스럽게 어우러지는 위치) 
+        <div class="w-full bg-slate-100 border border-slate-200 rounded-2xl p-6 text-center text-slate-400 flex flex-col items-center justify-center min-h-[90px]">
+            <span class="text-xs uppercase tracking-widest font-bold text-slate-400 mb-1"><i class="fa-solid fa-rectangle-ad mr-1"></i> Google AdSense 광고 영역</span>
+            <p class="text-xs text-slate-400">반응형 디스플레이 광고 단위 공간입니다.</p>
+        </div>-->
+
+        <!-- 서비스 설명 및 애드센스 승인용 상세 정보 섹션 -->
+        <section class="bg-white rounded-3xl border border-slate-200 p-8 shadow-sm space-y-8">
+            <div>
+                <h2 class="text-xl font-bold text-slate-900 mb-3">만 나이 통일법 시행 안내 및 이용 가이드</h2>
+                <div class="space-y-3 text-sm text-slate-600 leading-relaxed">
+                    <p>
+                        대한민국은 2023년 6월부터 사법·행정 분야에서 <strong>'만 나이' 사용을 원칙</strong>으로 하는 법안을 공식 시행했습니다. 이에 따라 계약, 행정 처분, 공공 민원 등 일상생활 속에서 나이를 계산하는 기준이 명확하게 통일되었습니다.
+                    </p>
+                    <p>
+                        <strong>misopick.kr 만 나이 계산기</strong>는 법적 기준에 따른 정확한 만 나이는 물론, 기존에 혼용되어 오던 <strong>'연나이(현재 연도 - 출생 연도)'</strong>와 한국식 전통 나이인 <strong>'세는 나이'</strong>를 한 번에 비교하여 보여줌으로써 사용자의 편의성을 높였습니다.
+                    </p>
+                </div>
+            </div>
+
+            <!-- 핵심 특징 요약 카드 -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100 space-y-2">
+                    <div class="w-8 h-8 rounded-lg bg-brand-100 text-brand-600 flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-900 text-sm">완벽한 보안</h3>
+                    <p class="text-xs text-slate-500 leading-relaxed">입력하신 생년월일 데이터는 서버에 저장되지 않으며 브라우저 내에서만 안전하게 연산됩니다.</p>
+                </div>
+                <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100 space-y-2">
+                    <div class="w-8 h-8 rounded-lg bg-brand-100 text-brand-600 flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-900 text-sm">실시간 인터랙션</h3>
+                    <p class="text-xs text-slate-500 leading-relaxed">토끼 캐릭터가 계단을 뛰어오르는 애니메이션 효과로 나이 계산 과정을 즐겁게 시각화합니다.</p>
+                </div>
+                <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100 space-y-2">
+                    <div class="w-8 h-8 rounded-lg bg-brand-100 text-brand-600 flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-mobile-screen"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-900 text-sm">모바일 최적화</h3>
+                    <p class="text-xs text-slate-500 leading-relaxed">PC, 스마트폰, 태블릿 등 어떤 기기에서든 최적화된 반응형 UI로 간편하게 이용할 수 있습니다.</p>
+                </div>
+            </div>
+
+            <!-- 자주 하는 질문 (아코디언) -->
+            <div class="space-y-4 pt-4 border-t border-slate-100">
+                <h3 class="text-lg font-bold text-slate-900 flex items-center">
+                    <i class="fa-solid fa-circle-question text-brand-600 mr-2"></i> 자주 하는 질문 (FAQ)
+                </h3>
+                <div class="space-y-3" id="faqContainer">
+                    
+                    <!-- FAQ 1 (처음에 열려 있는 아코디언) -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q1. 만 나이는 어떻게 계산되나요?</span>
+                            <i class="fa-solid fa-chevron-down transform rotate-180 transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 block">
+                            출생일을 기준으로 0살로 시작하여, 태어난 연도의 생일이 지나면 1살을 더하는 방식으로 계산됩니다. 현재 연도에서 생년월일을 뺀 값에서 생일이 지나지 않았으면 1살을 추가로 차감합니다.
+                        </div>
+                    </div>
+
+                    <!-- FAQ 2 -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q2. 연나이와 세는 나이는 무엇이 다른가요?</span>
+                            <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
+                            연나이는 '현재 연도에서 출생 연도를 뺀 값'으로 병역법이나 청소년보호법 등 일부 예외적인 법령에서 주로 사용됩니다. 세는 나이는 태어난 순간부터 1살로 시작하여 새해(1월 1일)가 될 때마다 한 살씩 늘어나는 전통적인 한국식 나이입니다.
+                        </div>
+                    </div>
+
+                    <!-- FAQ 3 -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q3. 입력한 생년월일 정보가 서버에 저장되나요?</span>
+                            <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
+                            아니요, 전혀 저장되지 않습니다. 모든 계산은 사용자의 브라우저 내부에서 자바스크립트로 안전하게 처리되므로 프라이버시가 완벽히 보호됩니다.
+                        </div>
+                    </div>
+
+                    <!-- FAQ 4 -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q4. 모바일 환경에서도 간편하게 조회할 수 있나요?</span>
+                            <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
+                            네, 모바일 기기의 날짜 입력 인터페이스와 반응형 디자인을 지원하여 스마트폰에서도 터치 한 번으로 간편하게 확인할 수 있습니다.
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="bg-white border-t border-slate-200 py-10 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-xl bg-brand-600 flex items-center justify-center text-white font-bold text-sm">M</div>
+                <a href="index.html" class="flex items-center space-x-2">
+                <span class="text-lg font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span></a>
+            </div>
+            <p class="text-sm text-slate-500 text-center md:text-left">
+               <strong>이용 안내:</strong> 본 사이트에서 제공하는 모든 툴과 기능은 지속적으로 업데이트되며, 누구나 무료로 자유롭게 이용할 수 있습니다. 
+               <br>서비스 이용 중 불편한 점이나 추가가 필요한 유틸리티 제안은 고객 피드백 채널을 통해 남겨주시기 바랍니다.<br>  
+            </p>
+             <p style="margin-top: 8px;"><a href="../privacy.html" style="color: var(--text-muted); text-decoration: none;">개인정보처리방침보기</a></p>
+        </div>
+    </footer>
+
+    <!-- 캔버스 캐릭터 애니메이션 스크립트 -->
+    <script>
+        let canvas, ctx;
+
+        window.onload = () => {
+            canvas = document.getElementById('ageCanvas');
+            ctx = canvas.getContext('2d');
+            drawInitialMessage('생년월일을 선택하고 애니메이션 시작 버튼을 눌러주세요!');
+            
+            // 기본값 설정 (20년 전 오늘)
+            const today = new Date();
+            const yyyy = today.getFullYear() - 20;
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            document.getElementById('birthDateInput').value = `${yyyy}-${mm}-${dd}`;
+        };
+
+        function drawInitialMessage(msg) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = '14px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(msg, canvas.width / 2, canvas.height / 2);
+        }
+
+        function startAgeAnimation() {
+            const birthStr = document.getElementById('birthDateInput').value;
+            if (!birthStr) {
+                alert('생년월일을 선택해주세요.');
+                return;
+            }
+
+            const birthDate = new Date(birthStr);
+            const today = new Date();
+
+            let birthYear = birthDate.getFullYear();
+            let birthMonth = birthDate.getMonth();
+            let birthDay = birthDate.getDate();
+
+            let currentYear = today.getFullYear();
+            let currentMonth = today.getMonth();
+            let currentDay = today.getDate();
+
+            let age = currentYear - birthYear;
+            if (currentMonth < birthMonth || (currentMonth === birthMonth && currentDay < birthDay)) {
+                age--;
+            }
+            let yearAge = currentYear - birthYear;
+            let countingAge = yearAge + 1;
+
+            // 애니메이션 실행
+            runCharacterAnimation(age, yearAge, countingAge);
+        }
+
+        function runCharacterAnimation(age, yearAge, countingAge) {
+            let progress = 0;
+            const resultTextDiv = document.getElementById('ageResultText');
+            resultTextDiv.innerHTML = '<span class="text-brand-600"><i class="fa-solid fa-spinner fa-spin mr-1"></i> 나이를 계산하며 달려가는 중...</span>';
+
+            function frame() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // 바닥 그리기
+                ctx.strokeStyle = '#e2e8f0';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(50, 200);
+                ctx.lineTo(650, 200);
+                ctx.stroke();
+
+                // 계단 및 목표 지점 표시
+                let charX = 60 + (progress / 100) * 540;
+                let charY = 200 - Math.sin((progress / 100) * Math.PI * 3) * 35; // 통통 튀는 높낮이
+
+                // 토끼 캐릭터 그리기
+                ctx.font = '32px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('🐇', charX, charY - 10);
+
+                // 현재 점프 중인 가상의 나이 표시
+                let currentStepAge = Math.floor((progress / 100) * age);
+                ctx.fillStyle = '#16a34a';
+                ctx.font = 'bold 14px sans-serif';
+                ctx.fillText(`${currentStepAge}세`, charX, charY - 45);
+
+                progress += 1.5; // 애니메이션 속도
+
+                if (progress <= 100) {
+                    requestAnimationFrame(frame);
+                } else {
+                    // 최종 완료 화면 렌더링
+                    drawFinalScene(age, yearAge, countingAge);
+                }
+            }
+
+            requestAnimationFrame(frame);
+        }
+
+        function drawFinalScene(age, yearAge, countingAge) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 최종 도착 디자인 박스들 렌더링
+            const boxWidth = 190;
+            const boxHeight = 110;
+            const startX = 45;
+            const startY = 75;
+
+            const cards = [
+                { title: '만 나이 (법적 기준)', value: `${age}세`, bg: '#f0fdf4', border: '#dcfce7', text: '#16a34a' },
+                { title: '연 나이', value: `${yearAge}세`, bg: '#f8fafc', border: '#e2e8f0', text: '#334155' },
+                { title: '세는 나이 (한국식)', value: `${countingAge}세`, bg: '#f8fafc', border: '#e2e8f0', text: '#334155' }
+            ];
+
+            cards.forEach((card, idx) => {
+                let bx = startX + idx * (boxWidth + 15);
+                
+                ctx.fillStyle = card.bg;
+                ctx.strokeStyle = card.border;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.roundRect(bx, startY, boxWidth, boxHeight, 16);
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.fillStyle = '#64748b';
+                ctx.font = 'bold 11px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(card.title, bx + boxWidth / 2, startY + 30);
+
+                ctx.fillStyle = card.text;
+                ctx.font = 'bold 30px sans-serif';
+                ctx.fillText(card.value, bx + boxWidth / 2, startY + 75);
+            });
+
+            const resultTextDiv = document.getElementById('ageResultText');
+            resultTextDiv.innerHTML = `
+                <span class="px-3 py-1.5 rounded-xl text-xs font-bold bg-brand-50 text-brand-700 border border-brand-100 shadow-xs">
+                    🎉 계산 완료! 만 나이는 <strong class="text-brand-600">${age}세</strong>입니다.
+                </span>
+            `;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // FAQ 아코디언 동작 로직
+            const faqItems = document.querySelectorAll('.faq-item');
+
+            faqItems.forEach(item => {
+                const btn = item.querySelector('.faq-btn');
+                const content = item.querySelector('.faq-content');
+                const icon = item.querySelector('.fa-chevron-down');
+
+                btn.addEventListener('click', () => {
+                    const isOpen = !content.classList.contains('hidden');
+
+                    faqItems.forEach(otherItem => {
+                        otherItem.querySelector('.faq-content').classList.add('hidden');
+                        otherItem.querySelector('.fa-chevron-down').classList.remove('rotate-180');
+                    });
+
+                    if (isOpen) {
+                        content.classList.add('hidden');
+                        icon.classList.remove('rotate-180');
+                    } else {
+                        content.classList.remove('hidden');
+                        icon.classList.add('rotate-180');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

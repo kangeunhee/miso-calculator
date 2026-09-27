@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>동적 사다리 타기 / 제비뽑기 - 미소픽 (MisoPick)</title>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2888840483385554"
+     crossorigin="anonymous"></script>
+    <!-- 구글 애드센스 승인용 스크립트 (주석 처리됨) -->
+    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 50: '#f0fdf4', 100: '#dcfce7', 500: '#22c55e', 600: '#16a34a', 700: '#15803d' }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white">
+
+    <!-- 상단 네비게이션바 -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <!-- 왼쪽 상단: misopick.kr 로고 -->
+            <a href="https://misopick.kr" class="flex items-center space-x-2">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-emerald-400 flex items-center justify-center text-white font-bold text-lg shadow-md shadow-brand-500/20">
+                    M
+                </div>
+                <span class="text-xl font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span>
+            </a>
+
+            <!-- 오른쪽 상단: 전체보기 버튼 -->
+            <div>
+                <a href="https://misopick.kr/index.html" class="inline-flex items-center space-x-1.5 px-4 py-2 rounded-full bg-slate-100 text-slate-700 hover:bg-brand-50 hover:text-brand-700 text-sm font-semibold transition">
+                    <i class="fa-solid fa-grid-2"></i>
+                    <span>전체보기</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 메인 컨텐츠 영역 -->
+    <main class="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+        
+        <!-- 툴 실행 영역 (동적 사다리 타기) -->
+        <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-8">
+            <div>
+                <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 bg-brand-50 text-brand-700 rounded-md">Tool #22</span>
+                <h1 class="text-2xl font-black text-slate-900 mt-2 mb-1">동적 사다리 타기 / 제비뽑기</h1>
+                <p class="text-sm text-slate-500">참가자별로 고유한 색상 선이 애니메이션으로 그려지며 공정하게 결과를 도출합니다.</p>
+            </div>
+
+            <!-- 입력 설정 영역 -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold text-slate-700">참가자 입력 (쉼표로 구분)</label>
+                    <input type="text" id="playersInput" class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:bg-white focus:border-brand-500 outline-none transition" value="김철수, 이영희, 박민수, 정지원">
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold text-slate-700">결과 항목 입력 (쉼표로 구분)</label>
+                    <input type="text" id="resultsInput" class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:bg-white focus:border-brand-500 outline-none transition" value="커피 쏘기, 꽝, 당첨, 식사 계산">
+                </div>
+            </div>
+
+            <!-- 실행 버튼 -->
+            <div class="flex items-center justify-between pt-2">
+                <button onclick="initLadder()" class="px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm rounded-2xl transition shadow-md">
+                    <i class="fa-solid fa-play mr-1"></i> 사다리 타기 시작하기
+                </button>
+                <button id="resetGameBtn" onclick="resetLadder()" class="text-xs text-slate-500 font-bold hover:underline hidden">
+                    <i class="fa-solid fa-rotate-right mr-1"></i> 초기화
+                </button>
+            </div>
+
+            <!-- 캔버스 사다리 출력 영역 -->
+            <div class="space-y-3 pt-4 border-t border-slate-100">
+                <label class="block text-xs font-bold text-slate-700">사다리 시각화 영역</label>
+                <div class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 overflow-x-auto flex flex-col items-center justify-center min-h-[350px]">
+                    <canvas id="ladderCanvas" width="700" height="400" class="bg-white rounded-xl shadow-xs border border-slate-100"></canvas>
+                    <div id="ladderResultText" class="mt-4 text-xs font-bold text-slate-600 text-center flex flex-wrap gap-2 justify-center"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 애드센스 광고 영역 (주석 처리됨) -->
+        <!-- 
+        <div class="w-full bg-slate-100 border border-slate-200 rounded-2xl p-6 text-center text-slate-400 flex flex-col items-center justify-center min-h-[90px]">
+            <span class="text-xs uppercase tracking-widest font-bold text-slate-400 mb-1"><i class="fa-solid fa-rectangle-ad mr-1"></i> Google AdSense 광고 영역</span>
+            <p class="text-xs text-slate-400">반응형 디스플레이 광고 단위 공간입니다.</p>
+        </div>
+        -->
+
+        <!-- 서비스 설명 및 자주 하는 질문 (아코디언) 섹션 -->
+        <section class="bg-white rounded-3xl border border-slate-200 p-8 shadow-sm space-y-8">
+            <div>
+                <h2 class="text-xl font-bold text-slate-900 mb-2">서비스 소개 및 이용 가이드</h2>
+                <p class="text-sm text-slate-600 leading-relaxed">
+                    <strong>misopick.kr</strong>의 동적 사다리 타기 툴은 참가자별 고유 컬러 매칭 애니메이션을 도입하여 각자의 경로를 뚜렷하게 구별하며 재미있게 결과를 확인할 수 있는 웹 유틸리티입니다.
+                </p>
+            </div>
+
+            <!-- 자주 하는 질문 (아코디언) -->
+            <div class="space-y-4">
+                <h3 class="text-lg font-bold text-slate-900 flex items-center">
+                    <i class="fa-solid fa-circle-question text-brand-600 mr-2"></i> 자주 하는 질문 (FAQ)
+                </h3>
+                <div class="space-y-3" id="faqContainer">
+                    
+                    <!-- FAQ 1 (처음에 열려 있는 아코디언) -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q1. 동적 사다리 타기는 어떤 방식으로 작동하나요?</span>
+                            <i class="fa-solid fa-chevron-down transform rotate-180 transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 block">
+                            참가자마다 고유 색상을 지정하여, 캔버스 위에서 각자의 경로를 따라 선이 부드럽게 움직이며 최종 결과에 도달하는 과정을 시각적으로 보여줍니다.
+                        </div>
+                    </div>
+
+                    <!-- FAQ 2 -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q2. 입력한 데이터나 사다리 결과가 서버에 저장되나요?</span>
+                            <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
+                            아니요, 전혀 저장되지 않습니다. 사용자의 브라우저 내부에서 자바스크립트 연산으로만 처리되므로 안심하고 이용할 수 있습니다.
+                        </div>
+                    </div>
+
+                    <!-- FAQ 3 -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q3. 모바일 화면에서도 정상적으로 시각화되나요?</span>
+                            <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
+                            네, 캔버스 크기가 반응형 환경에 맞추어 렌더링되므로 스마트폰 브라우저에서도 부드럽게 애니메이션을 감상할 수 있습니다.
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="bg-white border-t border-slate-200 py-10 mt-auto">
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-xl bg-brand-600 flex items-center justify-center text-white font-bold text-sm">M</div>
+                
+                    <a href="index.html" class="flex items-center space-x-2">
+                <span class="text-lg font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span></a>
+            </div>
+            <p class="text-sm text-slate-500 text-center md:text-left">
+               <strong>이용 안내:</strong> 본 사이트에서 제공하는 모든 툴과 기능은 지속적으로 업데이트되며, 누구나 무료로 자유롭게 이용할 수 있습니다. 
+               <br>서비스 이용 중 불편한 점이나 추가가 필요한 유틸리티 제안은 고객 피드백 채널을 통해 남겨주시기 바랍니다.<br>   
+               
+            </p>
+             <p style="margin-top: 8px;"><a href="../privacy.html" style="color: var(--text-muted); text-decoration: none;">개인정보처리방침보기</a></p>
+        </div>
+    </footer>
+
+    <!-- 참가자별 고유 색상 적용 사다리 애니메이션 스크립트 -->
+    <script>
+        let canvas, ctx;
+        let players = [];
+        let results = [];
+        let bridges = [];
+        let colWidth = 0;
+        let startY = 60;
+        let endY = 320;
+
+        // 참가자별 고유 색상 팔레트
+        const participantColors = [
+            '#22c55e', // Green
+            '#3b82f6', // Blue
+            '#ef4444', // Red
+            '#a855f7', // Purple
+            '#f59e0b', // Amber
+            '#06b6d4', // Cyan
+            '#ec4899', // Pink
+            '#84cc16', // Lime
+            '#6366f1', // Indigo
+            '#14b8a6'  // Teal
+        ];
+
+        window.onload = () => {
+            canvas = document.getElementById('ladderCanvas');
+            ctx = canvas.getContext('2d');
+            drawInitialStatic();
+        };
+
+        function drawInitialStatic() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = '14px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('상단에 참가자와 결과를 입력하고 시작 버튼을 눌러주세요.', canvas.width / 2, canvas.height / 2);
+        }
+
+        function initLadder() {
+            const playersRaw = document.getElementById('playersInput').value;
+            const resultsRaw = document.getElementById('resultsInput').value;
+
+            players = playersRaw.split(',').map(s => s.trim()).filter(Boolean);
+            results = resultsRaw.split(',').map(s => s.trim()).filter(Boolean);
+
+            if (players.length === 0 || results.length === 0) {
+                alert('참가자와 결과 항목을 올바르게 입력해주세요.');
+                return;
+            }
+
+            while(results.length < players.length) {
+                results.push('꽝');
+            }
+
+            colWidth = canvas.width / (players.length + 1);
+            generateBridges();
+            drawLadderStructure();
+            runAnimation();
+
+            document.getElementById('resetGameBtn').classList.remove('hidden');
+        }
+
+        function generateBridges() {
+            bridges = [];
+            const rows = 6;
+            for (let r = 0; r < rows; r++) {
+                let y = startY + ((endY - startY) / (rows + 1)) * (r + 1);
+                for (let c = 0; c < players.length - 1; c++) {
+                    if (Math.random() < 0.45 && (c === 0 || !bridges.some(b => b.row === r && b.col === c - 1))) {
+                        bridges.push({ row: r, col: c, y: y });
+                    }
+                }
+            }
+        }
+
+        function drawLadderStructure() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (let i = 0; i < players.length; i++) {
+                let x = colWidth * (i + 1);
+                let color = participantColors[i % participantColors.length];
+
+                // 상단 참가자 이름에 고유 색상 테두리 또는 포인트 적용 가능
+                ctx.fillStyle = color;
+                ctx.font = 'bold 13px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(players[i], x, 30);
+
+                ctx.fillStyle = '#16a34a';
+                ctx.fillText(results[i], x, 360);
+
+                ctx.strokeStyle = '#cbd5e1';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(x, startY);
+                ctx.lineTo(x, endY);
+                ctx.stroke();
+            }
+
+            bridges.forEach(b => {
+                let x1 = colWidth * (b.col + 1);
+                let x2 = colWidth * (b.col + 2);
+                ctx.strokeStyle = '#cbd5e1';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(x1, b.y);
+                ctx.lineTo(x2, b.y);
+                ctx.stroke();
+            });
+        }
+
+        function getPathSegments(startIndex) {
+            let currCol = startIndex;
+            let y = startY;
+            let segments = [];
+            let sortedBridges = [...bridges].sort((a, b) => a.y - b.y);
+
+            while (y < endY) {
+                let nextBridge = sortedBridges.find(b => b.y > y && (b.col === currCol || b.col === currCol - 1));
+                let targetY = nextBridge ? nextBridge.y : endY;
+
+                if (targetY > y) {
+                    segments.push({
+                        x1: colWidth * (currCol + 1), y1: y,
+                        x2: colWidth * (currCol + 1), y2: targetY
+                    });
+                    y = targetY;
+                }
+
+                if (nextBridge && nextBridge.y === y) {
+                    let nextCol = (nextBridge.col === currCol) ? currCol + 1 : currCol - 1;
+                    segments.push({
+                        x1: colWidth * (currCol + 1), y1: y,
+                        x2: colWidth * (nextCol + 1), y2: y
+                    });
+                    currCol = nextCol;
+                }
+            }
+            return { segments, finalCol: currCol };
+        }
+
+        async function runAnimation() {
+            const resultTextDiv = document.getElementById('ladderResultText');
+            resultTextDiv.innerHTML = '<span class="text-brand-600"><i class="fa-solid fa-spinner fa-spin mr-1"></i> 사다리를 타는 중입니다...</span>';
+
+            let matchSummary = [];
+
+            for (let i = 0; i < players.length; i++) {
+                let { segments, finalCol } = getPathSegments(i);
+                let color = participantColors[i % participantColors.length];
+                matchSummary.push({ player: players[i], result: results[finalCol], color: color });
+                
+                await animateSegments(segments, color);
+            }
+
+            // 결과 배지 출력
+            resultTextDiv.innerHTML = '';
+            const titleSpan = document.createElement('div');
+            titleSpan.className = 'w-full text-xs font-bold text-slate-900 mb-1';
+            titleSpan.textContent = '✨ 최종 매칭 결과';
+            resultTextDiv.appendChild(titleSpan);
+
+            matchSummary.forEach(m => {
+                const badge = document.createElement('span');
+                badge.className = 'px-3 py-1.5 rounded-xl text-xs font-bold text-white shadow-xs';
+                badge.style.backgroundColor = m.color;
+                badge.innerHTML = `${m.player} ➔ ${m.result}`;
+                resultTextDiv.appendChild(badge);
+            });
+        }
+
+        function animateSegments(segments, color) {
+            return new Promise(resolve => {
+                let segIdx = 0;
+                let progress = 0;
+                const speed = 7;
+
+                function frame() {
+                    if (segIdx < segments.length) {
+                        let seg = segments[segIdx];
+                        let dx = seg.x2 - seg.x1;
+                        let dy = seg.y2 - seg.y1;
+                        let dist = Math.hypot(dx, dy);
+
+                        if (dist === 0) {
+                            segIdx++;
+                            requestAnimationFrame(frame);
+                            return;
+                        }
+
+                        progress += speed;
+                        let t = Math.min(1, progress / dist);
+
+                        let currentX = seg.x1 + dx * t;
+                        let currentY = seg.y1 + dy * t;
+
+                        if (progress === speed) {
+                            ctx.beginPath();
+                            ctx.moveTo(seg.x1, seg.y1);
+                        }
+
+                        ctx.strokeStyle = color;
+                        ctx.lineWidth = 4;
+                        ctx.lineCap = 'round';
+                        ctx.lineTo(currentX, currentY);
+                        ctx.stroke();
+
+                        if (t >= 1) {
+                            segIdx++;
+                            progress = 0;
+                        }
+                        requestAnimationFrame(frame);
+                    } else {
+                        resolve();
+                    }
+                }
+                requestAnimationFrame(frame);
+            });
+        }
+
+        function resetLadder() {
+            drawInitialStatic();
+            document.getElementById('ladderResultText').textContent = '';
+            document.getElementById('resetGameBtn').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
