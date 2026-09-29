@@ -3,11 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>금칙어/비속어 필터링 툴 - 미소픽 (MisoPick)</title>
+    <title>금칙어/비속어 필터링 툴 - 텍스트 마스킹 및 검사 | 미소픽 (MisoPick)</title>
+    <meta name="description" content="게시글, 댓글, 문서 내 부적절한 비속어 및 금칙어를 자동으로 검출하고 마스킹(***) 처리하는 무료 온라인 툴입니다. 맞춤형 금칙어 설정과 실시간 텍스트 필터링 기능을 제공합니다.">
+    <meta name="keywords" content="금칙어 필터링, 비속어 필터, 텍스트 마스킹, 부적절한 단어 검사, 댓글 필터링, 미소픽, MisoPick">
+    <meta property="og:title" content="금칙어/비속어 필터링 툴 - 미소픽 (MisoPick)">
+    <meta property="og:description" content="문장 속 비속어와 금칙어를 즉시 검출하고 마스킹 처리하여 안전한 콘텐츠 생성을 도와주는 유틸리티입니다.">
+    <meta property="og:type" content="website">
+
+    <!-- 구글 애드센스 스크립트 -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2888840483385554"
      crossorigin="anonymous"></script>
-    <!-- 구글 애드센스 승인용 스크립트 (주석 처리됨) -->
-    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -52,8 +58,8 @@
         <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
             <div>
                 <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 bg-brand-50 text-brand-700 rounded-md">Tool #16</span>
-                <h1 class="text-2xl font-black text-slate-900 mt-2 mb-1">금칙어/비속어 필터링 툴</h1>
-                <p class="text-sm text-slate-500">문장이나 본문 속에서 특정 금칙어나 비속어 포함 여부를 확인하고 마스킹(***) 처리합니다.</p>
+                <h1 class="text-2xl sm:text-3xl font-black text-slate-900 mt-2 mb-1">금칙어/비속어 필터링 툴</h1>
+                <p class="text-sm text-slate-600 leading-relaxed">문장이나 본문 속에서 특정 금칙어나 비속어 포함 여부를 확인하고 마스킹(***) 처리합니다.</p>
             </div>
 
             <!-- 입력 영역 -->
@@ -70,8 +76,9 @@
 
             <!-- 실행 버튼 -->
             <div class="flex items-center justify-between">
-                <button onclick="filterProfanity()" class="px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm rounded-2xl transition shadow-md">
-                    금칙어 검사 및 필터링 실행
+                <button onclick="filterProfanity()" class="px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm rounded-2xl transition shadow-md flex items-center gap-2">
+                    <i class="fa-solid fa-filter"></i>
+                    <span>금칙어 검사 및 필터링 실행</span>
                 </button>
                 <button id="copyFilteredBtn" class="text-xs text-brand-600 font-bold hover:underline hidden">
                     <i class="fa-regular fa-copy mr-1"></i> 필터링된 텍스트 복사
@@ -87,16 +94,41 @@
             </div>
         </div>
 
-        <!-- 애드센스 광고 영역 (주석 처리됨) -->
-        <!-- 
-        <div class="w-full bg-slate-100 border border-slate-200 rounded-2xl p-6 text-center text-slate-400 flex flex-col items-center justify-center min-h-[90px]">
-            <span class="text-xs uppercase tracking-widest font-bold text-slate-400 mb-1"><i class="fa-solid fa-rectangle-ad mr-1"></i> Google AdSense 광고 영역</span>
-            <p class="text-xs text-slate-400">반응형 디스플레이 광고 단위 공간입니다.</p>
-        </div>
-        -->
+        <!-- 상세 설명 및 가이드 섹션 (SEO & AdSense 보강) -->
+        <section class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
+            <div>
+                <h2 class="text-xl font-bold text-slate-900 mb-3 flex items-center">
+                    <i class="fa-solid fa-shield-halved text-brand-600 mr-2.5"></i> 금칙어 필터링이 필요한 이유
+                </h2>
+                <p class="text-sm text-slate-600 leading-relaxed">
+                    온라인 커뮤니티, 블로그, 기업 내부 게시판 등 다양한 디지털 채널에서 비속어나 불건전한 단어의 사용은 브랜딩 이미지 훼손 및 사용자 간 갈등을 유발합니다. Automated Text Moderation(자동 텍스트 필터링)을 활용하면 커뮤니티 가이드라인을 준수하고 클린한 인터넷 환경을 유지할 수 있습니다.
+                </p>
+            </div>
 
-        <!-- 서비스 설명 및 자주 하는 질문 (아코디언) 섹션 -->
-        <section class="bg-white rounded-3xl border border-slate-200 p-8 shadow-sm space-y-8">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-slate-900 text-sm flex items-center gap-1.5">
+                        <i class="fa-solid fa-user-shield text-brand-600"></i> 건전한 커뮤니티 조성
+                    </div>
+                    <p class="text-slate-600 leading-relaxed">악플, 혐오 표현, 욕설 등을 사전 차단하여 사용자가 안심하고 활동할 수 있는 환경을 제공합니다.</p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-slate-900 text-sm flex items-center gap-1.5">
+                        <i class="fa-solid fa-sliders text-brand-600"></i> 커스텀 필터링 지원
+                    </div>
+                    <p class="text-slate-600 leading-relaxed">기본 비속어 외에도 사내 규정 단어나 기밀 키워드를 자유롭게 등록해 맞춤 검출할 수 있습니다.</p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-slate-900 text-sm flex items-center gap-1.5">
+                        <i class="fa-solid fa-lock text-brand-600"></i> 안전한 로컬 처리
+                    </div>
+                    <p class="text-slate-600 leading-relaxed">입력된 글이 외부 서버로 전송되지 않고 브라우저 내부에서 즉시 정제되므로 보안성이 뛰어납니다.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 서비스 소개 및 자주 하는 질문 (아코디언) 섹션 -->
+        <section class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-8">
             <div>
                 <h2 class="text-xl font-bold text-slate-900 mb-2">서비스 소개 및 이용 가이드</h2>
                 <p class="text-sm text-slate-600 leading-relaxed">
@@ -117,7 +149,7 @@
                             <span>Q1. 어떤 방식으로 금칙어가 필터링되나요?</span>
                             <i class="fa-solid fa-chevron-down transform rotate-180 transition-transform text-slate-500"></i>
                         </button>
-                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 block">
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 block leading-relaxed">
                             기본적인 비속어 목록과 사용자가 직접 추가한 맞춤형 금칙어 리스트를 대조하여, 일치하는 단어를 글자 수에 맞는 마스킹 기호(***)로 자동 치환합니다.
                         </div>
                     </div>
@@ -128,7 +160,7 @@
                             <span>Q2. 입력한 텍스트나 데이터가 서버에 저장되나요?</span>
                             <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
                         </button>
-                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden leading-relaxed">
                             아니요, 전혀 저장되지 않습니다. 사용자의 브라우저 환경에서 자바스크립트로 즉시 처리되므로 개인정보 및 작성 내용이 외부로 유출되지 않고 안전합니다.
                         </div>
                     </div>
@@ -139,8 +171,19 @@
                             <span>Q3. 모바일 기기에서도 원활하게 이용할 수 있나요?</span>
                             <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
                         </button>
-                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden leading-relaxed">
                             네, 반응형 디자인으로 제작되어 스마트폰이나 태블릿 브라우저에서도 간편하게 문장을 검사하고 필터링 결과를 확인할 수 있습니다.
+                        </div>
+                    </div>
+
+                    <!-- FAQ 4 -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q4. 사용자 정의 금칙어는 여러 개 등록이 가능한가요?</span>
+                            <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden leading-relaxed">
+                            네, '추가 금칙어 설정' 칸에 단어들을 쉼표(,)로 구분하여 입력하시면 개수 제한 없이 한 번에 필터링을 수행할 수 있습니다.
                         </div>
                     </div>
 
@@ -155,57 +198,57 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
             <div class="flex items-center space-x-3">
                 <div class="w-8 h-8 rounded-xl bg-brand-600 flex items-center justify-center text-white font-bold text-sm">M</div>
-                
-                    <a href="index.html" class="flex items-center space-x-2">
-                <span class="text-lg font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span></a>
+                <a href="index.html" class="flex items-center space-x-2">
+                    <span class="text-lg font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span>
+                </a>
             </div>
-            <p class="text-sm text-slate-500 text-center md:text-left">
-               <strong>이용 안내:</strong> 본 사이트에서 제공하는 모든 툴과 기능은 지속적으로 업데이트되며, 누구나 무료로 자유롭게 이용할 수 있습니다. 
-               <br>서비스 이용 중 불편한 점이나 추가가 필요한 유틸리티 제안은 고객 피드백 채널을 통해 남겨주시기 바랍니다.<br>   
-               
+            <p class="text-sm text-slate-500 text-center md:text-left leading-relaxed">
+                <strong>이용 안내:</strong> 본 사이트에서 제공하는 모든 툴과 기능은 지속적으로 업데이트되며, 누구나 무료로 자유롭게 이용할 수 있습니다. 
+                <br>서비스 이용 중 불편한 점이나 추가가 필요한 유틸리티 제안은 고객 피드백 채널을 통해 남겨주시기 바랍니다.
             </p>
-             <p style="margin-top: 8px;"><a href="../privacy.html" style="color: var(--text-muted); text-decoration: none;">개인정보처리방침보기</a></p>
+            <div>
+                <a href="../privacy.html" class="text-xs text-slate-400 hover:text-slate-600 transition underline">개인정보처리방침</a>
+            </div>
         </div>
     </footer>
 
     <!-- 필터링 및 아코디언 동작 스크립트 -->
     <script>
         // 기본 샘플 비속어/금칙어 리스트
-        // 대규모 비속어/금칙어 리스트 배열화 예시
-const defaultProfanity = [
-    "개새끼", "개색기", "개년", "개썅", "개놈", "개딸", "개판", "개구라", "개지랄", "개소리", "개웃김", 
-    "멍청이", "바보", "븅신", "병신", "빙신", "븅신새끼", "뼝신", "씨발", "씨바", "씨발새끼", "씨발럼", 
-    "씨발년", "씨빨", "씨댕", "씨부랄", "씨부렁", "씨팔", "십새끼", "십창", "십팔", "십라", "썅", "쌍놈", 
-    "쌍년", "지랄", "지랄발광", "지랄탄", "염병", "엿", "엿먹어", "호구", "호모", "호로새끼", "호로자식", 
-    "호로뇬", "잡것", "족발이", "쪽발이", "쪽바리", "창녀", "창년", "걸레", "걸레년", "걸레같은", "보지", 
-    "자지", "좆", "좆까", "좆나", "좆같네", "좆도", "좇", "씹", "씹새", "씹창", "씹물", "엠창", "느그어머니", 
-    "느금마", "느금", "니엄마", "니미", "느개비", "호모포비아", "게이", "레즈", "찌질이", "찌질", "찌질한", 
-    "찐따", "찐따새끼", "찐따같음", "똘아이", "돌아이", "또라이", "미친", "미친놈", "미친년", "미친새끼", 
-    "미쳐버린", "정신병자", "정신나간", "쓰레기", "인간쓰레기", "사회악", "범죄자", "살인자", "강간범", 
-    "도둑놈", "사기꾼", "양아치", "양아치새끼", "양아치년", "양아치같음", "건달", "깡패", "조폭", "일진", 
-    "날라리", "꼴통", "꼴통머리", "똥개", "똥글", "개진상", "진상", "진상고객", "무개념", "개념없는", 
-    "개념탑재", "무뇌", "무뇌충", "꼰대", "꼰대질", "틀딱", "틀딱충", "급식충", "잼민이", "잼민", "메갈", 
-    "메갈리아", "워마드", "한남", "한남충", "김치녀", "김치국", "김여사", "보빨러", "보빨", "스윗남", 
-    "스윗영포티", "영포티", "홍어", "일베", "일베충", "맘충", "유충", "노키즈존", "저능아", "저능", 
-    "지능낮은", "장애인", "장애", "병신력", "씹인싸", "아싸", "아웃사이더", "흑형", "짱깨", "쪽국", 
-    "뙤놈", "양키", "깜둥이", "다문화", "빨갱이", "종북", "좌파", "우파", "꼴통우파", "꼴통좌파", "틀딱충", 
-    "흑인", "백인", "황인", "조센징", "헬조선", "헬조센", "지옥불반도", "탈조선", "헬조", "똥양인", 
-    "열등민족", "국뽕", "국뽕튜브", "일뽕", "일뽕유튜버", "친일파", "매국노", "매국", "역적", "반역자", 
-    "간첩", "빨갱이새끼", "좌빨", "우빨", "토왜", "대깨문", "대깨", "대깨윤", "대깨준", "대깨명", "문빠", 
-    "윤빠", "찢빠", "대깨들", "일베새끼", "워마드새끼", "페미", "페미니즘", "페미충", "안티페미", "꼴페미", 
-    "여초", "남초", "커뮤니티", "디시", "디시인사이드", "일베저장소", "에펨코리아", "펨코", "더쿠", 
-    "인스티즈", "여성시대", "여시", "루리웹", "보배드림", "보배", "클리앙", "클리앙인", "엠팍", "MLBPARK", 
-    "네이트판", "판녀", "한남새끼", "여혐", "남혐", "성차별", "성희롱", "성추행", "성폭행", "성범죄", 
-    "불법촬영", "리벤지포르노", "몰카", "야동", "야짤", "음란물", "성인물", "조건만남", "조건", "성매매", 
-    "성매매알선", "스폰", "스폰서", "원조교제", "마약", "대마초", "필로폰", "엑스터시", "프로포폴", 
-    "본드", "가스", "환각", "자살", "자해", "죽어버려", "죽어", "뛰어내려", "목매달아", "자살해", 
-    "동반자살", "살해", "살인", "폭행", "폭력", "학교폭력", "학폭", "왕따", "따돌림", "괴롭힘", "스토킹", 
-    "데이트폭력", "가정폭력", "아동학대", "동물학대", "사기", "횡령", "배임", "탈세", "돈세탁", "주가조작", 
-    "코인사기", "스미싱", "보이스피싱", "파밍", "랜섬웨어", "해킹", "악성코드", "바이러스", "디도스", 
-    "DDOS", "불법다운로드", "토렌트", "와레즈", "크랙", "립버전", "불법복제", "짝퉁", "레플리카", 
-    "이미테이션", "명품가짜", "명품짝퉁", "밀수", "관세포탈", "불법유통", "암거래", "블랙마켓", "다크웹", 
-    "딥웹", "성착취", "n번방", "박사방", "지인능욕", "지능범죄", "보이스피싱인출책", "조선족", "조선족새끼", "보이스피싱조직","멍청"
-];
+        const defaultProfanity = [
+            "개새끼", "개색기", "개년", "개썅", "개놈", "개딸", "개판", "개구라", "개지랄", "개소리", "개웃김", 
+            "멍청이", "바보", "븅신", "병신", "빙신", "븅신새끼", "뼝신", "씨발", "씨바", "씨발새끼", "씨발럼", 
+            "씨발년", "씨빨", "씨댕", "씨부랄", "씨부렁", "씨팔", "십새끼", "십창", "십팔", "십라", "썅", "쌍놈", 
+            "쌍년", "지랄", "지랄발광", "지랄탄", "염병", "엿", "엿먹어", "호구", "호모", "호로새끼", "호로자식", 
+            "호로뇬", "잡것", "족발이", "쪽발이", "쪽바리", "창녀", "창년", "걸레", "걸레년", "걸레같은", "보지", 
+            "자지", "좆", "좆까", "좆나", "좆같네", "좆도", "좇", "씹", "씹새", "씹창", "씹물", "엠창", "느그어머니", 
+            "느금마", "느금", "니엄마", "니미", "느개비", "호모포비아", "게이", "레즈", "찌질이", "찌질", "찌질한", 
+            "찐따", "찐따새끼", "찐따같음", "똘아이", "돌아이", "또라이", "미친", "미친놈", "미친년", "미친새끼", 
+            "미쳐버린", "정신병자", "정신나간", "쓰레기", "인간쓰레기", "사회악", "범죄자", "살인자", "강간범", 
+            "도둑놈", "사기꾼", "양아치", "양아치새끼", "양아치년", "양아치같음", "건달", "깡패", "조폭", "일진", 
+            "날라리", "꼴통", "꼴통머리", "똥개", "똥글", "개진상", "진상", "진상고객", "무개념", "개념없는", 
+            "개념탑재", "무뇌", "무뇌충", "꼰대", "꼰대질", "틀딱", "틀딱충", "급식충", "잼민이", "잼민", "메갈", 
+            "메갈리아", "워마드", "한남", "한남충", "김치녀", "김치국", "김여사", "보빨러", "보빨", "스윗남", 
+            "스윗영포티", "영포티", "홍어", "일베", "일베충", "맘충", "유충", "노키즈존", "저능아", "저능", 
+            "지능낮은", "장애인", "장애", "병신력", "씹인싸", "아싸", "아웃사이더", "흑형", "짱깨", "쪽국", 
+            "뙤놈", "양키", "깜둥이", "다문화", "빨갱이", "종북", "좌파", "우파", "꼴통우파", "꼴통좌파", "틀딱충", 
+            "흑인", "백인", "황인", "조센징", "헬조선", "헬조센", "지옥불반도", "탈조선", "헬조", "똥양인", 
+            "열등민족", "국뽕", "국뽕튜브", "일뽕", "일뽕유튜버", "친일파", "매국노", "매국", "역적", "반역자", 
+            "간첩", "빨갱이새끼", "좌빨", "우빨", "토왜", "대깨문", "대깨", "대깨윤", "대깨준", "대깨명", "문빠", 
+            "윤빠", "찢빠", "대깨들", "일베새끼", "워마드새끼", "페미", "페미니즘", "페미충", "안티페미", "꼴페미", 
+            "여초", "남초", "커뮤니티", "디시", "디시인사이드", "일베저장소", "에펨코리아", "펨코", "더쿠", 
+            "인스티즈", "여성시대", "여시", "루리웹", "보배드림", "보배", "클리앙", "클리앙인", "엠팍", "MLBPARK", 
+            "네이트판", "판녀", "한남새끼", "여혐", "남혐", "성차별", "성희롱", "성추행", "성폭행", "성범죄", 
+            "불법촬영", "리벤지포르노", "몰카", "야동", "야짤", "음란물", "성인물", "조건만남", "조건", "성매매", 
+            "성매매알선", "스폰", "스폰서", "원조교제", "마약", "대마초", "필로폰", "엑스터시", "프로포폴", 
+            "본드", "가스", "환각", "자살", "자해", "죽어버려", "죽어", "뛰어내려", "목매달아", "자살해", 
+            "동반자살", "살해", "살인", "폭행", "폭력", "학교폭력", "학폭", "왕따", "따돌림", "괴롭힘", "스토킹", 
+            "데이트폭력", "가정폭력", "아동학대", "동물학대", "사기", "횡령", "배임", "탈세", "돈세탁", "주가조작", 
+            "코인사기", "스미싱", "보이스피싱", "파밍", "랜섬웨어", "해킹", "악성코드", "바이러스", "디도스", 
+            "DDOS", "불법다운로드", "토렌트", "와레즈", "크랙", "립버전", "불법복제", "짝퉁", "레플리카", 
+            "이미테이션", "명품가짜", "명품짝퉁", "밀수", "관세포탈", "불법유통", "암거래", "블랙마켓", "다크웹", 
+            "딥웹", "성착취", "n번방", "박사방", "지인능욕", "지능범죄", "보이스피싱인출책", "조선족", "조선족새끼", "보이스피싱조직", "멍청"
+        ];
 
         function filterProfanity() {
             const text = document.getElementById('textInput').value;

@@ -3,11 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>줄 바꿈 제거기 - 미소픽 (MisoPick)</title>
+    <title>줄 바꿈 제거기 - PDF 및 논문 텍스트 쉼표/공백 변환 툴 | 미소픽 (MisoPick)</title>
+    <meta name="description" content="PDF 문서, 웹페이지, 전자책에서 복사할 때 발생하는 불필요한 줄 바꿈(엔터)을 깔끔하게 제거하고 하나의 매끄러운 문장으로 연결해 드립니다. 번역기 연동 및 번역 작업 시 가독성을 완성해 보세요.">
+    <meta name="keywords" content="줄 바꿈 제거기, 엔터 제거, PDF 줄바꿈 제거, 텍스트 정제, 텍스트 공백 변환, 논문 번역 텍스트, 미소픽, MisoPick">
+    <meta property="og:title" content="줄 바꿈 제거기 - 미소픽 (MisoPick)">
+    <meta property="og:description" content="PDF나 웹 문서의 불필요한 줄 바꿈 기호를 공백으로 즉시 정제해 드립니다.">
+    <meta property="og:type" content="website">
+
+    <!-- 구글 애드센스 스크립트 -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2888840483385554"
      crossorigin="anonymous"></script>
-    <!-- 구글 애드센스 승인용 스크립트 (주석 처리됨) -->
-    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -52,28 +58,28 @@
         <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
             <div>
                 <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 bg-brand-50 text-brand-700 rounded-md">Tool #6</span>
-                <h1 class="text-2xl font-black text-slate-900 mt-2 mb-1">줄 바꿈 제거기</h1>
-                <p class="text-sm text-slate-500">PDF나 웹페이지에서 복사한 텍스트의 불필요한 엔터(줄 바꿈) 기호를 공백으로 변환합니다.</p>
+                <h1 class="text-2xl sm:text-3xl font-black text-slate-900 mt-2 mb-1">줄 바꿈 제거기</h1>
+                <p class="text-sm text-slate-600 leading-relaxed">PDF나 웹페이지에서 복사한 텍스트의 불필요한 엔터(줄 바꿈) 기호를 공백으로 자동 변환하여 깔끔한 문장으로 정제합니다.</p>
             </div>
 
             <!-- 실행 버튼 -->
             <div class="flex flex-wrap gap-2">
-                <button onclick="removeLineBreaks()" class="px-6 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm rounded-xl transition shadow-md">
-                    줄 바꿈 제거 실행
+                <button onclick="removeLineBreaks()" class="px-6 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm rounded-xl transition shadow-md flex items-center gap-2">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> 줄 바꿈 제거 실행
                 </button>
             </div>
 
             <!-- 입력 및 결과 영역 -->
             <div class="grid grid-cols-1 gap-4">
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">텍스트 입력 (줄 바꿈이 포함된 내용)</label>
+                    <label for="textInput" class="block text-xs font-bold text-slate-700 mb-1">텍스트 입력 (줄 바꿈이 포함된 내용)</label>
                     <textarea id="textInput" rows="5" placeholder="PDF나 문서에서 복사한&#10;줄 바꿈이 많은 텍스트를&#10;여기에 붙여넣으세요." class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:bg-white focus:border-brand-500 outline-none transition"></textarea>
                 </div>
                 <div>
                     <div class="flex items-center justify-between mb-1">
-                        <label class="block text-xs font-bold text-slate-700">제거 결과</label>
-                        <button id="copyBtn" class="text-xs text-brand-600 font-bold hover:underline">
-                            <i class="fa-regular fa-copy mr-1"></i> 복사하기
+                        <label for="resultOutput" class="block text-xs font-bold text-slate-700">제거 결과</label>
+                        <button id="copyBtn" class="text-xs text-brand-600 font-bold hover:underline flex items-center gap-1">
+                            <i class="fa-regular fa-copy"></i> 복사하기
                         </button>
                     </div>
                     <textarea id="resultOutput" rows="5" readonly placeholder="결과가 여기에 출력됩니다." class="w-full p-4 bg-slate-100 border border-slate-200 rounded-2xl text-sm outline-none"></textarea>
@@ -81,16 +87,76 @@
             </div>
         </div>
 
-        <!-- 애드센스 광고 영역 (주석 처리됨) -->
-        <!-- 
-        <div class="w-full bg-slate-100 border border-slate-200 rounded-2xl p-6 text-center text-slate-400 flex flex-col items-center justify-center min-h-[90px]">
-            <span class="text-xs uppercase tracking-widest font-bold text-slate-400 mb-1"><i class="fa-solid fa-rectangle-ad mr-1"></i> Google AdSense 광고 영역</span>
-            <p class="text-xs text-slate-400">반응형 디스플레이 광고 단위 공간입니다.</p>
-        </div>
-        -->
+        <!-- 정규식 처리 및 작동 원리 섹션 -->
+        <section class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
+            <div>
+                <h2 class="text-xl font-bold text-slate-900 mb-3 flex items-center">
+                    <i class="fa-solid fa-gears text-brand-600 mr-2.5"></i> 줄 바꿈 제거 알고리즘 및 작동 원리
+                </h2>
+                <p class="text-sm text-slate-600 leading-relaxed">
+                    본 도구는 정규 표현식(Regular Expressions) 알고리즘을 활용하여 문단 내의 개행 문자(<code>\r\n</code>, <code>\n</code>)를 탐지한 후 자연스러운 단어 간격(단일 공백)으로 치환합니다.
+                </p>
+            </div>
 
-        <!-- 서비스 설명 및 자주 하는 질문 (아코디언) 섹션 -->
-        <section class="bg-white rounded-3xl border border-slate-200 p-8 shadow-sm space-y-8">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                    <div class="font-bold text-slate-900 text-sm">1. 개행 기호 패턴 탐지</div>
+                    <p class="text-slate-600">Windows(CRLF) 및 Mac/Linux(LF) 방식의 엔터 기호를 실시간 감지</p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                    <div class="font-bold text-slate-900 text-sm">2. 단어 간 띄어쓰기 유지</div>
+                    <p class="text-slate-600">줄이 바뀌면서 단어가 이어 붙지 않도록 적절한 공백(Space)으로 치환</p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                    <div class="font-bold text-slate-900 text-sm">3. 중복 공백 자동 정제</div>
+                    <p class="text-slate-600">치환 과정에서 발생하는 2개 이상의 연속 공백을 1개로 깔끔히 정돈</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 활용 분야 안내 섹션 -->
+        <section class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
+            <h2 class="text-xl font-bold text-slate-900 mb-2 flex items-center">
+                <i class="fa-solid fa-file-lines text-brand-600 mr-2.5"></i> 줄 바꿈 제거기 주요 활용 사례
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-language text-brand-600"></i> 해외 논문 및 PDF 번역 작업
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        PDF 2단 편집에서 복사한 영문 논문 텍스트를 파파고나 딥엘(DeepL)에 입력할 때, 문장 끊김으로 인한 번역 오류를 사전에 예방합니다.
+                    </p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-laptop-code text-brand-600"></i> 웹 문서 데이터 긁어오기 (스크래핑)
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        웹페이지나 뉴스 기사에서 드래그하여 수집한 불필요한 줄 바꿈 데이터를 한 줄로 정제하여 엑셀이나 데이터베이스에 쉽게 입력할 수 있습니다.
+                    </p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-book-open text-brand-600"></i> 전자책(ePub) 및 원고 교정
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        전자책 라이브러리나 텍스트 파일에서 문단 레이아웃이 꺾여 흐트러진 본문을 깔끔한 문장 단 위로 원상 복구시킵니다.
+                    </p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-comments text-brand-600"></i> 메신저 및 SNS 게시글 작성
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        여러 줄로 작성된 안내문이나 메시지를 단일 문단 형태로 다듬어 메신저 전송 시 산만하지 않도록 정제합니다.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 서비스 소개 및 자주 하는 질문 (아코디언) 섹션 -->
+        <section class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-8">
             <div>
                 <h2 class="text-xl font-bold text-slate-900 mb-2">서비스 소개 및 이용 가이드</h2>
                 <p class="text-sm text-slate-600 leading-relaxed">
@@ -111,7 +177,7 @@
                             <span>Q1. 줄 바꿈이 제거되면 띄어쓰기는 어떻게 처리되나요?</span>
                             <i class="fa-solid fa-chevron-down transform rotate-180 transition-transform text-slate-500"></i>
                         </button>
-                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 block">
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 block leading-relaxed">
                             엔터 기호가 있던 자리가 단어끼리 붙어버리지 않도록 자연스러운 공백(띄어쓰기)으로 변환되어 가독성을 유지해 줍니다.
                         </div>
                     </div>
@@ -122,7 +188,7 @@
                             <span>Q2. 입력한 데이터가 서버로 전송되거나 저장되나요?</span>
                             <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
                         </button>
-                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden leading-relaxed">
                             아니요, 전혀 저장되지 않습니다. 사용자의 브라우저 내부에서만 자바스크립트로 연산 처리되므로 개인정보 및 작업 중인 내용이 안전하게 보호됩니다.
                         </div>
                     </div>
@@ -130,10 +196,21 @@
                     <!-- FAQ 3 -->
                     <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
                         <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
-                            <span>Q3. 모바일 환경에서도 원활하게 이용할 수 있나요?</span>
+                            <span>Q3. 대용량 텍스트나 영문 문서도 한 번에 처리 가능한가요?</span>
                             <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
                         </button>
-                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden leading-relaxed">
+                            네, 브라우저 성능이 허용하는 범위 내에서 수만 자 이상의 긴 문장이나 영문/한글 문서도 순식간에 실시간 변환이 가능합니다.
+                        </div>
+                    </div>
+
+                    <!-- FAQ 4 -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q4. 모바일 환경에서도 원활하게 이용할 수 있나요?</span>
+                            <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden leading-relaxed">
                             네, 모바일과 태블릿 화면에서도 반응형으로 최적화되어 있어 스마트폰 브라우저에서 언제든 간편하게 이용하실 수 있습니다.
                         </div>
                     </div>
@@ -146,21 +223,20 @@
 
     <!-- 푸터 -->
     <footer class="bg-white border-t border-slate-200 py-10 mt-auto">
-        
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
-            
             <div class="flex items-center space-x-3">
                 <div class="w-8 h-8 rounded-xl bg-brand-600 flex items-center justify-center text-white font-bold text-sm">M</div>
-                
-                    <a href="index.html" class="flex items-center space-x-2">
-                <span class="text-lg font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span></a>
+                <a href="index.html" class="flex items-center space-x-2">
+                    <span class="text-lg font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span>
+                </a>
             </div>
-            <p class="text-sm text-slate-500 text-center md:text-left">
-               <strong>이용 안내:</strong> 본 사이트에서 제공하는 모든 툴과 기능은 지속적으로 업데이트되며, 누구나 무료로 자유롭게 이용할 수 있습니다. 
-               <br>서비스 이용 중 불편한 점이나 추가가 필요한 유틸리티 제안은 고객 피드백 채널을 통해 남겨주시기 바랍니다.
-              
+            <p class="text-sm text-slate-500 text-center md:text-left leading-relaxed">
+                <strong>이용 안내:</strong> 본 사이트에서 제공하는 모든 툴과 기능은 지속적으로 업데이트되며, 누구나 무료로 자유롭게 이용할 수 있습니다. 
+                <br>서비스 이용 중 불편한 점이나 추가가 필요한 유틸리티 제안은 고객 피드백 채널을 통해 남겨주시기 바랍니다.
             </p>
-             <p style="margin-top: 8px;"><a href="../privacy.html" style="color: var(--text-muted); text-decoration: none;">개인정보처리방침보기</a></p>
+            <div>
+                <a href="../privacy.html" class="text-xs text-slate-400 hover:text-slate-600 transition underline">개인정보처리방침</a>
+            </div>
         </div>
     </footer>
 

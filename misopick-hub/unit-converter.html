@@ -3,11 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>단위 환산기 - 미소픽 (MisoPick)</title>
+    <title>스마트 단위 환산기 - 길이, 무게, 넓이, 온도 실시간 변환 | 미소픽 (MisoPick)</title>
+    <meta name="description" content="길이, 무게, 넓이(평/m²), 온도 등 실생활 및 업무에 자주 쓰이는 각종 도량형 단위를 실시간으로 간편하게 환산할 수 있는 무료 온라인 단위 변환기입니다.">
+    <meta name="keywords" content="단위 환산기, 단위 변환기, 평수 계산기, 길이 환산, 무게 변환, 평 제곱미터 변환, 섭씨 화씨 변환, 미소픽, MisoPick">
+    <meta property="og:title" content="스마트 단위 환산기 - 미소픽 (MisoPick)">
+    <meta property="og:description" content="길이, 무게, 넓이, 온도 등 표준 도량형 단위를 빠르고 정밀하게 자동 환산해 보세요.">
+    <meta property="og:type" content="website">
+
+    <!-- 구글 애드센스 스크립트 -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2888840483385554"
      crossorigin="anonymous"></script>
-    <!-- 구글 애드센스 승인용 스크립트 (주석 처리됨) -->
-    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -52,8 +58,8 @@
         <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-8">
             <div>
                 <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 bg-brand-50 text-brand-700 rounded-md">Tool #25</span>
-                <h1 class="text-2xl font-black text-slate-900 mt-2 mb-1">단위 환산기</h1>
-                <p class="text-sm text-slate-500">길이, 무게, 넓이, 온도 등 일상생활 및 업무에 자주 쓰이는 각종 도량형 단위를 간편하게 변환합니다.</p>
+                <h1 class="text-2xl sm:text-3xl font-black text-slate-900 mt-2 mb-1">스마트 단위 환산기</h1>
+                <p class="text-sm text-slate-600 leading-relaxed">길이, 무게, 넓이, 온도 등 일상생활 및 업무에 자주 쓰이는 각종 도량형 단위를 간편하고 정밀하게 실시간 변환합니다.</p>
             </div>
 
             <!-- 단위 카테고리 탭 -->
@@ -90,20 +96,97 @@
             </div>
         </div>
 
-        <!-- 애드센스 광고 영역 (주석 처리됨) -->
-        <!-- 
-        <div class="w-full bg-slate-100 border border-slate-200 rounded-2xl p-6 text-center text-slate-400 flex flex-col items-center justify-center min-h-[90px]">
-            <span class="text-xs uppercase tracking-widest font-bold text-slate-400 mb-1"><i class="fa-solid fa-rectangle-ad mr-1"></i> Google AdSense 광고 영역</span>
-            <p class="text-xs text-slate-400">반응형 디스플레이 광고 단위 공간입니다.</p>
-        </div>
-        -->
+        <!-- 카테고리별 도량형 참고 가이드 섹션 (SEO 콘텐츠 강화) -->
+        <section class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
+            <div>
+                <h2 class="text-xl font-bold text-slate-900 mb-2 flex items-center">
+                    <i class="fa-solid fa-calculator text-brand-600 mr-2.5"></i> 대표 도량형 단위 환산 공식 요약
+                </h2>
+                <p class="text-sm text-slate-600 leading-relaxed">
+                    자주 쓰이는 주요 단위 간 공식적인 변환 기준과 공식 정보입니다.
+                </p>
+            </div>
 
-        <!-- 서비스 설명 및 자주 하는 질문 (아코디언) 섹션 -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-slate-900 text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-ruler text-brand-600"></i> 길이 (Length)
+                    </div>
+                    <ul class="text-slate-600 space-y-1 leading-relaxed">
+                        <li>• <strong>1 인치 (inch):</strong> 2.54 cm</li>
+                        <li>• <strong>1 피트 (feet):</strong> 12 인치 = 30.48 cm</li>
+                        <li>• <strong>1 야드 (yard):</strong> 3 피트 = 0.9144 m</li>
+                        <li>• <strong>1 마일 (mile):</strong> 1,609.344 m</li>
+                    </ul>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-slate-900 text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-weight-scale text-brand-600"></i> 무게 (Weight)
+                    </div>
+                    <ul class="text-slate-600 space-y-1 leading-relaxed">
+                        <li>• <strong>1 온스 (oz):</strong> 28.3495 g</li>
+                        <li>• <strong>1 파운드 (lb):</strong> 16 온스 ≈ 0.4536 kg</li>
+                        <li>• <strong>1 톤 (ton):</strong> 1,000 kg</li>
+                        <li>• <strong>1 돈 (한글 전통):</strong> 3.75 g</li>
+                    </ul>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-slate-900 text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-vector-square text-brand-600"></i> 넓이 (Area)
+                    </div>
+                    <ul class="text-slate-600 space-y-1 leading-relaxed">
+                        <li>• <strong>1 평 (pyung):</strong> 약 3.305785 m²</li>
+                        <li>• <strong>1 m²:</strong> 약 0.3025 평</li>
+                        <li>• <strong>1 에이커 (acre):</strong> 4,046.86 m²</li>
+                        <li>• <strong>1 헥타르 (ha):</strong> 10,000 m²</li>
+                    </ul>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-slate-900 text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-temperature-three-quarters text-brand-600"></i> 온도 (Temperature)
+                    </div>
+                    <ul class="text-slate-600 space-y-1 leading-relaxed">
+                        <li>• <strong>섭씨(°C) → 화씨(°F):</strong> (°C × 9/5) + 32</li>
+                        <li>• <strong>화씨(°F) → 섭씨(°C):</strong> (°F - 32) × 5/9</li>
+                        <li>• <strong>섭씨(°C) → 켈빈(K):</strong> °C + 273.15</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 실생활 활용 사례 섹션 -->
+        <section class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
+            <h2 class="text-xl font-bold text-slate-900 mb-2 flex items-center">
+                <i class="fa-solid fa-house-laptop text-brand-600 mr-2.5"></i> 단위 환산기 주요 활용 분야
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1.5">
+                    <div class="font-bold text-sm text-slate-900">부동산 & 인테리어</div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        아파트나 주택의 공급면적·전용면적 제곱미터(m²) 수치를 평수로 빠르게 계산해 공간 감각을 쉽게 파악할 수 있습니다.
+                    </p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1.5">
+                    <div class="font-bold text-sm text-slate-900">해외 직구 & 요리 레시피</div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        미국이나 유럽 레시피의 온스(oz), 파운드(lb), 화씨(°F) 오븐 온도를 국내 표준에 맞는 그램(g) 및 섭씨(°C)로 즉시 전환합니다.
+                    </p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1.5">
+                    <div class="font-bold text-sm text-slate-900">학업 & 엔지니어링 업무</div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        물리학, 화학, 건축 등 다양한 전공과 산업 현장에서 필요한 SI 단위계 및 야드-파운드법 간 정밀 계산을 수월하게 지원합니다.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 서비스 소개 및 자주 하는 질문 (아코디언) 섹션 -->
         <section class="bg-white rounded-3xl border border-slate-200 p-8 shadow-sm space-y-8">
             <div>
                 <h2 class="text-xl font-bold text-slate-900 mb-2">서비스 소개 및 이용 가이드</h2>
                 <p class="text-sm text-slate-600 leading-relaxed">
-                    <strong>misopick.kr</strong>의 단위 환산기는 일상생활이나 요리, 인테리어, 학업 및 업무 중에 자주 접하는 길이, 무게, 넓이, 온도 등의 단위를 빠르고 정확하게 상호 변환해 주는 실용적인 유틸리티입니다.
+                    <strong>misopick.kr</strong>의 단위 환산기는 일상생활이나 요리, 인테리어, 학업 및 업무 중에 자주 접하는 길이, 무게, 넓이, 온도 등의 단위를 빠르고 정확하게 상호 변환해 주는 실용적인 웹 유틸리티입니다. 수치를 입력하는 즉시 결과가 계산되어 간편하게 사용할 수 있습니다.
                 </p>
             </div>
 
@@ -120,8 +203,8 @@
                             <span>Q1. 어떤 단위들을 지원하나요?</span>
                             <i class="fa-solid fa-chevron-down transform rotate-180 transition-transform text-slate-500"></i>
                         </button>
-                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 block">
-                            길이(mm, cm, m, km, 인치, 피트), 무게(g, kg, 톤, 온스, 파운드), 넓이(제곱미터, 평, 제곱킬로미터, 에이커), 온도(섭씨, 화씨, 켈빈) 등 실생활에서 가장 많이 쓰이는 표준 단위를 폭넓게 지원합니다.
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 block leading-relaxed">
+                            길이(mm, cm, m, km, 인치, 피트), 무게(mg, g, kg, 톤, 온스, 파운드), 넓이(제곱미터, 평, 제곱킬로미터, 에이커, 제곱피트), 온도(섭씨, 화씨, 켈빈) 등 실생활과 각종 업무 분야에서 가장 많이 쓰이는 표준 단위를 지원합니다.
                         </div>
                     </div>
 
@@ -131,8 +214,8 @@
                             <span>Q2. 입력한 환산 데이터가 서버에 저장되나요?</span>
                             <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
                         </button>
-                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
-                            아니요, 전혀 저장되지 않습니다. 사용자의 브라우저 내에서 자바스크립트 수식으로 실시간 계산되므로 안심하고 이용하실 수 있습니다.
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden leading-relaxed">
+                            아니요, 전혀 저장되지 않습니다. 사용자의 브라우저 내에서 자바스크립트 수식으로 실시간 자동 연산되므로 개인정보 및 작업 수치가 안전하게 보호됩니다.
                         </div>
                     </div>
 
@@ -142,8 +225,19 @@
                             <span>Q3. 스마트폰에서도 편리하게 사용할 수 있나요?</span>
                             <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
                         </button>
-                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
-                            네, 모바일 기기의 터치 환경과 반응형 레이아웃에 맞춰 최적화되어 있어 언제 어디서나 간편하게 단위를 변환할 수 있습니다.
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden leading-relaxed">
+                            네, 모바일 기기의 터치 환경과 반응형 레이아웃에 맞추어 최적화되어 있으므로 스마트폰 및 태블릿 브라우저에서도 언제 어디서나 간편하게 단위를 변환하실 수 있습니다.
+                        </div>
+                    </div>
+
+                    <!-- FAQ 4 -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q4. 소수점 정밀도는 어느 정도인가요?</span>
+                            <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden leading-relaxed">
+                            일반 도량형은 소수점 6자리, 온도는 소수점 4자리까지 반올림 정밀도를 지원하여 실생활부터 과학 및 산업적 용도까지 충분히 정확하게 활용하실 수 있습니다.
                         </div>
                     </div>
 
@@ -159,13 +253,16 @@
             <div class="flex items-center space-x-3">
                 <div class="w-8 h-8 rounded-xl bg-brand-600 flex items-center justify-center text-white font-bold text-sm">M</div>
                 <a href="index.html" class="flex items-center space-x-2">
-                <span class="text-lg font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span></a>
+                    <span class="text-lg font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span>
+                </a>
             </div>
-            <p class="text-sm text-slate-500 text-center md:text-left">
-               <strong>이용 안내:</strong> 본 사이트에서 제공하는 모든 툴과 기능은 지속적으로 업데이트되며, 누구나 무료로 자유롭게 이용할 수 있습니다. 
-               <br>서비스 이용 중 불편한 점이나 추가가 필요한 유틸리티 제안은 고객 피드백 채널을 통해 남겨주시기 바랍니다.<br>   
+            <p class="text-sm text-slate-500 text-center md:text-left leading-relaxed">
+                <strong>이용 안내:</strong> 본 사이트에서 제공하는 모든 툴과 기능은 지속적으로 업데이트되며, 누구나 무료로 자유롭게 이용할 수 있습니다. 
+                <br>서비스 이용 중 불편한 점이나 추가가 필요한 유틸리티 제안은 고객 피드백 채널을 통해 남겨주시기 바랍니다.
             </p>
-             <p style="margin-top: 8px;"><a href="../privacy.html" style="color: var(--text-muted); text-decoration: none;">개인정보처리방침보기</a></p>
+            <div>
+                <a href="../privacy.html" class="text-xs text-slate-400 hover:text-slate-600 transition underline">개인정보처리방침</a>
+            </div>
         </div>
     </footer>
 
@@ -242,7 +339,7 @@
             const units = unitData[category].units;
             const keys = Object.keys(units);
 
-            keys.forEach((key, idx) => {
+            keys.forEach((key) => {
                 fromSelect.add(new Option(units[key].name, key));
                 toSelect.add(new Option(units[key].name, key));
             });

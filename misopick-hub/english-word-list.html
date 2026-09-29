@@ -3,11 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>글자수별 영어 단어 목록 - 미소픽 (MisoPick)</title>
+    <title>글자수별 영어 단어 목록 - 3글자~7글자 이상 영단어 모음 | 미소픽 (MisoPick)</title>
+    <meta name="description" content="영어 퍼즐, 워드게임, 영어 닉네임 추천, 어휘 학습 시 필요한 글자수별(3글자, 4글자, 5글자, 6글자, 7글자 이상) 영어 단어 목록을 검색하고 원클릭으로 복사하세요.">
+    <meta name="keywords" content="글자수별 영어단어, 3글자 영어단어, 4글자 영어단어, 5글자 영어단어, 6글자 영어단어, 영어 닉네임 추천, 워들 단어, 미소픽, MisoPick">
+    <meta property="og:title" content="글자수별 영어 단어 목록 - 미소픽 (MisoPick)">
+    <meta property="og:description" content="원하는 글자 수(길이)에 맞는 유용한 영어 단어들을 간편하게 조회하고 복사할 수 있는 무료 웹 유틸리티입니다.">
+    <meta property="og:type" content="website">
+
+    <!-- 구글 애드센스 스크립트 -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2888840483385554"
      crossorigin="anonymous"></script>
-    <!-- 구글 애드센스 승인용 스크립트 (주석 처리됨) -->
-    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -52,19 +58,21 @@
         <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
             <div>
                 <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 bg-brand-50 text-brand-700 rounded-md">Tool #11</span>
-                <h1 class="text-2xl font-black text-slate-900 mt-2 mb-1">글자수별 영어 단어 목록</h1>
-                <p class="text-sm text-slate-500">원하는 글자 수(길이)에 맞는 유용한 영어 단어들을 간편하게 조회하고 복사합니다.</p>
+                <h1 class="text-2xl sm:text-3xl font-black text-slate-900 mt-2 mb-1">글자수별 영어 단어 목록</h1>
+                <p class="text-sm text-slate-600 leading-relaxed">
+                    원하는 글자 수(길이)에 맞는 유용한 영어 단어들을 간편하게 조회하고 원클릭으로 복사하여 활용해 보세요.
+                </p>
             </div>
 
             <!-- 글자수 선택 버튼 그룹 -->
             <div class="space-y-3">
                 <label class="block text-xs font-bold text-slate-700">단어 길이(글자수) 선택</label>
                 <div id="lengthButtons" class="flex flex-wrap gap-2">
-                    <button onclick="selectLength(3)" class="len-btn px-4 py-2 bg-brand-600 text-white font-bold text-xs rounded-xl transition shadow-sm">3글자</button>
-                    <button onclick="selectLength(4)" class="len-btn px-4 py-2 bg-slate-100 text-slate-700 hover:bg-brand-50 hover:text-brand-700 font-bold text-xs rounded-xl transition">4글자</button>
-                    <button onclick="selectLength(5)" class="len-btn px-4 py-2 bg-slate-100 text-slate-700 hover:bg-brand-50 hover:text-brand-700 font-bold text-xs rounded-xl transition">5글자</button>
-                    <button onclick="selectLength(6)" class="len-btn px-4 py-2 bg-slate-100 text-slate-700 hover:bg-brand-50 hover:text-brand-700 font-bold text-xs rounded-xl transition">6글자</button>
-                    <button onclick="selectLength(7)" class="len-btn px-4 py-2 bg-slate-100 text-slate-700 hover:bg-brand-50 hover:text-brand-700 font-bold text-xs rounded-xl transition">7글자 이상</button>
+                    <button onclick="selectLength(3, event)" class="len-btn px-4 py-2 bg-brand-600 text-white font-bold text-xs rounded-xl transition shadow-sm">3글자</button>
+                    <button onclick="selectLength(4, event)" class="len-btn px-4 py-2 bg-slate-100 text-slate-700 hover:bg-brand-50 hover:text-brand-700 font-bold text-xs rounded-xl transition">4글자</button>
+                    <button onclick="selectLength(5, event)" class="len-btn px-4 py-2 bg-slate-100 text-slate-700 hover:bg-brand-50 hover:text-brand-700 font-bold text-xs rounded-xl transition">5글자</button>
+                    <button onclick="selectLength(6, event)" class="len-btn px-4 py-2 bg-slate-100 text-slate-700 hover:bg-brand-50 hover:text-brand-700 font-bold text-xs rounded-xl transition">6글자</button>
+                    <button onclick="selectLength(7, event)" class="len-btn px-4 py-2 bg-slate-100 text-slate-700 hover:bg-brand-50 hover:text-brand-700 font-bold text-xs rounded-xl transition">7글자 이상</button>
                 </div>
             </div>
 
@@ -72,8 +80,8 @@
             <div class="space-y-2">
                 <div class="flex items-center justify-between">
                     <label id="resultLabel" class="block text-xs font-bold text-slate-700">3글자 영어 단어 목록</label>
-                    <button id="copyBtn" class="text-xs text-brand-600 font-bold hover:underline">
-                        <i class="fa-regular fa-copy mr-1"></i> 목록 복사하기
+                    <button id="copyBtn" class="text-xs text-brand-600 font-bold hover:underline flex items-center gap-1">
+                        <i class="fa-regular fa-copy"></i> 목록 전체 복사
                     </button>
                 </div>
                 <div id="wordResultBox" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm min-h-[140px] max-h-[220px] overflow-y-auto flex flex-wrap gap-2 items-start content-start">
@@ -82,16 +90,85 @@
             </div>
         </div>
 
-        <!-- 애드센스 광고 영역 (주석 처리됨) -->
-        <!-- 
-        <div class="w-full bg-slate-100 border border-slate-200 rounded-2xl p-6 text-center text-slate-400 flex flex-col items-center justify-center min-h-[90px]">
-            <span class="text-xs uppercase tracking-widest font-bold text-slate-400 mb-1"><i class="fa-solid fa-rectangle-ad mr-1"></i> Google AdSense 광고 영역</span>
-            <p class="text-xs text-slate-400">반응형 디스플레이 광고 단위 공간입니다.</p>
-        </div>
-        -->
+        <!-- 글자수별 영어 단어 활용 가이드 섹션 -->
+        <section class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
+            <div>
+                <h2 class="text-xl font-bold text-slate-900 mb-3 flex items-center">
+                    <i class="fa-solid fa-font text-brand-600 mr-2.5"></i> 글자수별 영단어의 주요 활용 분야
+                </h2>
+                <p class="text-sm text-slate-600 leading-relaxed">
+                    글자 수 단위로 영어 단어를 탐색하는 방식은 언어 학습뿐만 아니라 브랜드 작명, 게임 및 퍼즐 해결 등 다양한 실무 상황에서 매우 유용하게 활용됩니다.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-gamepad text-brand-600"></i> 영어 낱말 퀴즈 &amp; 워드게임(Wordle)
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        최근 유행하는 5글자 영어 단어 맞추기 게임(Wordle)이나 크로스워드 퍼즐(Crossword) 풀이 시 단어 길이에 맞춰 후보 단어를 효율적으로 추려낼 수 있습니다.
+                    </p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-at text-brand-600"></i> 감성적인 영어 닉네임 &amp; 브랜드 네이밍
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        인스타그램, 게임, 유튜브 채널의 간결하고 기억하기 쉬운 3~5글자 닉네임이나 브랜드 아이디(ID)를 정할 때 아이디어를 얻을 수 있습니다.
+                    </p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-book-open text-brand-600"></i> 난이도별 어휘 학습 및 암기
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        짧은 단어(3~4글자)부터 긴 단어(7글자 이상)까지 단어의 길이 단계별로 어휘를 분류하여 기억 패턴을 강화하고 단어장을 손쉽게 구성할 수 있습니다.
+                    </p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-pen-nib text-brand-600"></i> 도메인 &amp; 상표명 아이디어 추출
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        웹사이트 주소(Domain)나 신규 프로젝트의 이름을 정할 때 짧고 직관적인 단어 조합을 발굴하는 데 유용한 힌트를 제공합니다.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 글자수별 단어 유형 및 특징 설명 섹션 -->
+        <section class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
+            <h2 class="text-xl font-bold text-slate-900 mb-2 flex items-center">
+                <i class="fa-solid fa-layer-group text-brand-600 mr-2.5"></i> 길이별 영어 단어 가이드
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1.5">
+                    <span class="px-2 py-0.5 bg-brand-100 text-brand-700 rounded font-bold">3~4글자</span>
+                    <div class="font-bold text-slate-900 text-sm pt-1">초급 &amp; 직관적 단어</div>
+                    <p class="text-slate-600 leading-relaxed">
+                        일상 생활에서 자주 쓰이는 기본 명사와 동사 위주입니다. 가시성이 뛰어나 로고나 아이디로 선호됩니다.
+                    </p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1.5">
+                    <span class="px-2 py-0.5 bg-brand-100 text-brand-700 rounded font-bold">5~6글자</span>
+                    <div class="font-bold text-slate-900 text-sm pt-1">중급 &amp; 퍼즐 핵심 단어</div>
+                    <p class="text-slate-600 leading-relaxed">
+                        워들(Wordle) 등 퍼즐 게임의 표준 글자 수이자, 풍부한 표현력을 담을 수 있는 알맞은 길이의 어휘군입니다.
+                    </p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1.5">
+                    <span class="px-2 py-0.5 bg-brand-100 text-brand-700 rounded font-bold">7글자 이상</span>
+                    <div class="font-bold text-slate-900 text-sm pt-1">고급 &amp; 추상적 단어</div>
+                    <p class="text-slate-600 leading-relaxed">
+                        학술적, 비즈니스적 개념을 내포하는 고급 어휘가 많으며, 문맥 내 깊이 있는 의미 전달에 활용됩니다.
+                    </p>
+                </div>
+            </div>
+        </section>
 
         <!-- 서비스 설명 및 자주 하는 질문 (아코디언) 섹션 -->
-        <section class="bg-white rounded-3xl border border-slate-200 p-8 shadow-sm space-y-8">
+        <section class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-8">
             <div>
                 <h2 class="text-xl font-bold text-slate-900 mb-2">서비스 소개 및 이용 가이드</h2>
                 <p class="text-sm text-slate-600 leading-relaxed">
@@ -112,7 +189,7 @@
                             <span>Q1. 제공되는 단어 목록은 어떤 기준으로 분류되나요?</span>
                             <i class="fa-solid fa-chevron-down transform rotate-180 transition-transform text-slate-500"></i>
                         </button>
-                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 block">
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 block leading-relaxed">
                             사용자가 선택한 알파벳 글자 수(3글자~7글자 이상) 길이에 정확히 일치하는 일상 및 영단어 샘플 데이터베이스를 실시간으로 필터링하여 보여줍니다.
                         </div>
                     </div>
@@ -123,7 +200,7 @@
                             <span>Q2. 검색하거나 이용할 때 데이터가 서버에 저장되나요?</span>
                             <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
                         </button>
-                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden leading-relaxed">
                             아니요, 전혀 저장되지 않습니다. 사용자의 브라우저 내부에서 자바스크립트로 가볍게 조회 및 연산되므로 안심하고 이용하실 수 있습니다.
                         </div>
                     </div>
@@ -131,10 +208,21 @@
                     <!-- FAQ 3 -->
                     <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
                         <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
-                            <span>Q3. 스마트폰이나 모바일 기기에서도 원활하게 쓸 수 있나요?</span>
+                            <span>Q3. 개별 단어를 하나씩 클릭해서 복사할 수도 있나요?</span>
                             <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
                         </button>
-                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden leading-relaxed">
+                            네, 상단의 '목록 전체 복사' 버튼 외에도 화면에 나타난 개별 단어 태그를 클릭하면 해당 단어만 클립보드에 바로 복사됩니다.
+                        </div>
+                    </div>
+
+                    <!-- FAQ 4 -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q4. 스마트폰이나 모바일 기기에서도 원활하게 쓸 수 있나요?</span>
+                            <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden leading-relaxed">
                             네, 반응형 웹 디자인으로 제작되어 스마트폰이나 태블릿 브라우저에서도 버튼 터치 한 번으로 간편하게 단어 목록을 확인할 수 있습니다.
                         </div>
                     </div>
@@ -154,33 +242,39 @@
                     <span class="text-lg font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span>
                 </a>
             </div>
-            <p class="text-sm text-slate-500 text-center md:text-left">
-               <strong>이용 안내:</strong> 본 사이트에서 제공하는 모든 툴과 기능은 지속적으로 업데이트되며, 누구나 무료로 자유롭게 이용할 수 있습니다. 
-               <br>서비스 이용 중 불편한 점이나 추가가 필요한 유틸리티 제안은 고객 피드백 채널을 통해 남겨주시기 바랍니다.
+            <p class="text-sm text-slate-500 text-center md:text-left leading-relaxed">
+                <strong>이용 안내:</strong> 본 사이트에서 제공하는 모든 툴과 기능은 지속적으로 업데이트되며, 누구나 무료로 자유롭게 이용할 수 있습니다. 
+                <br>서비스 이용 중 불편한 점이나 추가가 필요한 유틸리티 제안은 고객 피드백 채널을 통해 남겨주시기 바랍니다.
             </p>
-             <p style="margin-top: 8px;"><a href="../privacy.html" style="color: var(--text-muted); text-decoration: none;">개인정보처리방침보기</a></p>
+            <div>
+                <a href="../privacy.html" class="text-xs text-slate-400 hover:text-slate-600 transition underline">개인정보처리방침</a>
+            </div>
         </div>
     </footer>
 
     <!-- 단어 추출 기능 및 아코디언 동작 스크립트 -->
     <script>
         const wordDatabase = {
-            3: ['cat', 'dog', 'sun', 'sky', 'pen', 'cup', 'box', 'car', 'key', 'map', 'hat', 'run', 'cup', 'net', 'owl', 'bed', 'toy', 'egg', 'ant', 'bee'],
+            3: ['cat', 'dog', 'sun', 'sky', 'pen', 'cup', 'box', 'car', 'key', 'map', 'hat', 'run', 'net', 'owl', 'bed', 'toy', 'egg', 'ant', 'bee', 'joy'],
             4: ['book', 'desk', 'fish', 'bird', 'lion', 'door', 'ball', 'star', 'moon', 'tree', 'rain', 'blue', 'pink', 'gold', 'cold', 'milk', 'cake', 'jump', 'walk', 'talk'],
             5: ['apple', 'beach', 'chair', 'dance', 'earth', 'flame', 'grape', 'house', 'juice', 'knife', 'lemon', 'mouse', 'night', 'ocean', 'piano', 'queen', 'river', 'smile', 'tiger', 'water'],
             6: ['banana', 'camera', 'doctor', 'flower', 'garden', 'guitar', 'island', 'jungle', 'kitten', 'monkey', 'orange', 'pencil', 'rabbit', 'school', 'turtle', 'window', 'yellow', 'bridge', 'castle', 'planet'],
             7: ['absolute', 'balance', 'cabinet', 'diamond', 'economy', 'freedom', 'galaxy', 'horizon', 'journey', 'kingdom', 'liberty', 'mountain', 'network', 'organic', 'pioneer', 'quality', 'rainbow', 'science', 'thunder', 'universe']
         };
 
-        function selectLength(len) {
+        function selectLength(len, evt) {
             // 버튼 활성 스타일 전환
             const buttons = document.querySelectorAll('.len-btn');
             buttons.forEach(btn => {
                 btn.classList.remove('bg-brand-600', 'text-white', 'shadow-sm');
                 btn.classList.add('bg-slate-100', 'text-slate-700');
             });
-            event.target.classList.remove('bg-slate-100', 'text-slate-700');
-            event.target.classList.add('bg-brand-600', 'text-white', 'shadow-sm');
+
+            const target = evt ? evt.currentTarget : buttons[0];
+            if (target) {
+                target.classList.remove('bg-slate-100', 'text-slate-700');
+                target.classList.add('bg-brand-600', 'text-white', 'shadow-sm');
+            }
 
             // 단어 렌더링
             const resultBox = document.getElementById('wordResultBox');
@@ -205,7 +299,7 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             // 초기 로드시 3글자 단어 세팅
-            selectLength(3);
+            selectLength(3, null);
 
             // 전체 목록 복사 버튼
             const copyBtn = document.getElementById('copyBtn');

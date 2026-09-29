@@ -3,11 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>빈줄 삭제기 - 미소픽 (MisoPick)</title>
+    <title>빈줄 삭제기 - 불필요한 공백 줄 일괄 제거 툴 | 미소픽 (MisoPick)</title>
+    <meta name="description" content="텍스트나 소스코드 사이에 불필요하게 늘어진 공백 줄 및 빈 줄을 클릭 한 번으로 깨끗하게 제거하세요. 문서 가독성을 높여주는 무료 온라인 텍스트 정제 도구입니다.">
+    <meta name="keywords" content="빈줄 삭제기, 빈줄 제거, 공백줄 삭제, 텍스트 정제, 개행 제거, 줄바꿈 정돈, 미소픽, MisoPick">
+    <meta property="og:title" content="빈줄 삭제기 - 미소픽 (MisoPick)">
+    <meta property="og:description" content="텍스트 사이사이에 포함된 불필요한 빈 공백 줄을 한 번에 깔끔하게 제거해 드립니다.">
+    <meta property="og:type" content="website">
+
+    <!-- 구글 애드센스 스크립트 -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2888840483385554"
      crossorigin="anonymous"></script>
-    <!-- 구글 애드센스 승인용 스크립트 (주석 처리됨) -->
-    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -52,28 +58,30 @@
         <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
             <div>
                 <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 bg-brand-50 text-brand-700 rounded-md">Tool #7</span>
-                <h1 class="text-2xl font-black text-slate-900 mt-2 mb-1">빈줄 삭제기</h1>
-                <p class="text-sm text-slate-500">텍스트 사이사이에 불필요하게 포함된 빈 공백 줄을 한 번에 깨끗하게 제거합니다.</p>
+                <h1 class="text-2xl sm:text-3xl font-black text-slate-900 mt-2 mb-1">빈줄 삭제기</h1>
+                <p class="text-sm text-slate-600 leading-relaxed">
+                    텍스트 사이사이에 불필요하게 포함된 빈 공백 줄을 한 번에 깨끗하게 제거하여 가독성 높은 문장으로 가공합니다.
+                </p>
             </div>
 
             <!-- 실행 버튼 -->
             <div class="flex flex-wrap gap-2">
-                <button onclick="removeEmptyLines()" class="px-6 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm rounded-xl transition shadow-md">
-                    빈줄 삭제 실행
+                <button onclick="removeEmptyLines()" class="px-6 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm rounded-xl transition shadow-md flex items-center gap-2">
+                    <i class="fa-solid fa-broom"></i> 빈줄 삭제 실행
                 </button>
             </div>
 
             <!-- 입력 및 결과 영역 -->
             <div class="grid grid-cols-1 gap-4">
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">텍스트 입력 (공백 줄이 포함된 내용)</label>
+                    <label for="textInput" class="block text-xs font-bold text-slate-700 mb-1">텍스트 입력 (공백 줄이 포함된 내용)</label>
                     <textarea id="textInput" rows="5" placeholder="첫 번째 줄&#10;&#10;두 번째 줄 (사이에 빈 줄 있음)&#10;&#10;세 번째 줄" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:bg-white focus:border-brand-500 outline-none transition"></textarea>
                 </div>
                 <div>
                     <div class="flex items-center justify-between mb-1">
-                        <label class="block text-xs font-bold text-slate-700">삭제 결과</label>
-                        <button id="copyBtn" class="text-xs text-brand-600 font-bold hover:underline">
-                            <i class="fa-regular fa-copy mr-1"></i> 복사하기
+                        <label for="resultOutput" class="block text-xs font-bold text-slate-700">삭제 결과</label>
+                        <button id="copyBtn" class="text-xs text-brand-600 font-bold hover:underline flex items-center gap-1">
+                            <i class="fa-regular fa-copy"></i> 복사하기
                         </button>
                     </div>
                     <textarea id="resultOutput" rows="5" readonly placeholder="결과가 여기에 출력됩니다." class="w-full p-4 bg-slate-100 border border-slate-200 rounded-2xl text-sm outline-none"></textarea>
@@ -81,16 +89,76 @@
             </div>
         </div>
 
-        <!-- 애드센스 광고 영역 (주석 처리됨) -->
-        <!-- 
-        <div class="w-full bg-slate-100 border border-slate-200 rounded-2xl p-6 text-center text-slate-400 flex flex-col items-center justify-center min-h-[90px]">
-            <span class="text-xs uppercase tracking-widest font-bold text-slate-400 mb-1"><i class="fa-solid fa-rectangle-ad mr-1"></i> Google AdSense 광고 영역</span>
-            <p class="text-xs text-slate-400">반응형 디스플레이 광고 단위 공간입니다.</p>
-        </div>
-        -->
+        <!-- 동작 원리 및 알고리즘 설명 섹션 -->
+        <section class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
+            <div>
+                <h2 class="text-xl font-bold text-slate-900 mb-3 flex items-center">
+                    <i class="fa-solid fa-align-left text-brand-600 mr-2.5"></i> 빈줄 삭제 처리 알고리즘
+                </h2>
+                <p class="text-sm text-slate-600 leading-relaxed">
+                    입력받은 전체 문장을 개행 문자(줄바꿈, <code>\n</code>) 기준으로 단일 행 단위 배열로 분할합니다. 각 행에 존재하는 앞뒤 여백(스페이스, 탭 등)을 감지하는 <code>trim()</code> 함수를 적용하여, 실제 글자나 데이터가 존재하지 않는 모든 공백 행을 필터링(`filter`)한 뒤 깔끔한 텍스트 배열로 재조합합니다.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                    <div class="font-bold text-slate-900 text-sm">1. 개행 분할</div>
+                    <p class="text-slate-600">줄바꿈 기준(\n)으로 입력 텍스트를 라인별로 정밀 분할</p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                    <div class="font-bold text-slate-900 text-sm">2. 공백 탐지 &amp; 제거</div>
+                    <p class="text-slate-600">스페이스, 탭 문자만 존재하는 겉보기 빈 줄까지 필터링</p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                    <div class="font-bold text-slate-900 text-sm">3. 텍스트 결합</div>
+                    <p class="text-slate-600">유효한 문장들만 일정한 줄바꿈으로 재연결하여 결과 출력</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 실무 활용 사례 섹션 -->
+        <section class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
+            <h2 class="text-xl font-bold text-slate-900 mb-2 flex items-center">
+                <i class="fa-solid fa-briefcase text-brand-600 mr-2.5"></i> 주요 실무 활용 분야
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-code text-brand-600"></i> 소스코드 정돈 &amp; 리팩토링
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        HTML, CSS, JavaScript, Python 등 웹 개발 및 프로그래밍 과정에서 과도하게 삽입된 공백 라인을 정돈하여 코드 가독성과 용량을 최적화합니다.
+                    </p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-file-lines text-brand-600"></i> 웹 문서 복사 원고 정제
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        뉴스 기사나 외부 블로그에서 텍스트를 복사해 올 때 발생하는 여러 줄의 공백과 여백을 지우고 깔끔하게 원고를 다듬을 수 있습니다.
+                    </p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-database text-brand-600"></i> 데이터베이스 &amp; 엑셀 정제
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        CSV, 엑셀, 텍스트 데이터 파일 전처리 과정에서 발생하는 빈 행(Empty Rows)을 한 번에 정리하여 데이터 처리 에러를 예방합니다.
+                    </p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-newspaper text-brand-600"></i> 게시글 및 SNS 마케팅 원고 가공
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        인스타그램, 포털 카페, 커뮤니티용 포스팅 작성 시 불필요하게 늘어진 여백 줄을 없애고 세련된 단락 구성을 만듭니다.
+                    </p>
+                </div>
+            </div>
+        </section>
 
         <!-- 서비스 설명 및 자주 하는 질문 (아코디언) 섹션 -->
-        <section class="bg-white rounded-3xl border border-slate-200 p-8 shadow-sm space-y-8">
+        <section class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-8">
             <div>
                 <h2 class="text-xl font-bold text-slate-900 mb-2">서비스 소개 및 이용 가이드</h2>
                 <p class="text-sm text-slate-600 leading-relaxed">
@@ -111,7 +179,7 @@
                             <span>Q1. 공백 문자만 있는 줄(스페이스가 포함된 빈 줄)도 제거되나요?</span>
                             <i class="fa-solid fa-chevron-down transform rotate-180 transition-transform text-slate-500"></i>
                         </button>
-                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 block">
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 block leading-relaxed">
                             네, 띄어쓰기나 공백 문자만 포함되어 실질적으로 비어 있는 줄들도 감지하여 깔끔하게 제거해 줍니다.
                         </div>
                     </div>
@@ -122,7 +190,7 @@
                             <span>Q2. 입력한 데이터가 서버로 전송되거나 저장되나요?</span>
                             <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
                         </button>
-                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden leading-relaxed">
                             아니요, 전혀 저장되지 않습니다. 사용자의 브라우저 내부에서만 자바스크립트로 연산 처리되므로 개인정보 및 작업 중인 내용이 안전하게 보호됩니다.
                         </div>
                     </div>
@@ -133,8 +201,19 @@
                             <span>Q3. 모바일 환경에서도 원활하게 이용할 수 있나요?</span>
                             <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
                         </button>
-                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden leading-relaxed">
                             네, 모바일과 태블릿 화면에서도 반응형으로 최적화되어 있어 스마트폰 브라우저에서 언제든 간편하게 이용하실 수 있습니다.
+                        </div>
+                    </div>
+
+                    <!-- FAQ 4 (추가된 FAQ) -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q4. 문장 내부의 단어 사이 띄어쓰기(공백)도 사라지나요?</span>
+                            <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden leading-relaxed">
+                            아니요, 문장 내부의 단어 사이 띄어쓰기는 그대로 보존됩니다. 본 도구는 오직 행(줄) 전체가 비어 있는 '공백 줄'만 골라 삭제합니다.
                         </div>
                     </div>
 
@@ -153,11 +232,13 @@
                     <span class="text-lg font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span>
                 </a>
             </div>
-            <p class="text-sm text-slate-500 text-center md:text-left">
-               <strong>이용 안내:</strong> 본 사이트에서 제공하는 모든 툴과 기능은 지속적으로 업데이트되며, 누구나 무료로 자유롭게 이용할 수 있습니다. 
-               <br>서비스 이용 중 불편한 점이나 추가가 필요한 유틸리티 제안은 고객 피드백 채널을 통해 남겨주시기 바랍니다.
+            <p class="text-sm text-slate-500 text-center md:text-left leading-relaxed">
+                <strong>이용 안내:</strong> 본 사이트에서 제공하는 모든 툴과 기능은 지속적으로 업데이트되며, 누구나 무료로 자유롭게 이용할 수 있습니다. 
+                <br>서비스 이용 중 불편한 점이나 추가가 필요한 유틸리티 제안은 고객 피드백 채널을 통해 남겨주시기 바랍니다.
             </p>
-             <p style="margin-top: 8px;"><a href="../privacy.html" style="color: var(--text-muted); text-decoration: none;">개인정보처리방침보기</a></p>
+            <div>
+                <a href="../privacy.html" class="text-xs text-slate-400 hover:text-slate-600 transition underline">개인정보처리방침</a>
+            </div>
         </div>
     </footer>
 

@@ -3,11 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>인터넷 속도 측정기 - 미소픽 (MisoPick)</title>
+    <title>인터넷 속도 측정기 - 핑(Ping), 다운로드, 업로드 대역폭 성능 테스트 | 미소픽 (MisoPick)</title>
+    <meta name="description" content="현재 연결된 Wi-Fi, 5G, LTE 및 유선 인터넷의 핑(Ping) 지연 시간, 다운로드 및 업로드 속도를 실시간으로 쉽고 빠르게 측정하세요.">
+    <meta name="keywords" content="인터넷 속도 측정, 핑 측정, Ping 테스트, 다운로드 속도, 업로드 속도, 대역폭 테스트, 네트워크 속도 측정, 미소픽, MisoPick">
+    <meta property="og:title" content="인터넷 속도 측정기 - 미소픽 (MisoPick)">
+    <meta property="og:description" content="클릭 한 번으로 네트워크 지연 시간(Ping)과 데이터 전송 속도를 실시간으로 측정하는 온라인 인터넷 속도 테스트 툴입니다.">
+    <meta property="og:type" content="website">
+
+    <!-- 구글 애드센스 스크립트 -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2888840483385554"
      crossorigin="anonymous"></script>
-    <!-- 구글 애드센스 승인용 스크립트 (주석 처리됨) -->
-    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -52,8 +58,8 @@
         <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-8 text-center">
             <div>
                 <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 bg-brand-50 text-brand-700 rounded-md">Tool #30</span>
-                <h1 class="text-2xl font-black text-slate-900 mt-2 mb-1">인터넷 속도 측정기</h1>
-                <p class="text-sm text-slate-500">핑(Ping), 다운로드 및 업로드 대역폭 성능을 실시간으로 시뮬레이션하고 측정합니다.</p>
+                <h1 class="text-2xl sm:text-3xl font-black text-slate-900 mt-2 mb-1">인터넷 속도 측정기</h1>
+                <p class="text-sm text-slate-600 leading-relaxed">핑(Ping), 다운로드 및 업로드 대역폭 성능을 실시간으로 시뮬레이션하고 측정합니다.</p>
             </div>
 
             <!-- 속도 측정 결과 카드 대시보드 -->
@@ -89,16 +95,82 @@
             </div>
         </div>
 
-        <!-- 애드센스 광고 영역 (주석 처리됨) -->
-        <!-- 
-        <div class="w-full bg-slate-100 border border-slate-200 rounded-2xl p-6 text-center text-slate-400 flex flex-col items-center justify-center min-h-[90px]">
-            <span class="text-xs uppercase tracking-widest font-bold text-slate-400 mb-1"><i class="fa-solid fa-rectangle-ad mr-1"></i> Google AdSense 광고 영역</span>
-            <p class="text-xs text-slate-400">반응형 디스플레이 광고 단위 공간입니다.</p>
-        </div>
-        -->
+        <!-- 주요 인터넷 성능 지표 설명 섹션 (SEO & AdSense 보강) -->
+        <section class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6 text-left">
+            <div>
+                <h2 class="text-xl font-bold text-slate-900 mb-3 flex items-center">
+                    <i class="fa-solid fa-network-wired text-brand-600 mr-2.5"></i> 인터넷 품질의 3대 핵심 지표
+                </h2>
+                <p class="text-sm text-slate-600 leading-relaxed">
+                    안정적이고 쾌적한 인터넷 환경을 평가하기 위해 확인해야 하는 주요 성능 수치 안내입니다.
+                </p>
+            </div>
 
-        <!-- 서비스 설명 및 자주 하는 질문 (아코디언) 섹션 -->
-        <section class="bg-white rounded-3xl border border-slate-200 p-8 shadow-sm space-y-8 text-left">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-slate-900 text-sm flex items-center gap-1.5">
+                        <i class="fa-solid fa-bolt text-brand-600"></i> 지연 시간 (Ping / Latency)
+                    </div>
+                    <p class="text-slate-600 leading-relaxed">내 기기에서 보낸 데이터 신호가 서버에 도착한 뒤 다시 돌아오는 시간(ms)입니다. 수치가 낮을수록 실시간 게임이나 화상 회의에 유리합니다.</p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-slate-900 text-sm flex items-center gap-1.5">
+                        <i class="fa-solid fa-cloud-arrow-down text-brand-600"></i> 다운로드 속도 (Download)
+                    </div>
+                    <p class="text-slate-600 leading-relaxed">인터넷 서버로부터 데이터를 받아오는 속도(Mbps)입니다. 웹 브라우징, OTT 고화질 영상 스트리밍 및 대용량 파일 받기에 영향을 줍니다.</p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-slate-900 text-sm flex items-center gap-1.5">
+                        <i class="fa-solid fa-cloud-arrow-up text-brand-600"></i> 업로드 속도 (Upload)
+                    </div>
+                    <p class="text-slate-600 leading-relaxed">내 기기에서 클라우드나 외부 서버로 데이터를 전송하는 속도(Mbps)입니다. 대용량 첨부파일 전송, 라이브 방송, 영상 업로드 시 주요 지표가 됩니다.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 인터넷 속도가 느릴 때 체크리스트 섹션 -->
+        <section class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6 text-left">
+            <h2 class="text-xl font-bold text-slate-900 mb-2 flex items-center">
+                <i class="fa-solid fa-wrench text-brand-600 mr-2.5"></i> 인터넷 속도가 느려졌을 때 해결 방법
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-rotate-right text-brand-600"></i> 공유기 및 모뎀 재부팅
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        공유기의 전원 케이블을 뽑은 후 약 10초 뒤 다시 연결하면 임시 캐시 메모리가 정돈되어 회선 속도가 정상 복구될 수 있습니다.
+                    </p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-wifi text-brand-600"></i> Wi-Fi 5GHz 대역 연결 사용
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        2.4GHz 대역은 범위가 넓지만 혼선이 많습니다. 공유기와 가까운 위치에서는 간섭이 적고 속도가 빠른 5GHz 대역 연결을 추천합니다.
+                    </p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-download text-brand-600"></i> 백그라운드 다운로드 프로그램 종료
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        토렌트, 백신 업데이트, 클라우드 동기화 프로그램 등 백그라운드에서 대역폭을 점유하는 애플리케이션을 모두 종료 후 테스트해보세요.
+                    </p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-ethernet text-brand-600"></i> 랜선(CAT5e 이상) 유선 연결 점검
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        기가비트 인터넷 환경을 제대로 사용하려면 노후된 랜선을 CAT5e, CAT6 규격 이상의 케이블로 교체하는 것이 중요합니다.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 서비스 소개 및 자주 하는 질문 (아코디언) 섹션 -->
+        <section class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-8 text-left">
             <div>
                 <h2 class="text-xl font-bold text-slate-900 mb-2">서비스 소개 및 이용 가이드</h2>
                 <p class="text-sm text-slate-600 leading-relaxed">
@@ -119,7 +191,7 @@
                             <span>Q1. 핑(Ping)과 다운로드 속도는 무엇을 의미하나요?</span>
                             <i class="fa-solid fa-chevron-down transform rotate-180 transition-transform text-slate-500"></i>
                         </button>
-                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 block">
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 block leading-relaxed">
                             핑(Ping)은 서버와 응답을 주고받는 시간(ms)으로 낮을수록 반응 속도가 좋습니다. 다운로드 속도는 인터넷에서 파일을 받아오거나 웹페이지를 로딩하는 대역폭 성능을 나타냅니다.
                         </div>
                     </div>
@@ -130,7 +202,7 @@
                             <span>Q2. 측정 결과나 네트워크 정보가 서버에 저장되나요?</span>
                             <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
                         </button>
-                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden leading-relaxed">
                             아니요, 전혀 저장되지 않습니다. 사용자의 브라우저 환경 내에서 실시간 시뮬레이션 및 테스트가 진행되므로 프라이버시가 안전하게 보호됩니다.
                         </div>
                     </div>
@@ -141,8 +213,19 @@
                             <span>Q3. 모바일 스마트폰 환경에서도 측정이 가능 한가요?</span>
                             <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
                         </button>
-                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden leading-relaxed">
                             네, 모바일 브라우저 환경 및 터치 인터페이스에 최적화되어 있어 Wi-Fi 또는 모바일 데이터 속도를 간편하게 테스트할 수 있습니다.
+                        </div>
+                    </div>
+
+                    <!-- FAQ 4 -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q4. Mbps 수치는 MB/s와 어떻게 다른가요?</span>
+                            <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden leading-relaxed">
+                            Mbps는 초당 메가비트(bit) 수치이며, 초당 메가바이트(Byte) 단위인 MB/s로 환산하려면 대략 8로 나누면 됩니다. (예: 100 Mbps ≒ 약 12.5 MB/s)
                         </div>
                     </div>
 
@@ -158,13 +241,16 @@
             <div class="flex items-center space-x-3">
                 <div class="w-8 h-8 rounded-xl bg-brand-600 flex items-center justify-center text-white font-bold text-sm">M</div>
                 <a href="index.html" class="flex items-center space-x-2">
-                <span class="text-lg font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span></a>
+                    <span class="text-lg font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span>
+                </a>
             </div>
-            <p class="text-sm text-slate-500 text-center md:text-left">
-               <strong>이용 안내:</strong> 본 사이트에서 제공하는 모든 툴과 기능은 지속적으로 업데이트되며, 누구나 무료로 자유롭게 이용할 수 있습니다. 
-               <br>서비스 이용 중 불편한 점이나 추가가 필요한 유틸리티 제안은 고객 피드백 채널을 통해 남겨주시기 바랍니다.<br>   
+            <p class="text-sm text-slate-500 text-center md:text-left leading-relaxed">
+                <strong>이용 안내:</strong> 본 사이트에서 제공하는 모든 툴과 기능은 지속적으로 업데이트되며, 누구나 무료로 자유롭게 이용할 수 있습니다. 
+                <br>서비스 이용 중 불편한 점이나 추가가 필요한 유틸리티 제안은 고객 피드백 채널을 통해 남겨주시기 바랍니다.
             </p>
-             <p style="margin-top: 8px;"><a href="../privacy.html" style="color: var(--text-muted); text-decoration: none;">개인정보처리방침보기</a></p>
+            <div>
+                <a href="../privacy.html" class="text-xs text-slate-400 hover:text-slate-600 transition underline">개인정보처리방침</a>
+            </div>
         </div>
     </footer>
 

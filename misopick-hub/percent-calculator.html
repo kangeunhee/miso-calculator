@@ -3,11 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>퍼센트(%) 계산기 - 미소픽 (MisoPick)</title>
+    <title>퍼센트(%) 계산기 - 할인율, 증감률, 비율 계산 | 미소픽 (MisoPick)</title>
+    <meta name="description" content="쇼핑 할인율, 주식 및 가격 변동 증감률, 전체 대비 비율 연산을 쉽고 빠르게 계산하세요. 캔버스 애니메이션과 계산 공식 가이드를 제공하는 무료 온라인 퍼센트 계산기입니다.">
+    <meta name="keywords" content="퍼센트 계산기, 백분율 계산기, 할인율 계산, 증감률 계산, 비율 계산, 주식 수익률 계산, 미소픽, MisoPick">
+    <meta property="og:title" content="퍼센트(%) 계산기 - 미소픽 (MisoPick)">
+    <meta property="og:description" content="할인율, 가격 증감률, 비율 연산을 실시간 애니메이션과 함께 계산하는 편리한 웹 유틸리티입니다.">
+    <meta property="og:type" content="website">
+
+    <!-- 구글 애드센스 스크립트 -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2888840483385554"
      crossorigin="anonymous"></script>
-    <!-- 구글 애드센스 승인용 스크립트 (주석 처리됨) -->
-    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -52,8 +58,8 @@
         <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-8">
             <div>
                 <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 bg-brand-50 text-brand-700 rounded-md">Tool #27</span>
-                <h1 class="text-2xl font-black text-slate-900 mt-2 mb-1">퍼센트(%) 계산기</h1>
-                <p class="text-sm text-slate-500">할인율, 증가폭, 전체 대비 비율 등을 입력하면 애니메이션과 함께 정확한 값을 산출해 줍니다.</p>
+                <h1 class="text-2xl sm:text-3xl font-black text-slate-900 mt-2 mb-1">퍼센트(%) 계산기</h1>
+                <p class="text-sm text-slate-600 leading-relaxed">할인율, 증가폭, 전체 대비 비율 등을 입력하면 애니메이션과 함께 정확한 값을 산출해 줍니다.</p>
             </div>
 
             <!-- 계산 모드 탭 -->
@@ -80,26 +86,95 @@
             <div class="space-y-3 pt-4 border-t border-slate-100">
                 <label class="block text-xs font-bold text-slate-700">결과 시각화 영역</label>
                 <div class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 overflow-x-auto flex flex-col items-center justify-center min-h-[220px]">
-                    <canvas id="percentCanvas" width="700" height="180" class="bg-white rounded-xl shadow-xs border border-slate-100"></canvas>
+                    <canvas id="percentCanvas" width="700" height="180" class="bg-white rounded-xl shadow-xs border border-slate-100 max-w-full"></canvas>
                     <div id="percentResultText" class="mt-4 text-xs font-bold text-slate-600 text-center"></div>
                 </div>
             </div>
         </div>
 
-        <!-- 애드센스 광고 영역 (주석 처리됨) -->
-        <!-- 
-        <div class="w-full bg-slate-100 border border-slate-200 rounded-2xl p-6 text-center text-slate-400 flex flex-col items-center justify-center min-h-[90px]">
-            <span class="text-xs uppercase tracking-widest font-bold text-slate-400 mb-1"><i class="fa-solid fa-rectangle-ad mr-1"></i> Google AdSense 광고 영역</span>
-            <p class="text-xs text-slate-400">반응형 디스플레이 광고 단위 공간입니다.</p>
-        </div>
-        -->
+        <!-- 퍼센트 계산 공식 및 가이드 섹션 -->
+        <section class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
+            <div>
+                <h2 class="text-xl font-bold text-slate-900 mb-3 flex items-center">
+                    <i class="fa-solid fa-book-bookmark text-brand-600 mr-2.5"></i> 퍼센트(%) 계산 방식 및 수학적 공식
+                </h2>
+                <p class="text-sm text-slate-600 leading-relaxed">
+                    백분율(Percentage)은 전체 수량을 100으로 두고 이에 대한 상대적인 비율을 나타내는 단위입니다. 계산 목적에 따라 아래의 기본적인 연산 공식이 사용됩니다.
+                </p>
+            </div>
 
-        <!-- 서비스 설명 및 자주 하는 질문 (아코디언) 섹션 -->
-        <section class="bg-white rounded-3xl border border-slate-200 p-8 shadow-sm space-y-8">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-slate-900 text-sm flex items-center gap-1.5">
+                        <i class="fa-solid fa-percent text-brand-600"></i> 특정 비율값 구하기
+                    </div>
+                    <p class="font-mono text-slate-700 bg-white p-2 rounded-lg border border-slate-200 text-center font-bold">A × (B ÷ 100)</p>
+                    <p class="text-slate-600 leading-relaxed">쇼핑몰 할인액 계산이나 세금 환급액 등 전체 금액에서 특정 퍼센트에 해당하는 금액을 계산할 때 사용됩니다.</p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-slate-900 text-sm flex items-center gap-1.5">
+                        <i class="fa-solid fa-chart-pie text-brand-600"></i> 점유 비율 구하기
+                    </div>
+                    <p class="font-mono text-slate-700 bg-white p-2 rounded-lg border border-slate-200 text-center font-bold">(A ÷ B) × 100</p>
+                    <p class="text-slate-600 leading-relaxed">시험 점수의 정답률, 목표 달성률, 또는 예산 대비 지출 비율을 계산할 때 활용됩니다.</p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-slate-900 text-sm flex items-center gap-1.5">
+                        <i class="fa-solid fa-arrow-trend-up text-brand-600"></i> 증감률(변동 폭) 구하기
+                    </div>
+                    <p class="font-mono text-slate-700 bg-white p-2 rounded-lg border border-slate-200 text-center font-bold">[(B - A) ÷ A] × 100</p>
+                    <p class="text-slate-600 leading-relaxed">주식 및 부동산 자산의 수익률, 매출액의 전년 대비 증가율이나 인플레이션율 측정에 유용합니다.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 실생활 활용 사례 섹션 -->
+        <section class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
+            <h2 class="text-xl font-bold text-slate-900 mb-2 flex items-center">
+                <i class="fa-solid fa-lightbulb text-brand-600 mr-2.5"></i> 퍼센트 계산기의 주요 실무 활용 예시
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-tags text-brand-600"></i> 쇼핑 및 세일 할인 가격 산출
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        '30,000원 상품 20% 할인' 시 실제 지출할 가격(24,000원)이나 절약 금액(6,000원)을 즉시 빠르게 파악할 수 있습니다.
+                    </p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-chart-line text-brand-600"></i> 주식 투자 및 자산 수익률 평가
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        매수 금액 대비 현재 평가 금액의 변동을 통해 정확한 수익률 및 손실률 백분율을 실시간으로 산출해 줍니다.
+                    </p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-receipt text-brand-600"></i> 부가가치세(VAT) 및 수수료 계산
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        공급가액에 대한 10% 부가가치세 및 각종 거래 수수료가 차지하는 비중을 간편하게 나누어 판단할 수 있습니다.
+                    </p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-bullseye text-brand-600"></i> 비즈니스 목표 달성률 집계
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        분기별 매출 목표액 대비 현재 실적 금액의 진척률(%)을 정확하게 확인하여 보고서 작성에 이용할 수 있습니다.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 서비스 소개 및 자주 하는 질문 (아코디언) 섹션 -->
+        <section class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-8">
             <div>
                 <h2 class="text-xl font-bold text-slate-900 mb-2">서비스 소개 및 이용 가이드</h2>
                 <p class="text-sm text-slate-600 leading-relaxed">
-                    <strong>misopick.kr</strong>의 퍼센트(%) 계산기는 쇼핑 할인율 계산, 가격 변동에 따른 증감 폭 분석, 전체 중 차지하는 비율 확인 등 일상생활 및 업무에 필수적인 백분율 연산을 간편하고 직관적으로 처리해 줍니다.
+                    <strong>misopick.kr</strong>의 퍼센트(%) 계산기는 쇼핑 할인율 계산, 가격 변동에 따른 증감 폭 분석, 전체 중 차지하는 비율 확인 등 일생활 및 업무에 필수적인 백분율 연산을 간편하고 직관적으로 처리해 줍니다.
                 </p>
             </div>
 
@@ -116,7 +191,7 @@
                             <span>Q1. 어떤 퍼센트 계산 기능들을 제공하나요?</span>
                             <i class="fa-solid fa-chevron-down transform rotate-180 transition-transform text-slate-500"></i>
                         </button>
-                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 block">
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 block leading-relaxed">
                             특정 숫자의 몇 퍼센트(%) 값 구하기, 한 숫자가 다른 숫자 대비 몇 퍼센트인지 비율 구하기, 그리고 전후 값 비교를 통한 가격 상승 및 할인율(증감률) 계산 기능을 모두 지원합니다.
                         </div>
                     </div>
@@ -127,8 +202,8 @@
                             <span>Q2. 계산된 데이터나 입력값이 서버에 저장되나요?</span>
                             <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
                         </button>
-                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
-                            아니요, 전혀 저장되지 않습니다. 입력하신 모든 수식과 계산 결과는 사용자의 브라우저 메모리 안에서만 처리되므로 안심하고 이용할 수 있습니다.
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden leading-relaxed">
+                            아니요, 전혀 저장되지 않습니다. 입력하신 모든 수식과 계산 결과는 서버 전송 없이 사용자의 웹 브라우저 메모리 안에서만 즉시 처리되므로 안심하고 이용할 수 있습니다.
                         </div>
                     </div>
 
@@ -138,8 +213,19 @@
                             <span>Q3. 모바일 화면에서도 편리하게 계산할 수 있나요?</span>
                             <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
                         </button>
-                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
-                            네, 모바일 환경의 화면 크기와 터치 입력에 최적화된 반응형 레이아웃을 갖추고 있어 스마트폰에서도 빠르게 계산할 수 있습니다.
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden leading-relaxed">
+                            네, 모바일 환경의 화면 크기와 터치 입력에 최적화된 반응형 레이아웃을 갖추고 있어 스마트폰이나 태블릿에서도 빠르게 계산할 수 있습니다.
+                        </div>
+                    </div>
+
+                    <!-- FAQ 4 -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q4. 소수점이 발생하는 계산의 경우 어디까지 표기되나요?</span>
+                            <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden leading-relaxed">
+                            비율 및 증감률 계산 결과의 경우 사용자의 가독성을 위해 소수점 둘째 자리까지 반올림되어 표시됩니다.
                         </div>
                     </div>
 
@@ -151,21 +237,20 @@
 
     <!-- 푸터 -->
     <footer class="bg-white border-t border-slate-200 py-10 mt-auto">
-        
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
-            
             <div class="flex items-center space-x-3">
                 <div class="w-8 h-8 rounded-xl bg-brand-600 flex items-center justify-center text-white font-bold text-sm">M</div>
-                
-                    <a href="index.html" class="flex items-center space-x-2">
-                <span class="text-lg font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span></a>
+                <a href="index.html" class="flex items-center space-x-2">
+                    <span class="text-lg font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span>
+                </a>
             </div>
-            <p class="text-sm text-slate-500 text-center md:text-left">
-               <strong>이용 안내:</strong> 본 사이트에서 제공하는 모든 툴과 기능은 지속적으로 업데이트되며, 누구나 무료로 자유롭게 이용할 수 있습니다. 
-               <br>서비스 이용 중 불편한 점이나 추가가 필요한 유틸리티 제안은 고객 피드백 채널을 통해 남겨주시기 바랍니다.<br>   
-               
+            <p class="text-sm text-slate-500 text-center md:text-left leading-relaxed">
+                <strong>이용 안내:</strong> 본 사이트에서 제공하는 모든 툴과 기능은 지속적으로 업데이트되며, 누구나 무료로 자유롭게 이용할 수 있습니다. 
+                <br>서비스 이용 중 불편한 점이나 추가가 필요한 유틸리티 제안은 고객 피드백 채널을 통해 남겨주시기 바랍니다.
             </p>
-             <p style="margin-top: 8px;"><a href="../privacy.html" style="color: var(--text-muted); text-decoration: none;">개인정보처리방침보기</a></p>
+            <div>
+                <a href="../privacy.html" class="text-xs text-slate-400 hover:text-slate-600 transition underline">개인정보처리방침</a>
+            </div>
         </div>
     </footer>
 

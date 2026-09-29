@@ -3,11 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML 태그 제거기 - 미소픽 (MisoPick)</title>
+    <title>HTML 태그 제거기 - 순수 텍스트 추출 툴 | 미소픽 (MisoPick)</title>
+    <meta name="description" content="본문 및 소스 코드 속 불필요한 HTML 태그를 한 번에 제거하여 깨끗한 순수 텍스트(Plain Text)만 추출해 드립니다. 웹 크롤링 데이터 정리, 블로그 원고 작성 시 유용한 무료 웹 유틸리티입니다.">
+    <meta name="keywords" content="HTML 태그 제거, HTML 제거기, 태그 없애기, 텍스트 추출, Plain Text 변환, 웹 크롤링 정제, 미소픽, MisoPick">
+    <meta property="og:title" content="HTML 태그 제거기 - 미소픽 (MisoPick)">
+    <meta property="og:description" content="소스 코드 및 복사한 본문 속 HTML 태그를 원클릭으로 깔끔하게 제거해 드립니다.">
+    <meta property="og:type" content="website">
+
+    <!-- 구글 애드센스 스크립트 -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2888840483385554"
      crossorigin="anonymous"></script>
-    <!-- 구글 애드센스 승인용 스크립트 (주석 처리됨) -->
-    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -52,38 +58,108 @@
         <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
             <div>
                 <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 bg-brand-50 text-brand-700 rounded-md">Tool #1</span>
-                <h1 class="text-2xl font-black text-slate-900 mt-2 mb-1">HTML 태그 제거기</h1>
-                <p class="text-sm text-slate-500">본문 및 소스 코드 속 불필요한 HTML 태그를 깔끔하게 없애줍니다.</p>
+                <h1 class="text-2xl sm:text-3xl font-black text-slate-900 mt-2 mb-1">HTML 태그 제거기</h1>
+                <p class="text-sm text-slate-600 leading-relaxed">
+                    본문 및 소스 코드 속 불필요한 HTML 태그(<code>&lt;div&gt;</code>, <code>&lt;p&gt;</code>, <code>&lt;a&gt;</code> 등)를 깔끔하게 지우고 순수한 알맹이 텍스트만 추출합니다.
+                </p>
             </div>
 
             <!-- 실제 툴 UI 인터페이스 -->
             <div class="grid grid-cols-1 gap-4">
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">HTML 소스 입력</label>
-                    <textarea id="htmlInput" rows="5" placeholder="<p>여기에 <strong>HTML 코드</strong>를 포함한 텍스트를 입력하세요...</p>" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:border-brand-500 outline-none transition"></textarea>
+                    <label for="htmlInput" class="block text-xs font-bold text-slate-700 mb-1">HTML 소스 입력</label>
+                    <textarea id="htmlInput" rows="5" placeholder="<p>여기에 <strong>HTML 코드</strong>를 포함한 텍스트를 입력하세요...</p>" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:bg-white focus:border-brand-500 outline-none transition"></textarea>
                 </div>
                 <div class="flex items-center justify-between">
                     <button id="clearBtn" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs rounded-xl transition">
                         초기화
                     </button>
-                    <button id="removeBtn" class="px-6 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm rounded-xl shadow-md transition">
-                        태그 제거 실행
+                    <button id="removeBtn" class="px-6 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm rounded-xl shadow-md transition flex items-center gap-2">
+                        <i class="fa-solid fa-code"></i> 태그 제거 실행
                     </button>
                 </div>
                 <div>
                     <div class="flex items-center justify-between mb-1">
-                        <label class="block text-xs font-bold text-slate-700">결과 텍스트</label>
-                        <button id="copyBtn" class="text-xs text-brand-600 font-bold hover:underline">
-                            <i class="fa-regular fa-copy mr-1"></i> 복사하기
+                        <label for="resultOutput" class="block text-xs font-bold text-slate-700">결과 텍스트</label>
+                        <button id="copyBtn" class="text-xs text-brand-600 font-bold hover:underline flex items-center gap-1">
+                            <i class="fa-regular fa-copy"></i> 복사하기
                         </button>
                     </div>
-                    <textarea id="resultOutput" rows="5" readonly placeholder="결과가 여기에 출력됩니다." class="w-full p-3 bg-slate-100 border border-slate-200 rounded-xl text-sm outline-none"></textarea>
+                    <textarea id="resultOutput" rows="5" readonly placeholder="결과가 여기에 출력됩니다." class="w-full p-4 bg-slate-100 border border-slate-200 rounded-2xl text-sm outline-none"></textarea>
                 </div>
             </div>
         </div>
 
+        <!-- 동작 원리 및 정규식 설명 섹션 -->
+        <section class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
+            <div>
+                <h2 class="text-xl font-bold text-slate-900 mb-3 flex items-center">
+                    <i class="fa-solid fa-microchip text-brand-600 mr-2.5"></i> HTML 태그 제거 동작 원리
+                </h2>
+                <p class="text-sm text-slate-600 leading-relaxed">
+                    입력된 문장 및 웹 문서 내에서 여는 꺾쇠괄호(<code>&lt;</code>)와 닫는 꺾쇠괄호(<code>&gt;</code>) 사이에 위치하는 모든 구조적 HTML 문자열을 정규 표현식(Regular Expression)으로 탐지하여 빈 문자열로 치환합니다.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                    <div class="font-bold text-slate-900 text-sm">1. 태그 패턴 탐지</div>
+                    <p class="text-slate-600">정규식 <code>/&lt;[^&gt;]*&gt;/g</code>를 사용해 모든 HTML 괄호 구간 탐색</p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                    <div class="font-bold text-slate-900 text-sm">2. 치환 및 문자 정제</div>
+                    <p class="text-slate-600">태그 구문을 안전하게 지우고 순수 알맹이 글자만 보존</p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                    <div class="font-bold text-slate-900 text-sm">3. 실시간 결과 제공</div>
+                    <p class="text-slate-600">웹브라우저 단에서 즉시 가공되어 1초 이내 결과 출력</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 주요 활용 분야 섹션 -->
+        <section class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
+            <h2 class="text-xl font-bold text-slate-900 mb-2 flex items-center">
+                <i class="fa-solid fa-lightbulb text-brand-600 mr-2.5"></i> 주요 실무 활용 사례
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-spider text-brand-600"></i> 웹 크롤링 데이터 전처리
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        파이썬(Python)이나 노드(Node.js) 등으로 스크래핑해 온 HTML 본문에서 텍스트 분석에 불필요한 태그들을 제거할 수 있습니다.
+                    </p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-paste text-brand-600"></i> 웹에디터 문서 복사 &amp; 붙여넣기
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        외부 사이트나 에디터의 글을 복사할 때 묻어오는 원치 않는 서식(Style) 태그를 모두 지우고 깔끔한 평문으로 변환합니다.
+                    </p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-envelope text-brand-600"></i> 이메일 템플릿 및 폼 데이터 정제
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        HTML 메일 서식에서 순수 텍스트(Plain Text) 버전 메일을 제작하거나 고객 문의 폼 입력값을 정리할 때 활용됩니다.
+                    </p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-file-word text-brand-600"></i> 원고 분량 및 글자수 정밀 측정
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        태그 수치 제외 후 실제 사용자가 보게 되는 순수 원고 글자 수만 정확하게 파악하고 계산하기 쉽습니다.
+                    </p>
+                </div>
+            </div>
+        </section>
+
         <!-- 서비스 설명 및 자주 하는 질문 (아코디언) 섹션 -->
-        <section class="bg-white rounded-3xl border border-slate-200 p-8 shadow-sm space-y-8">
+        <section class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-8">
             <div>
                 <h2 class="text-xl font-bold text-slate-900 mb-2">서비스 소개 및 이용 가이드</h2>
                 <p class="text-sm text-slate-600 leading-relaxed">
@@ -104,7 +180,7 @@
                             <span>Q1. 입력한 텍스트나 데이터가 서버에 저장되나요?</span>
                             <i class="fa-solid fa-chevron-down transform rotate-180 transition-transform text-slate-500"></i>
                         </button>
-                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 block">
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 block leading-relaxed">
                             아니요, 전혀 저장되지 않습니다. 모든 가공과 연산 처리는 사용자분들의 로컬 웹브라우저(Client-side) 환경에서만 이루어지므로 보안 측면에서 매우 안전합니다.
                         </div>
                     </div>
@@ -112,21 +188,32 @@
                     <!-- FAQ 2 -->
                     <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
                         <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
-                            <span>Q2. 모바일 기기에서도 원활하게 이용할 수 있나요?</span>
+                            <span>Q2. &amp;nbsp; 나 &amp;lt; 같은 특수 엔티티 문자도 함께 처리되나요?</span>
                             <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
                         </button>
-                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
-                            네, 물론입니다. 반응형 웹 디자인으로 제작되어 스마트폰, 태블릿, PC 등 기기 제약 없이 브라우저만 있으면 언제 어디서나 편리하게 이용하실 수 있습니다.
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden leading-relaxed">
+                            본 기능은 <code>&lt;...&gt;</code> 형태의 HTML 태그 구조를 1차적으로 깔끔히 없애줍니다. HTML 특수문자 엔티티는 본문 문자로 인식되어 보존됩니다.
                         </div>
                     </div>
 
                     <!-- FAQ 3 -->
                     <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
                         <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
-                            <span>Q3. 이 유틸리티 서비스는 유료인가요?</span>
+                            <span>Q3. 모바일 기기에서도 원활하게 이용할 수 있나요?</span>
                             <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
                         </button>
-                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden leading-relaxed">
+                            네, 물론입니다. 반응형 웹 디자인으로 제작되어 스마트폰, 태블릿, PC 등 기기 제약 없이 브라우저만 있으면 언제 어디서나 편리하게 이용하실 수 있습니다.
+                        </div>
+                    </div>
+
+                    <!-- FAQ 4 -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q4. 이 유틸리티 서비스는 유료인가요?</span>
+                            <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden leading-relaxed">
                             misopick.kr에서 제공하는 모든 툴은 별도의 회원가입이나 비용 청구 없이 누구나 평생 무료로 자유롭게 이용하실 수 있습니다.
                         </div>
                     </div>
@@ -138,22 +225,21 @@
     </main>
 
     <!-- 푸터 -->
-     <footer class="bg-white border-t border-slate-200 py-10 mt-auto">
-        
+    <footer class="bg-white border-t border-slate-200 py-10 mt-auto">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
-            
             <div class="flex items-center space-x-3">
                 <div class="w-8 h-8 rounded-xl bg-brand-600 flex items-center justify-center text-white font-bold text-sm">M</div>
-                
-                    <a href="index.html" class="flex items-center space-x-2">
-                <span class="text-lg font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span></a>
+                <a href="index.html" class="flex items-center space-x-2">
+                    <span class="text-lg font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span>
+                </a>
             </div>
-            <p class="text-sm text-slate-500 text-center md:text-left">
-               <strong>이용 안내:</strong> 본 사이트에서 제공하는 모든 툴과 기능은 지속적으로 업데이트되며, 누구나 무료로 자유롭게 이용할 수 있습니다. 
-               <br>서비스 이용 중 불편한 점이나 추가가 필요한 유틸리티 제안은 고객 피드백 채널을 통해 남겨주시기 바랍니다.<br>              
-                
+            <p class="text-sm text-slate-500 text-center md:text-left leading-relaxed">
+                <strong>이용 안내:</strong> 본 사이트에서 제공하는 모든 툴과 기능은 지속적으로 업데이트되며, 누구나 무료로 자유롭게 이용할 수 있습니다. 
+                <br>서비스 이용 중 불편한 점이나 추가가 필요한 유틸리티 제안은 고객 피드백 채널을 통해 남겨주시기 바랍니다.
             </p>
-             <p style="margin-top: 8px;"><a href="../privacy.html" style="color: var(--text-muted); text-decoration: none;">개인정보처리방침보기</a></p>
+            <div>
+                <a href="../privacy.html" class="text-xs text-slate-400 hover:text-slate-600 transition underline">개인정보처리방침</a>
+            </div>
         </div>
     </footer>
 

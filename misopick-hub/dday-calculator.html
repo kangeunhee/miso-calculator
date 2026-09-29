@@ -3,11 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>D-Day 날짜 계산기 - 미소픽 (MisoPick)</title>
+    <title>D-Day 날짜 계산기 - 기념일·시험·목표일 실시간 계산 툴 | 미소픽 (MisoPick)</title>
+    <meta name="description" content="수능, 시험, 결혼기념일, 연애 기념일, 프로젝트 마감일까지 남은 일수(D-Day)와 지나온 날짜(D+)를 한눈에 정확히 계산합니다. 무료 온라인 D-Day 계산기입니다.">
+    <meta name="keywords" content="D-Day 계산기, 디데이 계산기, 날짜 계산기, 기념일 계산, 시험 디데이, 커플 디데이, 미소픽, MisoPick">
+    <meta property="og:title" content="D-Day 날짜 계산기 - 미소픽 (MisoPick)">
+    <meta property="og:description" content="중요한 목표일이나 기념일까지 남은 날짜와 지나온 일수를 실시간으로 정확하게 계산해 보세요.">
+    <meta property="og:type" content="website">
+
+    <!-- 구글 애드센스 승인용 스크립트 -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2888840483385554"
      crossorigin="anonymous"></script>
-    <!-- 구글 애드센스 승인용 스크립트 (주석 처리됨) -->
-    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -52,26 +58,28 @@
         <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-8">
             <div>
                 <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 bg-brand-50 text-brand-700 rounded-md">Tool #23</span>
-                <h1 class="text-2xl font-black text-slate-900 mt-2 mb-1">D-Day 날짜 계산기</h1>
-                <p class="text-sm text-slate-500">기념일, 시험일, 목표일까지 남은 기간이나 지나온 날짜를 정확하게 계산합니다.</p>
+                <h1 class="text-2xl sm:text-3xl font-black text-slate-900 mt-2 mb-1">D-Day 날짜 계산기</h1>
+                <p class="text-sm text-slate-600 leading-relaxed">
+                    기념일, 시험일, 목표일까지 남은 기간이나 지나온 날짜를 정확하게 계산합니다. 목표 날짜를 설정하여 일정을 관리해 보세요.
+                </p>
             </div>
 
             <!-- 입력 설정 영역 -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div class="space-y-2">
-                    <label class="block text-xs font-bold text-slate-700">이벤트/기념일 이름</label>
-                    <input type="text" id="eventTitleInput" class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:bg-white focus:border-brand-500 outline-none transition" value="목표일 (예: 수능, 결혼기념일)">
+                    <label for="eventTitleInput" class="block text-xs font-bold text-slate-700">이벤트/기념일 이름</label>
+                    <input type="text" id="eventTitleInput" class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:bg-white focus:border-brand-500 outline-none transition" placeholder="목표일 (예: 수능, 결혼기념일)">
                 </div>
                 <div class="space-y-2">
-                    <label class="block text-xs font-bold text-slate-700">목표 날짜 선택</label>
+                    <label for="targetDateInput" class="block text-xs font-bold text-slate-700">목표 날짜 선택</label>
                     <input type="date" id="targetDateInput" class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:bg-white focus:border-brand-500 outline-none transition">
                 </div>
             </div>
 
             <!-- 실행 버튼 -->
             <div class="flex items-center justify-between pt-2">
-                <button onclick="calculateDDay()" class="px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm rounded-2xl transition shadow-md">
-                    <i class="fa-solid fa-calculator mr-1"></i> D-Day 계산하기
+                <button onclick="calculateDDay()" class="px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm rounded-2xl transition shadow-md flex items-center gap-2">
+                    <i class="fa-solid fa-calculator"></i> D-Day 계산하기
                 </button>
             </div>
 
@@ -84,24 +92,134 @@
             </div>
         </div>
 
-        <!-- 애드센스 광고 영역 (주석 처리됨) -->
-        <!-- 
-        <div class="w-full bg-slate-100 border border-slate-200 rounded-2xl p-6 text-center text-slate-400 flex flex-col items-center justify-center min-h-[90px]">
-            <span class="text-xs uppercase tracking-widest font-bold text-slate-400 mb-1"><i class="fa-solid fa-rectangle-ad mr-1"></i> Google AdSense 광고 영역</span>
-            <p class="text-xs text-slate-400">반응형 디스플레이 광고 단위 공간입니다.</p>
-        </div>
-        -->
-
-        <!-- 서비스 설명 및 자주 하는 질문 (아코디언) 섹션 -->
-        <section class="bg-white rounded-3xl border border-slate-200 p-8 shadow-sm space-y-8">
+        <!-- D-Day 개념 및 표기법 설명 섹션 -->
+        <section class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
             <div>
-                <h2 class="text-xl font-bold text-slate-900 mb-2">서비스 소개 및 이용 가이드</h2>
+                <h2 class="text-xl font-bold text-slate-900 mb-3 flex items-center">
+                    <i class="fa-solid fa-calendar-check text-brand-600 mr-2.5"></i> D-Day 표기법과 올바른 날짜 계산 기준
+                </h2>
                 <p class="text-sm text-slate-600 leading-relaxed">
-                    <strong>misopick.kr</strong>의 D-Day 날짜 계산기는 중요한 시험, 기념일, 프로젝트 마감일까지 남은 일수뿐만 아니라 지나온 날(만난 지 며칠 등)까지 한눈에 계산해 주는 실용적인 유틸리티입니다.
+                    D-Day(디데이)는 특정 사건이나 목표가 일어나는 예정일을 기준으로 남은 일수 또는 지체된 일수를 나타내는 시점 표기법입니다.
                 </p>
             </div>
 
-            <!-- 자주 하는 질문 (아코디언) -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-sm text-brand-700 flex items-center gap-1.5">
+                        <span class="px-2 py-0.5 bg-brand-100 rounded text-xs">D-Day</span> 당일
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        오늘 날짜와 목표 날짜가 일치하는 상태입니다. (예: 시험 당일, 행사 당일)
+                    </p>
+                </div>
+
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-sm text-brand-700 flex items-center gap-1.5">
+                        <span class="px-2 py-0.5 bg-brand-100 rounded text-xs">D-N</span> 남은 날짜
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        목표 날짜가 미래인 경우입니다. 오늘을 제외하고 목표일까지 남은 순수 자정 간격을 계산합니다.
+                    </p>
+                </div>
+
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-sm text-brand-700 flex items-center gap-1.5">
+                        <span class="px-2 py-0.5 bg-brand-100 rounded text-xs">D+N</span> 지나온 날짜
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        기준일이 과거인 경우입니다. 시작일로부터 현재까지 경과한 총 일수를 뜻합니다. (예: 만난 지 100일)
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- D-Day 주요 활용 예시 섹션 -->
+        <section class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
+            <h2 class="text-xl font-bold text-slate-900 mb-2 flex items-center">
+                <i class="fa-solid fa-list-check text-brand-600 mr-2.5"></i> D-Day 계산기 대표 활용 분야
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-graduation-cap text-brand-600"></i> 학업 및 자격증 시험 관리
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        수능, 공무원 시험, 토익, 국가자격증 시험 등 중요 평가 시험일까지 남은 기간을 파악하고 일자별 학습 플랜을 체계적으로 수립할 수 있습니다.
+                    </p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-heart text-brand-600"></i> 커플 & 가족 기념일 계산
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        연애를 시작한 날부터 100일, 1주년, 결혼기념일, 생일, 아기 백일 등 소중한 순간의 날짜 수를 잊지 않고 챙길 수 있습니다.
+                    </p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-briefcase text-brand-600"></i> 업무 프로젝트 데드라인
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        계약 마감일, 납품 일정, 신제품 출시일 등 사업 및 업무 목표 시점까지 잔여 기간을 산출하여 일정 지연을 예방합니다.
+                    </p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-dumbbell text-brand-600"></i> 건강 관리 & 다이어트 목표
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        식단 조절 30일 도전, 바디프로필 촬영일, 금연/금주 시도 후 경과한 날짜 수를 확인하며 목표 달성 동기를 강화합니다.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 사이트 장점 카드 섹션 -->
+        <section class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
+            <h2 class="text-xl font-bold text-slate-900 mb-2 flex items-center">
+                <i class="fa-solid fa-shield-halved text-brand-600 mr-2.5"></i> 미소픽 D-Day 계산기의 장점
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                <div class="space-y-2">
+                    <div class="w-10 h-10 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <h3 class="font-bold text-sm text-slate-900">실시간 고속 계산</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        날짜를 선택하는 순간 웹 브라우저 자체 자바스크립트로 자정 시각 기준 차이를 즉시 산출해 냅니다.
+                    </p>
+                </div>
+                <div class="space-y-2">
+                    <div class="w-10 h-10 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-user-shield"></i>
+                    </div>
+                    <h3 class="font-bold text-sm text-slate-900">개인정보 보호</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        입력한 일정 제목과 날짜는 사용자의 기기 내부에서만 처리되며 서버나 외부에 절대 기록되지 않습니다.
+                    </p>
+                </div>
+                <div class="space-y-2">
+                    <div class="w-10 h-10 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-mobile-screen-button"></i>
+                    </div>
+                    <h3 class="font-bold text-sm text-slate-900">모바일 모던 UI</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        스마트폰 및 태블릿 모바일 기기 내장 네이티브 날짜 선택기와 완벽히 호환되어 간편하게 조작할 수 있습니다.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 서비스 설명 및 자주 하는 질문 (아코디언) 섹션 -->
+        <section class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-8">
+            <div>
+                <h2 class="text-xl font-bold text-slate-900 mb-2">서비스 소개 및 이용 가이드</h2>
+                <p class="text-sm text-slate-600 leading-relaxed">
+                    <strong>misopick.kr</strong>의 D-Day 날짜 계산기는 중요한 시험, 기념일, 프로젝트 마감일까지 남은 일수뿐만 아니라 지나온 날(만난 지 며칠 등)까지 한눈에 계산해 주는 실용적인 웹 유틸리티입니다.
+                </p>
+            </div>
+
+            <!-- 자주 하는 질문 (FAQ) -->
             <div class="space-y-4">
                 <h3 class="text-lg font-bold text-slate-900 flex items-center">
                     <i class="fa-solid fa-circle-question text-brand-600 mr-2"></i> 자주 하는 질문 (FAQ)
@@ -114,7 +232,7 @@
                             <span>Q1. 디데이 계산 방식은 어떻게 되나요?</span>
                             <i class="fa-solid fa-chevron-down transform rotate-180 transition-transform text-slate-500"></i>
                         </button>
-                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 block">
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 block leading-relaxed">
                             선택하신 목표 날짜와 오늘 날짜의 시차를 일(Day) 단위로 계산합니다. 목표일이 미래인 경우 D-Day(남은 일수)로 표시되며, 과거인 경우 지난 날짜(D+)로 계산되어 표시됩니다.
                         </div>
                     </div>
@@ -125,7 +243,7 @@
                             <span>Q2. 입력한 날짜 정보가 서버에 저장되나요?</span>
                             <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
                         </button>
-                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden leading-relaxed">
                             아니요, 전혀 저장되지 않습니다. 사용자의 브라우저 내부에서 실시간으로 연산되므로 개인정보가 안전하게 보호됩니다.
                         </div>
                     </div>
@@ -136,8 +254,19 @@
                             <span>Q3. 모바일 환경에서도 간편하게 사용할 수 있나요?</span>
                             <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
                         </button>
-                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden leading-relaxed">
                             네, 모바일 기기의 날짜 선택기(Date Picker)와 반응형 레이아웃을 완벽히 지원하여 언제 어디서나 편리하게 조회할 수 있습니다.
+                        </div>
+                    </div>
+
+                    <!-- FAQ 4 (추가 질문) -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q4. 계산할 때 시작일을 1일로 포함(초일산입)하나요?</span>
+                            <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden leading-relaxed">
+                            일반적인 D-Day 계산 공식에 따라 오늘과 목표일 사이의 자정(00:00) 기준 간격을 계산합니다. 만약 만난 첫날을 1일로 셈하는 방식이 필요하다면 결과값에 +1을 더해 계산하시면 됩니다.
                         </div>
                     </div>
 
@@ -153,13 +282,16 @@
             <div class="flex items-center space-x-3">
                 <div class="w-8 h-8 rounded-xl bg-brand-600 flex items-center justify-center text-white font-bold text-sm">M</div>
                 <a href="index.html" class="flex items-center space-x-2">
-                <span class="text-lg font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span></a>
+                    <span class="text-lg font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span>
+                </a>
             </div>
-            <p class="text-sm text-slate-500 text-center md:text-left">
-               <strong>이용 안내:</strong> 본 사이트에서 제공하는 모든 툴과 기능은 지속적으로 업데이트되며, 누구나 무료로 자유롭게 이용할 수 있습니다. 
-               <br>서비스 이용 중 불편한 점이나 추가가 필요한 유틸리티 제안은 고객 피드백 채널을 통해 남겨주시기 바랍니다.<br>   
+            <p class="text-sm text-slate-500 text-center md:text-left leading-relaxed">
+                <strong>이용 안내:</strong> 본 사이트에서 제공하는 모든 툴과 기능은 지속적으로 업데이트되며, 누구나 무료로 자유롭게 이용할 수 있습니다. 
+                <br>서비스 이용 중 불편한 점이나 추가가 필요한 유틸리티 제안은 고객 피드백 채널을 통해 남겨주시기 바랍니다.
             </p>
-             <p style="margin-top: 8px;"><a href="../privacy.html" style="color: var(--text-muted); text-decoration: none;">개인정보처리방침보기</a></p>
+            <div>
+                <a href="../privacy.html" class="text-xs text-slate-400 hover:text-slate-600 transition underline">개인정보처리방침</a>
+            </div>
         </div>
     </footer>
 
@@ -172,14 +304,15 @@
             const yyyy = today.getFullYear();
             const mm = String(today.getMonth() + 1).padStart(2, '0');
             const dd = String(today.getDate()).padStart(2, '0');
-            document.getElementById('targetDateInput').value = `${yyyy}-${mm}-${mm ? mm : '01'}-${dd}`;
+            document.getElementById('targetDateInput').value = `${yyyy}-${mm}-${dd}`;
             
             // 오늘 날짜 기준 기본 계산 실행
             calculateDDay();
         };
 
         function calculateDDay() {
-            const title = document.getElementById('eventTitleInput').value.trim() || '목표일';
+            const titleInput = document.getElementById('eventTitleInput').value.trim();
+            const title = titleInput || '목표일';
             const targetDateStr = document.getElementById('targetDateInput').value;
             const resultBox = document.getElementById('resultBox');
 
@@ -210,7 +343,7 @@
             } else {
                 const passedDays = Math.abs(diffDays);
                 badgeText = `D+${passedDays}`;
-                subText = `[ ${title} ] 이후로 ${passedDays일}이 지났습니다.`.replace('일일', '일');
+                subText = `[ ${title} ] 이후로 ${passedDays}일이 지났습니다.`;
             }
 
             resultBox.innerHTML = `

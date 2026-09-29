@@ -3,11 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>글자수/공백 계산기 - 미소픽 (MisoPick)</title>
+    <title>글자수/공백 계산기 - 실시간 자기소개서 및 블로그 글자수 측정 | 미소픽 (MisoPick)</title>
+    <meta name="description" content="작성 중인 텍스트의 공백 포함/제외 글자수, 단어 수, 줄 수를 실시간으로 정확하게 측정합니다. 자기소개서, 이력서, 과제, 블로그 포스팅 글자수 제한 체크에 최적화된 무료 계산기입니다.">
+    <meta name="keywords" content="글자수 계산기, 공백 포함 글자수, 공백 제외 글자수, 자소서 글자수, 단어수 계산기, 바이트 계산, 미소픽, MisoPick">
+    <meta property="og:title" content="글자수/공백 계산기 - 미소픽 (MisoPick)">
+    <meta property="og:description" content="실시간 글자수, 공백 제외 글자수, 단어수 및 줄수 계산 도구">
+    <meta property="og:type" content="website">
+
+    <!-- 구글 애드센스 승인용 스크립트 -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2888840483385554"
      crossorigin="anonymous"></script>
-    <!-- 구글 애드센스 승인용 스크립트 (주석 처리됨) -->
-    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -52,55 +58,163 @@
         <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
             <div>
                 <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 bg-brand-50 text-brand-700 rounded-md">Tool #2</span>
-                <h1 class="text-2xl font-black text-slate-900 mt-2 mb-1">글자수/공백 계산기</h1>
-                <p class="text-sm text-slate-500">작성 중인 글의 공백 포함/제외 글자수, 단어수, 줄 수를 실시간으로 측정합니다.</p>
+                <h1 class="text-2xl sm:text-3xl font-black text-slate-900 mt-2 mb-2">글자수/공백 계산기</h1>
+                <p class="text-sm text-slate-600 leading-relaxed">
+                    작성 중인 글의 공백 포함/제외 글자수, 단어수, 줄 수를 입력과 동시에 실시간으로 측정합니다. 자기소개서, 논문, 과제 및 SNS 포스팅 규격 체크에 활용하세요.
+                </p>
             </div>
 
             <!-- 통계 요약 카드 -->
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <div class="bg-slate-50 border border-slate-200/80 rounded-2xl p-4 text-center">
-                    <div class="text-xs text-slate-400 font-bold mb-1">공백 포함 글자수</div>
-                    <div id="charWithSpace" class="text-xl font-black text-slate-900">0</div>
+                <div class="bg-slate-50 border border-slate-200/80 rounded-2xl p-4 text-center space-y-1">
+                    <div class="text-xs text-slate-500 font-bold">공백 포함 글자수</div>
+                    <div id="charWithSpace" class="text-2xl font-black text-slate-900">0</div>
                 </div>
-                <div class="bg-slate-50 border border-slate-200/80 rounded-2xl p-4 text-center">
-                    <div class="text-xs text-slate-400 font-bold mb-1">공백 제외 글자수</div>
-                    <div id="charWithoutSpace" class="text-xl font-black text-brand-600">0</div>
+                <div class="bg-slate-50 border border-slate-200/80 rounded-2xl p-4 text-center space-y-1">
+                    <div class="text-xs text-slate-500 font-bold">공백 제외 글자수</div>
+                    <div id="charWithoutSpace" class="text-2xl font-black text-brand-600">0</div>
                 </div>
-                <div class="bg-slate-50 border border-slate-200/80 rounded-2xl p-4 text-center">
-                    <div class="text-xs text-slate-400 font-bold mb-1">단어 수</div>
-                    <div id="wordCount" class="text-xl font-black text-slate-900">0</div>
+                <div class="bg-slate-50 border border-slate-200/80 rounded-2xl p-4 text-center space-y-1">
+                    <div class="text-xs text-slate-500 font-bold">단어 수</div>
+                    <div id="wordCount" class="text-2xl font-black text-slate-900">0</div>
                 </div>
-                <div class="bg-slate-50 border border-slate-200/80 rounded-2xl p-4 text-center">
-                    <div class="text-xs text-slate-400 font-bold mb-1">줄 수</div>
-                    <div id="lineCount" class="text-xl font-black text-slate-900">0</div>
+                <div class="bg-slate-50 border border-slate-200/80 rounded-2xl p-4 text-center space-y-1">
+                    <div class="text-xs text-slate-500 font-bold">줄 수</div>
+                    <div id="lineCount" class="text-2xl font-black text-slate-900">0</div>
                 </div>
             </div>
 
             <!-- 입력 텍스트 영역 -->
             <div class="space-y-3">
-                <textarea id="textInput" rows="6" placeholder="여기에 텍스트를 입력하거나 붙여넣으세요..." class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:bg-white focus:border-brand-500 outline-none transition"></textarea>
+                <label for="textInput" class="block text-xs font-bold text-slate-700">텍스트 입력 및 편집</label>
+                <textarea id="textInput" rows="8" placeholder="여기에 텍스트를 입력하거나 붙여넣으세요... 실시간으로 글자 수가 카운트됩니다." class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 outline-none transition leading-relaxed"></textarea>
                 <div class="flex justify-end">
-                    <button id="clearBtn" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs rounded-xl transition">
-                        내용 지우기
+                    <button id="clearBtn" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-trash-can"></i> 내용 지우기
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- 애드센스 광고 영역 (주석 처리됨) -->
-        <!-- 
-        <div class="w-full bg-slate-100 border border-slate-200 rounded-2xl p-6 text-center text-slate-400 flex flex-col items-center justify-center min-h-[90px]">
-            <span class="text-xs uppercase tracking-widest font-bold text-slate-400 mb-1"><i class="fa-solid fa-rectangle-ad mr-1"></i> Google AdSense 광고 영역</span>
-            <p class="text-xs text-slate-400">반응형 디스플레이 광고 단위 공간입니다.</p>
-        </div>
-        -->
+        <!-- 글자수 측정 항목별 상세 설명 섹션 -->
+        <section class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
+            <div>
+                <h2 class="text-xl font-bold text-slate-900 mb-3 flex items-center">
+                    <i class="fa-solid fa-chart-simple text-brand-600 mr-2.5"></i> 글자수 측정 항목 및 카운트 기준
+                </h2>
+                <p class="text-sm text-slate-600 leading-relaxed">
+                    글자수를 측정할 때는 플랫폼이나 제출 기관에 따라 공백 포함 여부나 단어 단위 카운트 방식이 다를 수 있습니다. 각 항목의 세부 계산 방식은 다음과 같습니다.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-brand-500"></span> 공백 포함 글자수
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        문자, 숫자, 기호뿐만 아니라 띄어쓰기(스페이스), 줄바꿈(엔터), 탭 문자를 모두 포함하여 계산합니다. 대부분의 대기업 및 공공기관 채용 자소서 시스템의 기본 규격입니다.
+                    </p>
+                </div>
+
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-brand-500"></span> 공백 제외 글자수
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        모든 띄어쓰기와 줄바꿈을 제외하고 순수하게 기입된 한글, 영문, 숫자, 문장부호의 개수만 측정합니다. 원고료 산정이나 가독성 중심의 글 작성 시 주요 기준이 됩니다.
+                    </p>
+                </div>
+
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-brand-500"></span> 단어 수 (Word Count)
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        공백 문자를 기준으로 구분된 어절 및 단어의 총개수를 카운트합니다. 영문 에세이, 해외 유학 서류(SOP, CV), 학술 논문 제출 시 주로 요구되는 지표입니다.
+                    </p>
+                </div>
+
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-brand-500"></span> 줄 수 (Line Count)
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        엔터키(줄바꿈)를 기준으로 생성된 문단 및 단락의 행 수를 계산합니다. 텍스트 분량 분포를 한눈에 확인하고 레이아웃을 조절할 때 유용합니다.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 자소서 및 주요 플랫폼 글자수 가이드 -->
+        <section class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
+            <h2 class="text-xl font-bold text-slate-900 mb-2 flex items-center">
+                <i class="fa-solid fa-file-signature text-brand-600 mr-2.5"></i> 주요 용도별 글자수 작성 팁
+            </h2>
+            <div class="space-y-4 text-sm text-slate-600 leading-relaxed">
+                <div class="border-l-4 border-brand-500 pl-4 py-1">
+                    <h3 class="font-bold text-slate-900">1. 자기소개서 및 이력서 작성</h3>
+                    <p class="text-xs text-slate-600 mt-1">
+                        대부분의 지원 시스템은 500자, 1,000자 등의 제한을 둡니다. 작성 시 권장 분량의 **90%~95%** 수준을 채우는 것이 성의 있는 작성으로 평가받기 좋습니다. 보통 **공백 포함 글자수** 기준인 경우가 많으므로 제출 전 시스템 요구 조건을 반드시 확인하세요.
+                    </p>
+                </div>
+                <div class="border-l-4 border-brand-500 pl-4 py-1">
+                    <h3 class="font-bold text-slate-900">2. 블로그 포스팅 및 검색 엔진 최적화(SEO)</h3>
+                    <p class="text-xs text-slate-600 mt-1">
+                        네이버 블로그나 티스토리의 경우, 검색엔진이 전문성 있는 문서로 인식하기 위해 최소 **1,000자~1,500자(공백 제외)** 이상의 양질의 본문 작성을 권장합니다.
+                    </p>
+                </div>
+                <div class="border-l-4 border-brand-500 pl-4 py-1">
+                    <h3 class="font-bold text-slate-900">3. 소셜 미디어(SNS) 게시글 규격</h3>
+                    <p class="text-xs text-slate-600 mt-1">
+                        트위터(X)는 기본 280자, 인스타그램 캡션은 최대 2,200자까지 지원됩니다. 각 매체별 글자수 한도를 고려하여 메시지를 간결하게 전달하는 것이 중요합니다.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 서비스 장점 섹션 -->
+        <section class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
+            <h2 class="text-xl font-bold text-slate-900 mb-2 flex items-center">
+                <i class="fa-solid fa-shield-halved text-brand-600 mr-2.5"></i> 미소픽 글자수 계산기의 주요 특징
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                <div class="space-y-2">
+                    <div class="w-10 h-10 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <h3 class="font-bold text-sm text-slate-900">실시간 즉시 카운트</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        텍스트를 타이핑하거나 붙여넣는 즉시 실시간으로 연산되어 한 번의 클릭도 필요 없이 정밀한 수치를 보여줍니다.
+                    </p>
+                </div>
+                <div class="space-y-2">
+                    <div class="w-10 h-10 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-lock"></i>
+                    </div>
+                    <h3 class="font-bold text-sm text-slate-900">안전한 데이터 보안</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        모든 입력값은 브라우저 자바스크립트로 내부 연산되며 서버로 저장되거나 전송되지 않아 자소서 및 기밀문서도 안전합니다.
+                    </p>
+                </div>
+                <div class="space-y-2">
+                    <div class="w-10 h-10 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-desktop"></i>
+                    </div>
+                    <h3 class="font-bold text-sm text-slate-900">모든 기기 완벽 지원</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        데스크톱, 태블릿, 모바일 스마트폰 화면 크기에 자동 맞춤되는 반응형 UI로 어디서나 원활하게 사용 가능합니다.
+                    </p>
+                </div>
+            </div>
+        </section>
 
         <!-- 서비스 설명 및 자주 하는 질문 (아코디언) 섹션 -->
-        <section class="bg-white rounded-3xl border border-slate-200 p-8 shadow-sm space-y-8">
+        <section class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-8">
             <div>
                 <h2 class="text-xl font-bold text-slate-900 mb-2">서비스 소개 및 이용 가이드</h2>
                 <p class="text-sm text-slate-600 leading-relaxed">
-                    <strong>misopick.kr</strong>의 글자수 계산기는 이력서, 자기소개서, 블로그 포스팅, 과제 작성 시 글자 제한을 정확하게 맞출 수 있도록 도와주는 실시간 유틸리티 도구입니다.
+                    <strong>misopick.kr</strong>의 글자수 계산기는 이력서, 자기소개서, 블로그 포스팅, 과제 작성 시 글자 제한을 정확하게 맞출 수 있도록 도와주는 실시간 유틸리티 도구입니다. 한글, 영문, 특수문자, 숫자의 수치를 정밀하게 체크할 수 있습니다.
                 </p>
             </div>
 
@@ -117,8 +231,8 @@
                             <span>Q1. 공백 포함과 제외는 어떤 차이가 있나요?</span>
                             <i class="fa-solid fa-chevron-down transform rotate-180 transition-transform text-slate-500"></i>
                         </button>
-                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 block">
-                            공백 포함은 띄어쓰기를 글자 수에 포함하며, 공백 제외는 순수 문자의 개수만 카운트합니다. 대기업 자소서나 공공기관 이력서 제출 시 요구하는 기준에 맞춰 확인하실 수 있습니다.
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 block leading-relaxed">
+                            공백 포함은 띄어쓰기, 줄바꿈, 탭을 포함하여 글자 수를 카운트하며, 공백 제외는 순수 문자의 개수만 카운트합니다. 대기업 자소서나 공공기관 이력서 제출 시 요구하는 기준에 맞춰 확인하실 수 있습니다.
                         </div>
                     </div>
 
@@ -128,8 +242,8 @@
                             <span>Q2. 작성 중인 내용이 외부 서버에 저장되나요?</span>
                             <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
                         </button>
-                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
-                            아니요, 전혀 저장되지 않습니다. 입력하신 모든 텍스트는 브라우저 내부에서만 실시간 계산되므로 개인정보 및 비밀 유지가 철저하게 보장됩니다.
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden leading-relaxed">
+                            아니요, 전혀 저장되지 않습니다. 입력하신 모든 텍스트는 브라우저 내부 메모리에서만 실시간 계산되므로 개인정보 및 비밀 유지가 철저하게 보장됩니다.
                         </div>
                     </div>
 
@@ -139,8 +253,19 @@
                             <span>Q3. 모바일 환경에서도 원활하게 쓸 수 있나요?</span>
                             <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
                         </button>
-                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden leading-relaxed">
                             네, 반응형 디자인으로 제작되어 스마트폰이나 태블릿에서도 간편하게 글자 수를 실시간으로 체크하실 수 있습니다.
+                        </div>
+                    </div>
+
+                    <!-- FAQ 4 (추가된 질문) -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q4. 한글과 영문의 글자수 계산 방식이 다른가요?</span>
+                            <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden leading-relaxed">
+                            본 계산기의 글자수(Character Count) 기준에서는 한글, 영문, 숫자, 기호 모두 '1자'로 동일하게 카운트됩니다. 바이트(Byte) 단위 계산 방식과는 차이가 있으니 제출처의 요구사항을 잘 파악하시기 바랍니다.
                         </div>
                     </div>
 
@@ -159,11 +284,13 @@
                     <span class="text-lg font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span>
                 </a>
             </div>
-            <p class="text-sm text-slate-500 text-center md:text-left">
+            <p class="text-sm text-slate-500 text-center md:text-left leading-relaxed">
                 <strong>이용 안내:</strong> 본 사이트에서 제공하는 모든 툴과 기능은 지속적으로 업데이트되며, 누구나 무료로 자유롭게 이용할 수 있습니다. 
                 <br>서비스 이용 중 불편한 점이나 추가가 필요한 유틸리티 제안은 고객 피드백 채널을 통해 남겨주시기 바랍니다.
             </p>
-            <p style="margin-top: 8px;"><a href="../privacy.html" style="color: var(--text-muted); text-decoration: none;">개인정보처리방침보기</a></p>
+            <div>
+                <a href="../privacy.html" class="text-xs text-slate-400 hover:text-slate-600 transition underline">개인정보처리방침</a>
+            </div>
         </div>
     </footer>
 
@@ -182,18 +309,18 @@
                 const text = textInput.value;
 
                 // 공백 포함 글자수
-                charWithSpace.textContent = text.length;
+                charWithSpace.textContent = text.length.toLocaleString();
 
                 // 공백 제외 글자수 (모든 공백 문자 제거)
-                charWithoutSpace.textContent = text.replace(/\s/g, '').length;
+                charWithoutSpace.textContent = text.replace(/\s/g, '').length.toLocaleString();
 
                 // 단어 수 (공백 기준으로 분리하되 빈 문자열 제외)
                 const words = text.trim() === '' ? [] : text.trim().split(/\s+/);
-                wordCount.textContent = words.length;
+                wordCount.textContent = words.length.toLocaleString();
 
                 // 줄 수 (엔터 기준)
                 const lines = text === '' ? 0 : text.split('\n').length;
-                lineCount.textContent = lines;
+                lineCount.textContent = lines.toLocaleString();
             });
 
             clearBtn.addEventListener('click', () => {

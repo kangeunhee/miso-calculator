@@ -3,11 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>마크다운 미리보기 뷰어 - 미소픽 (MisoPick)</title>
+    <title>마크다운 미리보기 뷰어 - 실시간 Markdown HTML 변환기 | 미소픽 (MisoPick)</title>
+    <meta name="description" content="마크다운(Markdown) 문법으로 작성한 문서를 실시간 웹 렌더링 화면으로 확인하고 HTML 코드로 즉시 변환하는 웹 툴입니다. README, 개발 문서, 블로그 포스팅 작성을 효율화하세요.">
+    <meta name="keywords" content="마크다운 뷰어, 마크다운 미리보기, Markdown Viewer, 마크다운 HTML 변환, README 작성, 깃허브 마크다운, 미소픽, MisoPick">
+    <meta property="og:title" content="마크다운 미리보기 뷰어 - 미소픽 (MisoPick)">
+    <meta property="og:description" content="실시간 마크다운 HTML 렌더링 및 변환 도구입니다.">
+    <meta property="og:type" content="website">
+
+    <!-- 구글 애드센스 스크립트 -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2888840483385554"
      crossorigin="anonymous"></script>
-    <!-- 구글 애드센스 승인용 스크립트 (주석 처리됨) -->
-    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- 마크다운 렌더링을 위한 marked 라이브러리 추가 -->
@@ -54,42 +60,118 @@
         <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
             <div>
                 <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 bg-brand-50 text-brand-700 rounded-md">Tool #10</span>
-                <h1 class="text-2xl font-black text-slate-900 mt-2 mb-1">마크다운 미리보기 뷰어</h1>
-                <p class="text-sm text-slate-500">마크다운 문법으로 작성한 텍스트를 실시간 HTML 렌더링 화면으로 확인합니다.</p>
+                <h1 class="text-2xl sm:text-3xl font-black text-slate-900 mt-2 mb-1">마크다운 미리보기 뷰어</h1>
+                <p class="text-sm text-slate-600 leading-relaxed">마크다운(Markdown) 문법으로 작성한 텍스트를 입력하면 실시간으로 변환된 HTML 미리보기 화면을 확인하고 소스코드를 추출할 수 있습니다.</p>
             </div>
 
             <!-- 입력 및 미리보기 분할 레이아웃 -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- 마크다운 입력 영역 -->
                 <div class="space-y-2">
-                    <label class="block text-xs font-bold text-slate-700">마크다운 입력</label>
-                    <textarea id="markdownInput" rows="12" placeholder="# 제목을 입력하세요&#10;&#10;- 항목 1&#10;- 항목 2&#10;&#10;**굵은 텍스트**" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:bg-white focus:border-brand-500 outline-none transition font-mono"></textarea>
+                    <label for="markdownInput" class="block text-xs font-bold text-slate-700">마크다운 입력</label>
+                    <textarea id="markdownInput" rows="12" placeholder="# 제목을 입력하세요&#10;&#10;**굵은 텍스트**와 *기울임 텍스트*입니다.&#10;&#10;- 목록 항목 1&#10;- 목록 항목 2&#10;&#10;> 인용구 내용입니다." class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:bg-white focus:border-brand-500 outline-none transition font-mono leading-relaxed"></textarea>
                 </div>
                 <!-- HTML 렌더링 결과 미리보기 영역 -->
                 <div class="space-y-2">
                     <div class="flex items-center justify-between">
                         <label class="block text-xs font-bold text-slate-700">실시간 미리보기</label>
-                        <button id="copyHtmlBtn" class="text-xs text-brand-600 font-bold hover:underline">
-                            <i class="fa-regular fa-copy mr-1"></i> HTML 소스 복사
+                        <button id="copyHtmlBtn" class="text-xs text-brand-600 font-bold hover:underline flex items-center gap-1">
+                            <i class="fa-regular fa-copy"></i> HTML 소스 복사
                         </button>
                     </div>
-                    <div id="previewOutput" class="w-full h-[285px] p-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm overflow-y-auto prose max-w-none text-slate-700">
+                    <div id="previewOutput" class="w-full h-[285px] p-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm overflow-y-auto prose max-w-none text-slate-700 leading-relaxed">
                         렌더링된 결과가 여기에 표시됩니다.
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- 애드센스 광고 영역 (주석 처리됨) -->
-        <!-- 
-        <div class="w-full bg-slate-100 border border-slate-200 rounded-2xl p-6 text-center text-slate-400 flex flex-col items-center justify-center min-h-[90px]">
-            <span class="text-xs uppercase tracking-widest font-bold text-slate-400 mb-1"><i class="fa-solid fa-rectangle-ad mr-1"></i> Google AdSense 광고 영역</span>
-            <p class="text-xs text-slate-400">반응형 디스플레이 광고 단위 공간입니다.</p>
-        </div>
-        -->
+        <!-- 마크다운 문법 종합 가이드 섹션 -->
+        <section class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
+            <div>
+                <h2 class="text-xl font-bold text-slate-900 mb-3 flex items-center">
+                    <i class="fa-solid fa-code text-brand-600 mr-2.5"></i> 필수 마크다운(Markdown) 문법 가이드
+                </h2>
+                <p class="text-sm text-slate-600 leading-relaxed">
+                    마크다운은 텍스트 기호만을 이용하여 문서의 구조와 스타일을 간단히 지정하는 경량 마크업 언어입니다. 자주 쓰이는 핵심 문법 표현식은 다음과 같습니다.
+                </p>
+            </div>
 
-        <!-- 서비스 설명 및 자주 하는 질문 (아코디언) 섹션 -->
-        <section class="bg-white rounded-3xl border border-slate-200 p-8 shadow-sm space-y-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-slate-900 text-sm flex items-center gap-1.5">
+                        <i class="fa-solid fa-heading text-brand-600"></i> 제목 (Headers)
+                    </div>
+                    <p class="text-slate-600 font-mono"># H1, ## H2, ### H3</p>
+                    <p class="text-slate-500"><code>#</code>의 개수로 <code>&lt;h1&gt;</code>부터 <code>&lt;h6&gt;</code>까지 대소제목을 구분합니다.</p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-slate-900 text-sm flex items-center gap-1.5">
+                        <i class="fa-solid fa-bold text-brand-600"></i> 텍스트 강조 (Emphasis)
+                    </div>
+                    <p class="text-slate-600 font-mono">**굵게**, *기울임*, ~~취소선~~</p>
+                    <p class="text-slate-500">특정 단어나 문장을 굵거나 이탤릭체로 강조할 때 감싸줍니다.</p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-slate-900 text-sm flex items-center gap-1.5">
+                        <i class="fa-solid fa-list-ul text-brand-600"></i> 목록 (Lists)
+                    </div>
+                    <p class="text-slate-600 font-mono">- 순서없는 목록, 1. 순서있는 목록</p>
+                    <p class="text-slate-500">하이픈(<code>-</code>) 또는 숫자를 사용하여 항목 리스트를 생성합니다.</p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-slate-900 text-sm flex items-center gap-1.5">
+                        <i class="fa-solid fa-quote-left text-brand-600"></i> 인용 및 코드 (Quote & Code)
+                    </div>
+                    <p class="text-slate-600 font-mono">> 인용문, `인라인 코드`</p>
+                    <p class="text-slate-500"><code>&gt;</code> 키워드로 인용구를 표현하며, 백틱(<code>`</code>)으로 코드를 강조합니다.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 마크다운 실무 활용 분야 섹션 -->
+        <section class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
+            <h2 class="text-xl font-bold text-slate-900 mb-2 flex items-center">
+                <i class="fa-solid fa-file-lines text-brand-600 mr-2.5"></i> 마크다운 미리보기의 주요 활용 사례
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                        <i class="fa-brands fa-github text-brand-600"></i> GitHub README 및 오픈소스 문서 작성
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        개발 프로젝트 리포지토리의 README.md 파일이 정상적으로 가독성 있게 표현되는지 미리 검토할 수 있습니다.
+                    </p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-blog text-brand-600"></i> 기술 블로그 및 벨로그(Velog) 포스팅
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        마크다운을 지원하는 기술 블로그 플랫폼에 글을 등록하기 전, 문단 간격과 자간 및 코드가 잘 나오는지 확인합니다.
+                    </p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-headset text-brand-600"></i> 노션(Notion) 및 노션 가이드 정리
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        사내 위키, 노션 문서, 슬랙(Slack) 등의 메시지 작성 시 서식 표현을 실시간으로 확인하고 교정할 수 있습니다.
+                    </p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-html5 text-brand-600"></i> 빠른 HTML 변환기 활용
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        마크다운 형태의 기획서나 원고를 깔끔한 웹 표준 HTML 소스 코드 태그로 즉시 변환하여 복사할 수 있습니다.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 서비스 소개 및 자주 하는 질문 (아코디언) 섹션 -->
+        <section class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-8">
             <div>
                 <h2 class="text-xl font-bold text-slate-900 mb-2">서비스 소개 및 이용 가이드</h2>
                 <p class="text-sm text-slate-600 leading-relaxed">
@@ -110,7 +192,7 @@
                             <span>Q1. 어떤 마크다운 문법들을 지원하나요?</span>
                             <i class="fa-solid fa-chevron-down transform rotate-180 transition-transform text-slate-500"></i>
                         </button>
-                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 block">
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 block leading-relaxed">
                             제목(H1~H6), 강조(기울임, 굵게), 목록(순서형, 비순서형), 링크, 인용구 등 표준 마크다운 문법들을 실시간으로 완벽하게 지원합니다.
                         </div>
                     </div>
@@ -118,21 +200,32 @@
                     <!-- FAQ 2 -->
                     <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
                         <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
-                            <span>Q2. 작성 중인 문서나 데이터가 서버에 저장되나요?</span>
+                            <span>Q2. 렌더링된 결과를 HTML 코드로 바로 복사할 수 있나요?</span>
                             <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
                         </button>
-                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
-                            아니요, 전혀 저장되지 않습니다. 사용자의 브라우저 내부에서만 자바스크립트로 연산 처리되므로 개인정보 및 작업 중인 내용이 안전하게 보호됩니다.
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden leading-relaxed">
+                            네, 오른쪽 상단의 'HTML 소스 복사' 버튼을 누르면 마크다운에서 변환된 태그 형태의 웹 소스코드가 클립보드에 바로 저장됩니다.
                         </div>
                     </div>
 
                     <!-- FAQ 3 -->
                     <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
                         <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
-                            <span>Q3. 모바일 환경에서도 원활하게 이용할 수 있나요?</span>
+                            <span>Q3. 작성 중인 문서나 데이터가 서버에 저장되나요?</span>
                             <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
                         </button>
-                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden leading-relaxed">
+                            아니요, 전혀 저장되지 않습니다. 사용자의 브라우저 내부에서만 자바스크립트로 연산 처리되므로 개인정보 및 작업 중인 내용이 안전하게 보호됩니다.
+                        </div>
+                    </div>
+
+                    <!-- FAQ 4 -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q4. 모바일 환경에서도 원활하게 이용할 수 있나요?</span>
+                            <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden leading-relaxed">
                             네, 모바일과 태블릿 화면에서도 반응형으로 최적화되어 있어 스마트폰 브라우저에서 언제든 간편하게 이용하실 수 있습니다.
                         </div>
                     </div>
@@ -152,11 +245,13 @@
                     <span class="text-lg font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span>
                 </a>
             </div>
-            <p class="text-sm text-slate-500 text-center md:text-left">
-               <strong>이용 안내:</strong> 본 사이트에서 제공하는 모든 툴과 기능은 지속적으로 업데이트되며, 누구나 무료로 자유롭게 이용할 수 있습니다. 
-               <br>서비스 이용 중 불편한 점이나 추가가 필요한 유틸리티 제안은 고객 피드백 채널을 통해 남겨주시기 바랍니다.
+            <p class="text-sm text-slate-500 text-center md:text-left leading-relaxed">
+                <strong>이용 안내:</strong> 본 사이트에서 제공하는 모든 툴과 기능은 지속적으로 업데이트되며, 누구나 무료로 자유롭게 이용할 수 있습니다. 
+                <br>서비스 이용 중 불편한 점이나 추가가 필요한 유틸리티 제안은 고객 피드백 채널을 통해 남겨주시기 바랍니다.
             </p>
-             <p style="margin-top: 8px;"><a href="../privacy.html" style="color: var(--text-muted); text-decoration: none;">개인정보처리방침보기</a></p>
+            <div>
+                <a href="../privacy.html" class="text-xs text-slate-400 hover:text-slate-600 transition underline">개인정보처리방침</a>
+            </div>
         </div>
     </footer>
 

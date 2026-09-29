@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>세계 시간 비교기 - 미소픽 (MisoPick)</title>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2888840483385554"
-     crossorigin="anonymous"></script>
-    <!-- 구글 애드센스 승인용 스크립트 (주석 처리됨) -->
-    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+    <title>세계 시간 비교기 - 주요 국가 실시간 시차 계산 | 미소픽 (MisoPick)</title>
+    <meta name="description" content="미국, 영국, 일본 등 전 세계 주요 국가의 실시간 현지 시각과 한국(KST) 기준 시차를 한눈에 비교할 수 있는 무료 웹 도구입니다. 해외 출장 및 글로벌 비즈니스 미팅에 활용하세요.">
+    <meta name="keywords" content="세계 시간, 타임존, 시차 계산, 글로벌 시간, 미국 시간, 런던 시간, 현지 시각, MisoPick, 미소픽">
+    <meta property="og:title" content="세계 시간 비교기 - 미소픽 (MisoPick)">
+    <meta property="og:description" content="전 세계 주요 국가의 실시간 시간과 시차를 간편하게 확인하고 비교해보세요.">
+    <meta property="og:type" content="website">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -27,7 +29,6 @@
     <!-- 상단 네비게이션바 -->
     <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <!-- 왼쪽 상단: misopick.kr 로고 -->
             <a href="https://misopick.kr" class="flex items-center space-x-2">
                 <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-emerald-400 flex items-center justify-center text-white font-bold text-lg shadow-md shadow-brand-500/20">
                     M
@@ -35,7 +36,6 @@
                 <span class="text-xl font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span>
             </a>
 
-            <!-- 오른쪽 상단: 전체보기 버튼 -->
             <div>
                 <a href="https://misopick.kr/index.html" class="inline-flex items-center space-x-1.5 px-4 py-2 rounded-full bg-slate-100 text-slate-700 hover:bg-brand-50 hover:text-brand-700 text-sm font-semibold transition">
                     <i class="fa-solid fa-grid-2"></i>
@@ -46,18 +46,17 @@
     </header>
 
     <!-- 메인 컨텐츠 영역 -->
-    <main class="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+    <main class="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
         
         <!-- 툴 실행 영역 (세계 시간 비교기) -->
         <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-8">
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
                     <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 bg-brand-50 text-brand-700 rounded-md">Tool #31</span>
-                    <h1 class="text-2xl font-black text-slate-900 mt-2 mb-1">세계 시간 비교기</h1>
-                    <p class="text-sm text-slate-500">주요 국가별 실시간 시각과 한국 기준 시차를 비교하고 아날로그 애니메이션을 확인합니다.</p>
+                    <h1 class="text-2xl sm:text-3xl font-black text-slate-900 mt-2 mb-1">세계 시간 비교기</h1>
+                    <p class="text-sm text-slate-600 leading-relaxed">주요 국가별 실시간 시각과 한국 기준 시차를 직관적으로 비교 분석합니다.</p>
                 </div>
                 
-                <!-- 움직이는 메인 아날로그 시계 애니메이션 아이콘 -->
                 <div class="flex items-center space-x-3 px-4 py-2.5 bg-brand-50 border border-brand-100 rounded-2xl text-brand-700">
                     <div class="relative w-8 h-8 rounded-full border-2 border-brand-600 flex items-center justify-center">
                         <div id="animSecondHand" class="absolute w-0.5 h-3 bg-red-500 origin-bottom bottom-1/2 left-[calc(50%-1px)] transition-transform duration-75"></div>
@@ -68,69 +67,111 @@
                 </div>
             </div>
 
-            <!-- 국가별 시간 카드 그리드 -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="worldClockGrid">
                 <!-- JS로 동적 생성 -->
             </div>
         </div>
 
-        <!-- 애드센스 광고 영역 (주석 처리됨) -->
-        <!-- 
-        <div class="w-full bg-slate-100 border border-slate-200 rounded-2xl p-6 text-center text-slate-400 flex flex-col items-center justify-center min-h-[90px]">
-            <span class="text-xs uppercase tracking-widest font-bold text-slate-400 mb-1"><i class="fa-solid fa-rectangle-ad mr-1"></i> Google AdSense 광고 영역</span>
-            <p class="text-xs text-slate-400">반응형 디스플레이 광고 단위 공간입니다.</p>
-        </div>
-        -->
+        <!-- SEO 및 유용한 정보 가이드 섹션 1 -->
+        <section class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
+            <div>
+                <h2 class="text-xl font-bold text-slate-900 mb-2 flex items-center">
+                    <i class="fa-solid fa-earth-americas text-brand-600 mr-2.5"></i> 글로벌 비즈니스와 여행을 위한 필수 도구
+                </h2>
+                <p class="text-sm text-slate-600 leading-relaxed">
+                    현대 사회에서 국경을 초월한 소통은 일상이 되었습니다. 성공적인 글로벌 비즈니스 미팅을 준비하거나, 해외에 거주하는 가족 및 지인과 연락을 취할 때 상대방 국가의 현재 시각을 파악하는 것은 매우 중요한 예절이자 업무 효율의 핵심입니다. 
+                    <strong>misopick.kr</strong>의 세계 시간 비교기는 복잡한 타임존 계산 없이 직관적으로 주요 도시의 시각과 시차 정보를 제공합니다.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-slate-900 text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-handshake text-brand-600"></i> 원활한 업무 조율
+                    </div>
+                    <p class="text-slate-600 leading-relaxed">
+                        화상 회의나 중요한 이메일 발송 시 상대방의 업무 시간을 고려하여 일정을 조율함으로써 실수를 방지하고 전문성을 높일 수 있습니다.
+                    </p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-slate-900 text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-plane-departure text-brand-600"></i> 해외 여행 계획
+                    </div>
+                    <p class="text-slate-600 leading-relaxed">
+                        비행기 탑승 시간, 현지 도착 시간 및 체크인 스케줄을 시차 오류 없이 완벽하게 계산하여 피로도 없는 여행을 준비할 수 있습니다.
+                    </p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-slate-900 text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-clock-rotate-left text-brand-600"></i> 생체 리듬 관리
+                    </div>
+                    <p class="text-slate-600 leading-relaxed">
+                        목적지와의 시차를 미리 파악함으로써 시차 증후군(Jet lag)을 최소화하고 수면 패턴을 조절하는 데 도움을 줍니다.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEO 및 전문 정보 섹션 2 -->
+        <section class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
+            <div>
+                <h2 class="text-xl font-bold text-slate-900 mb-2 flex items-center">
+                    <i class="fa-solid fa-book-open text-brand-600 mr-2.5"></i> 표준시(UTC)와 타임존(Timezone)의 이해
+                </h2>
+                <div class="space-y-4 text-sm text-slate-600 leading-relaxed">
+                    <p>
+                        지구는 24시간 동안 자전하기 때문에 지역별로 태양이 뜨고 지는 시간이 다릅니다. 이를 체계적으로 관리하기 위해 세계는 경도를 기준으로 24개의 주요 타임존으로 나뉘어져 있습니다. 
+                    </p>
+                    <ul class="list-disc pl-5 space-y-2">
+                        <li><strong>UTC (협정 세계시):</strong> 예전의 그리니치 표준시(GMT)를 대체하는 현대의 국제 표준 시각입니다. 원자 시계를 기반으로 하여 매우 높은 정확도를 자랑하며, 전 세계 시간대의 기준점이 됩니다.</li>
+                        <li><strong>KST (한국 표준시):</strong> 대한민국의 표준시로, UTC보다 9시간 빠른 <strong>UTC+9</strong>를 사용합니다. 일본(JST)과 동일한 시간대를 공유합니다.</li>
+                        <li><strong>서머타임 (DST):</strong> 여름철에 일광을 효율적으로 활용하기 위해 시간을 1시간 앞당기는 제도로, 미국과 유럽 등 많은 국가에서 시행 중입니다. 이로 인해 계절에 따라 한국과의 시차가 달라질 수 있습니다.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
 
         <!-- 서비스 설명 및 자주 하는 질문 (아코디언) 섹션 -->
         <section class="bg-white rounded-3xl border border-slate-200 p-8 shadow-sm space-y-8">
             <div>
-                <h2 class="text-xl font-bold text-slate-900 mb-2">서비스 소개 및 이용 가이드</h2>
+                <h2 class="text-xl font-bold text-slate-900 mb-2">자주 하는 질문 (FAQ)</h2>
                 <p class="text-sm text-slate-600 leading-relaxed">
-                    <strong>misopick.kr</strong>의 세계 시간 비교기는 해외 출장, 글로벌 비즈니스 미팅, 해외여행, 시차 계산이 필요할 때 주요 국가의 현지 시각과 한국(KST)과의 시차를 실시간으로 간편하게 확인할 수 있는 유틸리티입니다.
+                    본 세계 시간 비교기 서비스 이용 시 사용자들이 가장 많이 궁금해하는 질문과 답변을 정리했습니다.
                 </p>
             </div>
 
-            <!-- 자주 하는 질문 (아코디언) -->
-            <div class="space-y-4">
-                <h3 class="text-lg font-bold text-slate-900 flex items-center">
-                    <i class="fa-solid fa-circle-question text-brand-600 mr-2"></i> 자주 하는 질문 (FAQ)
-                </h3>
-                <div class="space-y-3" id="faqContainer">
-                    
-                    <!-- FAQ 1 (처음에 열려 있는 아코디언) -->
-                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
-                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
-                            <span>Q1. 실시간 시각은 어떻게 계산되나요?</span>
-                            <i class="fa-solid fa-chevron-down transform rotate-180 transition-transform text-slate-500"></i>
-                        </button>
-                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 block">
-                            사용자의 브라우저 시스템 시각을 표준으로 삼아 각 국가별 표준 타임존(Timezone) 오프셋을 적용하여 초 단위까지 실시간으로 정확하게 연산합니다.
-                        </div>
+            <div class="space-y-3" id="faqContainer">
+                <!-- FAQ 1 -->
+                <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                    <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                        <span>Q1. 제공되는 세계 시간은 얼마나 정확한가요?</span>
+                        <i class="fa-solid fa-chevron-down transform rotate-180 transition-transform text-slate-500"></i>
+                    </button>
+                    <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 block leading-relaxed">
+                        본 서비스는 사용자가 접속 중인 기기(스마트폰, PC 등)의 시스템 시간을 표준으로 삼아 작동합니다. 브라우저의 기본 타임존 데이터베이스(IANA Time Zone Database)를 활용하여 각 국가의 오프셋을 계산하므로 초 단위까지 매우 정밀하게 일치합니다. 단, 기기의 시간이 잘못 설정되어 있다면 오차가 발생할 수 있습니다.
                     </div>
+                </div>
 
-                    <!-- FAQ 2 -->
-                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
-                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
-                            <span>Q2. 서머타임(Daylight Saving Time)도 반영되나요?</span>
-                            <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
-                        </button>
-                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
-                            현재 제공되는 기본 타임존 기준이며, 국가별 표준 오프셋을 기반으로 전 세계 주요 도시의 시각을 안정적으로 제공합니다.
-                        </div>
+                <!-- FAQ 2 -->
+                <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                    <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                        <span>Q2. 서머타임(Daylight Saving Time)이 자동으로 반영되나요?</span>
+                        <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
+                    </button>
+                    <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden leading-relaxed">
+                        네, 자바스크립트의 내장 객체(Intl.DateTimeFormat)를 활용하여 연산하기 때문에, 미국(뉴욕, LA)이나 영국, 프랑스, 독일 등 서머타임 제도를 시행하는 국가의 경우 해당 시기가 되면 자동으로 시차가 1시간 조절되어 표기됩니다. 사용자가 별도로 계산할 필요가 없어 매우 편리합니다.
                     </div>
+                </div>
 
-                    <!-- FAQ 3 -->
-                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
-                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
-                            <span>Q3. 모바일 기기에서도 편리하게 이용할 수 있나요?</span>
-                            <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
-                        </button>
-                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
-                            네, 모바일 환경의 반응형 카드 레이아웃이 적용되어 있어 스마트폰에서도 언제든지 전 세계 시각을 간편하게 비교할 수 있습니다.
-                        </div>
+                <!-- FAQ 3 -->
+                <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                    <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                        <span>Q3. 미국은 지역이 넓은데 기준 시간이 어떻게 되나요?</span>
+                        <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
+                    </button>
+                    <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden leading-relaxed">
+                        미국은 영토가 방대하여 여러 타임존을 사용합니다. 현재 패널에서는 동부의 금융 및 상업 중심지인 '뉴욕(동부 표준시, EST)'과 서부의 중심지인 '로스앤젤레스(태평양 표준시, PST)' 두 곳을 나누어 직관적으로 비교할 수 있도록 분리하여 제공하고 있습니다.
                     </div>
-
                 </div>
             </div>
         </section>
@@ -145,11 +186,13 @@
                 <a href="index.html" class="flex items-center space-x-2">
                 <span class="text-lg font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span></a>
             </div>
-            <p class="text-sm text-slate-500 text-center md:text-left">
+            <p class="text-sm text-slate-500 text-center md:text-left leading-relaxed">
                <strong>이용 안내:</strong> 본 사이트에서 제공하는 모든 툴과 기능은 지속적으로 업데이트되며, 누구나 무료로 자유롭게 이용할 수 있습니다. 
-               <br>서비스 이용 중 불편한 점이나 추가가 필요한 유틸리티 제안은 고객 피드백 채널을 통해 남겨주시기 바랍니다.<br>   
+               <br>서비스 이용 중 불편한 점이나 추가가 필요한 유틸리티 제안은 고객 피드백 채널을 통해 남겨주시기 바랍니다.
             </p>
-             <p style="margin-top: 8px;"><a href="../privacy.html" style="color: var(--text-muted); text-decoration: none;">개인정보처리방침보기</a></p>
+            <div>
+                 <a href="../privacy.html" class="text-xs text-slate-400 hover:text-slate-600 transition underline">개인정보처리방침보기</a>
+            </div>
         </div>
     </footer>
 
@@ -173,7 +216,6 @@
 
             const now = new Date();
 
-            // 아날로그 시계 애니메이션 각도 계산 (초, 분, 시)
             const sec = now.getSeconds();
             const min = now.getMinutes();
             const hr = now.getHours();
@@ -188,7 +230,6 @@
                 minHand.style.transform = `rotate(${minDeg}deg)`;
             }
 
-            // 한국 시간 기준 추출
             const seoulTimeStr = now.toLocaleTimeString('en-US', { timeZone: 'Asia/Seoul', hour12: false });
             const [seoulH] = seoulTimeStr.split(':').map(Number);
 
@@ -202,7 +243,6 @@
                     const dateString = now.toLocaleDateString('ko-KR', optionsDate);
                     const cityH = parseInt(now.toLocaleTimeString('en-US', optionsHourNum));
 
-                    // 시차 계산 (한국 기준)
                     let diff = cityH - seoulH;
                     if (diff > 12) diff -= 24;
                     if (diff < -12) diff += 24;
@@ -228,11 +268,10 @@
 
         window.onload = () => {
             updateClocks();
-            setInterval(updateClocks, 1000); // 1초마다 초침 회전 애니메이션 및 시각 갱신
+            setInterval(updateClocks, 1000);
         };
 
         document.addEventListener('DOMContentLoaded', () => {
-            // FAQ 아코디언 동작 로직
             const faqItems = document.querySelectorAll('.faq-item');
 
             faqItems.forEach(item => {

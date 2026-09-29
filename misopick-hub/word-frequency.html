@@ -3,11 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>단어 빈도수 측정기 - 미소픽 (MisoPick)</title>
+    <title>단어 빈도수 측정기 - 텍스트 키워드 분석 및 반복 단어 카운터 | 미소픽 (MisoPick)</title>
+    <meta name="description" content="문장 및 본문 내 단어의 등장 횟수, 사용 빈도수 순위, 백분율 비율을 실시간으로 정밀 분석합니다. 블로그 SEO 키워드 최적화 및 문서 교정에 활용해보세요.">
+    <meta name="keywords" content="단어 빈도수 측정기, 키워드 분석, 단어 카운터, 텍스트 분석, 반복 단어 찾기, SEO 키워드 추출, 미소픽, MisoPick">
+    <meta property="og:title" content="단어 빈도수 측정기 - 미소픽 (MisoPick)">
+    <meta property="og:description" content="텍스트 내 주요 키워드와 반복 단어의 빈도수를 실시간으로 빠르게 분석하세요.">
+    <meta property="og:type" content="website">
+
+    <!-- 구글 애드센스 스크립트 -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2888840483385554"
      crossorigin="anonymous"></script>
-    <!-- 구글 애드센스 승인용 스크립트 (주석 처리됨) -->
-    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -52,14 +58,14 @@
         <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
             <div>
                 <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 bg-brand-50 text-brand-700 rounded-md">Tool #15</span>
-                <h1 class="text-2xl font-black text-slate-900 mt-2 mb-1">단어 빈도수 측정기</h1>
-                <p class="text-sm text-slate-500">문장 속에서 단어가 등장하는 횟수와 사용 통계를 정밀하게 분석합니다.</p>
+                <h1 class="text-2xl sm:text-3xl font-black text-slate-900 mt-2 mb-1">스마트 단어 빈도수 측정기</h1>
+                <p class="text-sm text-slate-600 leading-relaxed">문장이나 본문 속에서 각 단어가 등장하는 횟수, 사용 비율, 순위 통계를 정밀하게 분석합니다.</p>
             </div>
 
             <!-- 입력 영역 -->
             <div class="space-y-2">
                 <label class="block text-xs font-bold text-slate-700">분석할 텍스트 입력</label>
-                <textarea id="textInput" rows="6" placeholder="문장이나 본문 내용을 입력하세요. 각 단어가 몇 번씩 사용되었는지 빈도수 순위별로 계산해 드립니다." class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:bg-white focus:border-brand-500 outline-none transition"></textarea>
+                <textarea id="textInput" rows="6" placeholder="분석하고 싶은 문장이나 본문 내용을 입력하세요. 입력된 단어들의 빈도수와 비중을 상위 순위별로 즉시 도출해 드립니다." class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:bg-white focus:border-brand-500 outline-none transition"></textarea>
             </div>
 
             <!-- 실행 버튼 -->
@@ -81,20 +87,51 @@
             </div>
         </div>
 
-        <!-- 애드센스 광고 영역 (주석 처리됨) -->
-        <!-- 
-        <div class="w-full bg-slate-100 border border-slate-200 rounded-2xl p-6 text-center text-slate-400 flex flex-col items-center justify-center min-h-[90px]">
-            <span class="text-xs uppercase tracking-widest font-bold text-slate-400 mb-1"><i class="fa-solid fa-rectangle-ad mr-1"></i> Google AdSense 광고 영역</span>
-            <p class="text-xs text-slate-400">반응형 디스플레이 광고 단위 공간입니다.</p>
-        </div>
-        -->
+        <!-- SEO 및 유용한 정보 가이드 섹션 -->
+        <section class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
+            <div>
+                <h2 class="text-xl font-bold text-slate-900 mb-2 flex items-center">
+                    <i class="fa-solid fa-chart-pie text-brand-600 mr-2.5"></i> 단어 빈도수 분석이 필요한 이유
+                </h2>
+                <p class="text-sm text-slate-600 leading-relaxed">
+                    작성된 문서나 글에서 어떤 단어가 지나치게 반복되는지 파악하고, 주요 핵심 키워드가 적절히 포함되었는지 확인하는 것은 문맥의 품질을 높이는 데 필수적입니다.
+                </p>
+            </div>
 
-        <!-- 서비스 설명 및 자주 하는 질문 (아코디언) 섹션 -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-slate-900 text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-magnifying-glass text-brand-600"></i> 검색엔진 최적화 (SEO)
+                    </div>
+                    <p class="text-slate-600 leading-relaxed">
+                        블로그나 웹사이트 게시물 작성 시 목표 키워드의 밀도(Density)가 적정한지 점검하여 검색엔진 노출 효과를 극대화할 수 있습니다.
+                    </p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-slate-900 text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-pen-nib text-brand-600"></i> 문장 교정 및 리라이팅
+                    </div>
+                    <p class="text-slate-600 leading-relaxed">
+                        특정 어휘나 접속사가 과도하게 중복 사용되는 것을 방지하고, 유의어나 다양한 표현으로 대체하여 글의 완성도를 높입니다.
+                    </p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-slate-900 text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-file-lines text-brand-600"></i> 논문 및 보고서 분석
+                    </div>
+                    <p class="text-slate-600 leading-relaxed">
+                        방대한 양의 문단이나 자료에서 자주 등장하는 핵심 개념어를 도출하고 데이터 트렌드를 빠르게 파악할 수 있습니다.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 서비스 소개 및 자주 하는 질문 (아코디언) 섹션 -->
         <section class="bg-white rounded-3xl border border-slate-200 p-8 shadow-sm space-y-8">
             <div>
                 <h2 class="text-xl font-bold text-slate-900 mb-2">서비스 소개 및 이용 가이드</h2>
                 <p class="text-sm text-slate-600 leading-relaxed">
-                    <strong>misopick.kr</strong>의 단어 빈도수 측정기는 입력된 문서나 문장 내에서 특정 어휘가 얼마나 자주 반복해서 사용되었는지를 분석하여 통계 수치와 순위로 제공하는 유틸리티 도구입니다. 글쓰기 교정 및 문서 분석에 유용합니다.
+                    <strong>misopick.kr</strong>의 단어 빈도수 측정기는 입력된 문서나 문장 내에서 특정 어휘가 얼마나 자주 반복해서 사용되었는지를 정밀하게 분석하여 통계 수치와 순위로 제공하는 무료 웹 유틸리티 도구입니다.
                 </p>
             </div>
 
@@ -111,8 +148,8 @@
                             <span>Q1. 빈도수 측정은 어떤 방식으로 이루어지나요?</span>
                             <i class="fa-solid fa-chevron-down transform rotate-180 transition-transform text-slate-500"></i>
                         </button>
-                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 block">
-                            본문 내의 단어들을 형태별로 분리한 뒤, 각 단어의 등장 횟수를 카운트하여 가장 많이 쓰인 순서대로 정렬하고 백분율 통계를 산출합니다.
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 block leading-relaxed">
+                            본문 내의 한글 및 영문 단어들을 추출한 뒤, 각 단어의 등장 횟수와 전체 단어 대비 비율(%)을 계산하여 가장 많이 사용된 순서대로 정렬하여 보여줍니다.
                         </div>
                     </div>
 
@@ -122,8 +159,8 @@
                             <span>Q2. 작성 중인 텍스트가 서버에 기록되나요?</span>
                             <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
                         </button>
-                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
-                            아니요, 전혀 저장되지 않습니다. 사용자의 브라우저 내부에서만 자바스크립트로 처리되므로 작성 중인 문 내용이 외부로 유출되지 않고 안전합니다.
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden leading-relaxed">
+                            아니요, 전혀 저장되지 않습니다. 사용자의 웹 브라우저 내부에서 자바스크립트로만 연산이 수행되므로 중요 문서나 개인적인 글도 안심하고 분석하실 수 있습니다.
                         </div>
                     </div>
 
@@ -133,8 +170,19 @@
                             <span>Q3. 모바일 기기에서도 원활하게 분석할 수 있나요?</span>
                             <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
                         </button>
-                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
-                            네, 반응형 레이아웃으로 설계되어 스마트폰이나 태블릿에서도 편리하게 텍스트를 입력하고 빈도수 통계를 확인할 수 있습니다.
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden leading-relaxed">
+                            네, 반응형 인터페이스로 구현되어 있어 스마트폰이나 태블릿 등 모바일 기기에서도 손쉽게 텍스트를 입력하고 분석 결과를 즉시 확인하실 수 있습니다.
+                        </div>
+                    </div>
+
+                    <!-- FAQ 4 -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q4. 분석 결과는 최대 몇 개까지 표시되나요?</span>
+                            <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden leading-relaxed">
+                            가장 많이 등장한 상위 30개 단어까지 순위별로 상세 통계(횟수 및 백분율)가 제공되며, 결과 복사 버튼을 통해 간편하게 메모장에 붙여넣을 수 있습니다.
                         </div>
                     </div>
 
@@ -149,14 +197,17 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
             <div class="flex items-center space-x-3">
                 <div class="w-8 h-8 rounded-xl bg-brand-600 flex items-center justify-center text-white font-bold text-sm">M</div>
-                    <a href="index.html" class="flex items-center space-x-2">
-                <span class="text-lg font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span></a>
+                <a href="index.html" class="flex items-center space-x-2">
+                    <span class="text-lg font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span>
+                </a>
             </div>
-            <p class="text-sm text-slate-500 text-center md:text-left">
-               <strong>이용 안내:</strong> 본 사이트에서 제공하는 모든 툴과 기능은 지속적으로 업데이트되며, 누구나 무료로 자유롭게 이용할 수 있습니다. 
-               <br>서비스 이용 중 불편한 점이나 추가가 필요한 유틸리티 제안은 고객 피드백 채널을 통해 남겨주시기 바랍니다.<br>   
+            <p class="text-sm text-slate-500 text-center md:text-left leading-relaxed">
+                <strong>이용 안내:</strong> 본 사이트에서 제공하는 모든 툴과 기능은 지속적으로 업데이트되며, 누구나 무료로 자유롭게 이용할 수 있습니다. 
+                <br>서비스 이용 중 불편한 점이나 추가가 필요한 유틸리티 제안은 고객 피드백 채널을 통해 남겨주시기 바랍니다.
             </p>
-             <p style="margin-top: 8px;"><a href="../privacy.html" style="color: var(--text-muted); text-decoration: none;">개인정보처리방침보기</a></p>
+            <div>
+                <a href="../privacy.html" class="text-xs text-slate-400 hover:text-slate-600 transition underline">개인정보처리방침</a>
+            </div>
         </div>
     </footer>
 

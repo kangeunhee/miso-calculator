@@ -3,11 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>캐릭터 이름/닉네임 생성기 - 미소픽 (MisoPick)</title>
+    <title>캐릭터 이름/닉네임 생성기 - 게임, 소설, SNS 유니크한 ID 추천 | 미소픽 (MisoPick)</title>
+    <meta name="description" content="RPG 게임 캐릭터, 웹소설 주인공, 커뮤니티 및 SNS에 사용할 개성 있고 유니크한 닉네임을 생성합니다. 판타지, 귀여운 감성, 시크/다크, 밈 스타일별 무작위 이름을 즉시 추천받으세요.">
+    <meta name="keywords" content="닉네임 생성기, 캐릭터 이름 생성기, 게임 닉네임 추천, 두글자 닉네임, 판타지 이름, 예쁜 닉네임, 레어 닉네임, 미소픽, MisoPick">
+    <meta property="og:title" content="캐릭터 이름/닉네임 생성기 - 미소픽 (MisoPick)">
+    <meta property="og:description" content="컨셉별 개성 넘치는 유니크한 닉네임 및 캐릭터 이름 추천 도구입니다.">
+    <meta property="og:type" content="website">
+
+    <!-- 구글 애드센스 스크립트 -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2888840483385554"
      crossorigin="anonymous"></script>
-    <!-- 구글 애드센스 승인용 스크립트 (주석 처리됨) -->
-    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -52,15 +58,15 @@
         <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
             <div>
                 <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 bg-brand-50 text-brand-700 rounded-md">Tool #13</span>
-                <h1 class="text-2xl font-black text-slate-900 mt-2 mb-1">캐릭터 이름/닉네임 생성기</h1>
-                <p class="text-sm text-slate-500">게임, 소설, 커뮤니티 등에서 활용할 수 있는 개성 있고 유니크한 닉네임을 생성합니다.</p>
+                <h1 class="text-2xl sm:text-3xl font-black text-slate-900 mt-2 mb-1">캐릭터 이름/닉네임 생성기</h1>
+                <p class="text-sm text-slate-600 leading-relaxed">게임, 소설, 커뮤니티 등에서 활용할 수 있는 개성 있고 유니크한 닉네임을 콘셉트에 맞춰 즉시 생성합니다.</p>
             </div>
 
             <!-- 스타일 선택 및 생성 버튼 -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">닉네임 스타일 선택</label>
-                    <select id="nicknameStyle" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:bg-white focus:border-brand-500 outline-none transition">
+                    <label for="nicknameStyle" class="block text-xs font-bold text-slate-700 mb-1">닉네임 스타일 선택</label>
+                    <select id="nicknameStyle" class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:bg-white focus:border-brand-500 outline-none transition">
                         <option value="fantasy">판타지 RPG (기사/마법사풍)</option>
                         <option value="cute">귀여운 감성 (몽글몽글/포근한풍)</option>
                         <option value="cool">시크/다크 (강렬하고 멋진풍)</option>
@@ -68,8 +74,8 @@
                     </select>
                 </div>
                 <div class="flex items-end">
-                    <button onclick="generateNicknames()" class="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm rounded-2xl transition shadow-md">
-                        닉네임 생성하기
+                    <button onclick="generateNicknames()" class="w-full py-3.5 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm rounded-2xl transition shadow-md flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> 닉네임 생성하기
                     </button>
                 </div>
             </div>
@@ -78,7 +84,7 @@
             <div class="space-y-2">
                 <div class="flex items-center justify-between">
                     <label class="block text-xs font-bold text-slate-700">생성된 닉네임 추천 목록</label>
-                    <span class="text-xs text-slate-400">원하는 닉네임을 클릭하면 복사됩니다.</span>
+                    <span class="text-xs text-slate-400">원하는 닉네임을 클릭하면 클립보드에 복사됩니다.</span>
                 </div>
                 <div id="nicknameResultBox" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm min-h-[160px] max-h-[240px] overflow-y-auto flex flex-wrap gap-2 items-start content-start">
                     <span class="text-xs text-slate-400 py-2">버튼을 눌러 닉네임을 생성해보세요!</span>
@@ -86,16 +92,88 @@
             </div>
         </div>
 
-        <!-- 애드센스 광고 영역 (주석 처리됨) -->
-        <!-- 
-        <div class="w-full bg-slate-100 border border-slate-200 rounded-2xl p-6 text-center text-slate-400 flex flex-col items-center justify-center min-h-[90px]">
-            <span class="text-xs uppercase tracking-widest font-bold text-slate-400 mb-1"><i class="fa-solid fa-rectangle-ad mr-1"></i> Google AdSense 광고 영역</span>
-            <p class="text-xs text-slate-400">반응형 디스플레이 광고 단위 공간입니다.</p>
-        </div>
-        -->
+        <!-- 닉네임 컨셉 및 작명 가이드 섹션 -->
+        <section class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
+            <div>
+                <h2 class="text-xl font-bold text-slate-900 mb-3 flex items-center">
+                    <i class="fa-solid fa-pen-nib text-brand-600 mr-2.5"></i> 개성 있는 닉네임 스타일별 특징 및 작명 가이드
+                </h2>
+                <p class="text-sm text-slate-600 leading-relaxed">
+                    좋은 닉네임은 자신의 개성을 나타낼 뿐만 아니라 기억하기 쉬우며 정체성을 형성합니다. 콘셉트에 따른 작명 특징을 파악해 보세요.
+                </p>
+            </div>
 
-        <!-- 서비스 설명 및 자주 하는 질문 (아코디언) 섹션 -->
-        <section class="bg-white rounded-3xl border border-slate-200 p-8 shadow-sm space-y-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-slate-900 text-sm flex items-center gap-1.5">
+                        <i class="fa-solid fa-dragon text-brand-600"></i> 판타지 RPG 스타일
+                    </div>
+                    <p class="text-slate-600 leading-relaxed">신화 속 인물, 천문/자연 용어, 신비로운 서양 고대명을 기반으로 웅장하고 클래식한 분위기를 연출합니다.</p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-slate-900 text-sm flex items-center gap-1.5">
+                        <i class="fa-solid fa-heart text-brand-600"></i> 귀여운 감성 스타일
+                    </div>
+                    <p class="text-slate-600 leading-relaxed">디저트, 동물, 음의 중복(부드러운 발음) 단어를 결합하여 다정하고 포근한 느낌을 줍니다.</p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-slate-900 text-sm flex items-center gap-1.5">
+                        <i class="fa-solid fa-skull text-brand-600"></i> 시크/다크 스타일
+                    </div>
+                    <p class="text-slate-600 leading-relaxed">영어 단어, 어두운 영웅/악당 이미지, 강렬한 음절 조합을 통해 묵직하고 압도적인 존재감을 발휘합니다.</p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-slate-900 text-sm flex items-center gap-1.5">
+                        <i class="fa-solid fa-face-laugh-squint text-brand-600"></i> 재미있는 밈(Meme) 스타일
+                    </div>
+                    <p class="text-slate-600 leading-relaxed">일상 속 공감대를 형성하는 문장이나 유머러스한 언어유희를 활용하여 친근감을 높여줍니다.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 플랫폼별 활용 사례 섹션 -->
+        <section class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
+            <h2 class="text-xl font-bold text-slate-900 mb-2 flex items-center">
+                <i class="fa-solid fa-gamepad text-brand-600 mr-2.5"></i> 캐릭터 이름/닉네임 주요 활용 분야
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-trophy text-brand-600"></i> 온라인 & 모바일 RPG/FPS 게임 ID
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        메이플스토리, 로스트아크, 리그오브레전드(LoL), 발로란트 등 중복되지 않는 독창적인 아이디를 생성합니다.
+                    </p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-book-open text-brand-600"></i> 웹소설 & 시나리오 등장인물 설정
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        소설이나 웹툰의 주인공, 라이벌, 몬스터, 영지 이름 등 세계관에 맞는 작명 아이디어를 구상할 때 유용합니다.
+                    </p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-hashtag text-brand-600"></i> SNS & 스트리밍 채널명
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        유튜브, 치지직, 아프리카TV, 인스타그램 등 방송 콘텐츠 및 개인 부계정 프로필명으로 활용 가능합니다.
+                    </p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-users text-brand-600"></i> 커뮤니티 & 익명 계정 활동
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        디스코드, 카페, 커뮤니티에서 본인을 개성 있게 나타낼 수 있는 유쾌하거나 감성적인 익명명을 만들어보세요.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 서비스 소개 및 자주 하는 질문 (아코디언) 섹션 -->
+        <section class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-8">
             <div>
                 <h2 class="text-xl font-bold text-slate-900 mb-2">서비스 소개 및 이용 가이드</h2>
                 <p class="text-sm text-slate-600 leading-relaxed">
@@ -116,7 +194,7 @@
                             <span>Q1. 어떤 종류의 닉네임 스타일을 지원하나요?</span>
                             <i class="fa-solid fa-chevron-down transform rotate-180 transition-transform text-slate-500"></i>
                         </button>
-                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 block">
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 block leading-relaxed">
                             판타지 RPG, 귀여운 감성, 시크/다크, 유쾌한 밈 등 다양한 분위기와 콘셉트에 맞춘 조합형 명칭들을 스타일별로 다양하게 제공합니다.
                         </div>
                     </div>
@@ -124,21 +202,32 @@
                     <!-- FAQ 2 -->
                     <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
                         <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
-                            <span>Q2. 생성된 닉네임이나 데이터가 서버에 저장되나요?</span>
+                            <span>Q2. 추천된 닉네임을 상업적, 공용 상표로 써도 문제가 없나요?</span>
                             <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
                         </button>
-                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
-                            아니요, 전혀 저장되지 않습니다. 사용자의 브라우저 내부에서 자바스크립트 알고리즘에 의해 실시간으로 무작위 조합되어 안전하게 이용할 수 있습니다.
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden leading-relaxed">
+                            제시되는 이름은 무작위 조합 어휘이므로 게임이나 소설 등에는 자유롭게 사용 가능합니다. 단, 특정 게임사 상표권이나 유명 캐릭터명과 중복될 수 있으므로 적용 전 중복 검색을 권장합니다.
                         </div>
                     </div>
 
                     <!-- FAQ 3 -->
                     <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
                         <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
-                            <span>Q3. 모바일 환경에서도 원활하게 이용할 수 있나요?</span>
+                            <span>Q3. 생성된 닉네임이나 데이터가 서버에 저장되나요?</span>
                             <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
                         </button>
-                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden">
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden leading-relaxed">
+                            아니요, 전혀 저장되지 않습니다. 사용자의 브라우저 내부에서 자바스크립트 알고리즘에 의해 실시간으로 무작위 조합되어 안전하게 이용할 수 있습니다.
+                        </div>
+                    </div>
+
+                    <!-- FAQ 4 -->
+                    <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden transition">
+                        <button class="faq-btn w-full px-6 py-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex items-center justify-between transition">
+                            <span>Q4. 모바일 환경에서도 원활하게 이용할 수 있나요?</span>
+                            <i class="fa-solid fa-chevron-down transform transition-transform text-slate-500"></i>
+                        </button>
+                        <div class="faq-content px-6 py-4 text-sm text-slate-600 bg-white border-t border-slate-100 hidden leading-relaxed">
                             네, 모바일 기기와 태블릿 환경에서도 반응형 UI로 최적화되어 있어 터치 한 번으로 간편하게 닉네임을 생성하고 복사할 수 있습니다.
                         </div>
                     </div>
@@ -151,21 +240,20 @@
 
     <!-- 푸터 -->
     <footer class="bg-white border-t border-slate-200 py-10 mt-auto">
-        
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
-            
             <div class="flex items-center space-x-3">
                 <div class="w-8 h-8 rounded-xl bg-brand-600 flex items-center justify-center text-white font-bold text-sm">M</div>
-                
-                    <a href="index.html" class="flex items-center space-x-2">
-                <span class="text-lg font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span></a>
+                <a href="index.html" class="flex items-center space-x-2">
+                    <span class="text-lg font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span>
+                </a>
             </div>
-            <p class="text-sm text-slate-500 text-center md:text-left">
-               <strong>이용 안내:</strong> 본 사이트에서 제공하는 모든 툴과 기능은 지속적으로 업데이트되며, 누구나 무료로 자유롭게 이용할 수 있습니다. 
-               <br>서비스 이용 중 불편한 점이나 추가가 필요한 유틸리티 제안은 고객 피드백 채널을 통해 남겨주시기 바랍니다.<br>   
-               
+            <p class="text-sm text-slate-500 text-center md:text-left leading-relaxed">
+                <strong>이용 안내:</strong> 본 사이트에서 제공하는 모든 툴과 기능은 지속적으로 업데이트되며, 누구나 무료로 자유롭게 이용할 수 있습니다. 
+                <br>서비스 이용 중 불편한 점이나 추가가 필요한 유틸리티 제안은 고객 피드백 채널을 통해 남겨주시기 바랍니다.
             </p>
-             <p style="margin-top: 8px;"><a href="../privacy.html" style="color: var(--text-muted); text-decoration: none;">개인정보처리방침보기</a></p>
+            <div>
+                <a href="../privacy.html" class="text-xs text-slate-400 hover:text-slate-600 transition underline">개인정보처리방침</a>
+            </div>
         </div>
     </footer>
 
