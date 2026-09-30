@@ -3,92 +3,713 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>랜덤 사다리 타기 - misopick.kr</title>
-    <meta name="description" content="벌칙, 내기, 당첨자 지정을 지원하는 사다리타기">
+    <title>랜덤 사다리 타기 - 공정한 내기 & 벌칙 추첨기</title>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2888840483385554"
+     crossorigin="anonymous"></script>
+    <meta name="description" content="참가자 이름을 입력하면 간편하게 즐길 수 있는 무료 온라인 사다리타기 게임! 벌칙, 점심 내기, 순서 정하기 등 다양한 상황에서 공정하게 결과를 확인해보세요.">
+    <!-- FontAwesome 아이콘 CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;600;700&display=swap" rel="stylesheet">
     
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary-color: #4F46E5;
+            --primary-hover: #4338CA;
+            --secondary-color: #10B981;
+            --bg-color: #F9FAFB;
+            --card-bg: #FFFFFF;
+            --text-main: #1F2937;
+            --text-sub: #4B5563;
+            --border-color: #E5E7EB;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* 헤더 스타일 */
+        header {
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .header-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .top-link {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            text-decoration: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            background-color: #EEF2FF;
+            transition: all 0.2s ease;
+        }
+
+        .top-link:hover {
+            background-color: var(--primary-color);
+            color: #FFFFFF;
+        }
+
+        /* 메인 컨테이너 */
+        main {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            flex: 1;
+        }
+
+        /* 카드 공통 스타일 */
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .step-badge {
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 0.8rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            margin-right: 0.3rem;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .input-group label {
+            font-weight: 600;
+        }
+
+        .input-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.95rem;
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.65rem 1.2rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            justify-content: center;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: #059669;
+        }
+
+        /* 2단계: 결과 입력 Grid */
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .result-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            background-color: #F9FAFB;
+            padding: 0.8rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        /* 사다리 하단 위치 표기 태그 (이름 오해 방지) */
+        .result-item .slot-tag {
+            font-weight: 700;
+            font-size: 0.85rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            background-color: #4B5563;
+            color: white;
+            text-align: center;
+        }
+
+        .result-item input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        /* 사다리 게임 캔버스 영역 */
+        .game-card {
+            text-align: center;
+            overflow-x: auto;
+        }
+
+        #ladderCanvas {
+            background-color: #FAFAFA;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            margin: 1.5rem 0;
+        }
+
+        /* 결과 창 애니메이션 효과 */
+        .result-box {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background-color: #ECFDF5;
+            border: 1px solid #A7F3D0;
+            border-radius: 8px;
+            color: #065F46;
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* SEO 컨텐츠 카드 */
+        .content-card h2 {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #EEF2FF;
+            padding-bottom: 0.5rem;
+        }
+
+        .content-card h3 {
+            font-size: 1.2rem;
+            margin: 1.5rem 0 0.5rem 0;
+            color: var(--text-main);
+        }
+
+        .content-card p {
+            color: var(--text-sub);
+            margin-bottom: 1rem;
+        }
+
+        .info-graphics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .graphic-item {
+            background-color: #F3F4F6;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .graphic-item i {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        /* 푸터 영역 */
+        footer {
+            background-color: #111827;
+            color: #9CA3AF;
+            padding: 3rem 1rem 1.5rem 1rem;
+            margin-top: auto;
+        }
+
+        .footer-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #374151;
+        }
+
+        .footer-col h4 {
+            color: white;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .footer-col ul {
+            list-style: none;
+        }
+
+        .footer-col ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-col a {
+            color: #9CA3AF;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-col a:hover {
+            color: white;
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 1.5rem;
+            font-size: 0.875rem;
+        }
+
+        @media (max-width: 640px) {
+            .card {
+                padding: 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <a href="ladder.html" class="logo">
+                <i class="fa-solid fa-code-merge"></i> 랜덤 사다리 타기
+            </a>
+            <!-- 오른쪽 상단 misopick.kr 링크 (index.html로 이동) -->
+            <a href="index.html" class="top-link"><i class="fa-solid fa-house"></i> misopick.kr</a>
+        </div>
+    </header>
+
+    <!-- Main Body -->
+    <main>
+        <!-- STEP 1: 참가자 입력 카드 -->
+        <section class="card">
+            <h2 class="section-title">
+                <span class="step-badge">STEP 1</span> 참가자 설정
+            </h2>
+            <div class="input-group">
+                <label for="nameInput">참가자 이름을 쉼표(,)나 줄바꿈으로 구분하여 입력하세요 (2~10명):</label>
+                <textarea id="nameInput" placeholder="예: 김철수, 이영희, 박민수, 정수진">김철수, 이영희, 박민수, 정수진</textarea>
+                <div>
+                    <button class="btn" onclick="setupParticipants()">
+                        <i class="fa-solid fa-user-plus"></i> 참가자 확정 및 결과 입력으로 이동
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- STEP 2: 결과 입력 카드 (1단계 완료 후 활성화) -->
+        <section class="card" id="step2Card" style="opacity: 0.6; pointer-events: none;">
+            <h2 class="section-title">
+                <span class="step-badge" style="background-color: #6B7280;">STEP 2</span> 사다리 하단 결과 항목 입력
+            </h2>
+            <p style="color: var(--text-sub); font-size: 0.9rem; margin-bottom: 1rem;">
+                사다리 각 줄의 **맨 아래(도착 지점)**에 배치될 벌칙/당첨 항목을 입력하세요. (사람 이름과 직접 매칭되지 않는 무작위 도착 위치입니다.)
+            </p>
+
+            <div id="resultsGrid" class="results-grid">
+                <!-- JavaScript로 위치별 입력창 자동 생성 -->
+            </div>
+        </section>
+
+        <!-- Ladder Game Area -->
+        <section class="card game-card">
+            <h2 class="section-title" style="justify-content: center;"><i class="fa-solid fa-gamepad"></i> 사다리타기 진행</h2>
+            <p style="color: var(--text-sub); font-size: 0.9rem;">시작하기 버튼을 누르면 각 참가자별 고유 색상 라인이 사다리를 따라 이동합니다.</p>
+            
+            <div style="margin-top: 1rem;">
+                <button class="btn btn-secondary" id="startBtn" onclick="startLadderGame()" disabled>
+                    <i class="fa-solid fa-play"></i> 사다리타기 시작
+                </button>
+            </div>
+
+            <!-- Canvas Element -->
+            <canvas id="ladderCanvas" width="600" height="400"></canvas>
+
+            <!-- Result Box -->
+            <div id="resultBox" class="result-box">
+                <h3><i class="fa-solid fa-trophy"></i> 최종 결과 목록</h3>
+                <div id="resultContent" style="margin-top: 0.5rem; font-weight: 600;"></div>
+            </div>
+        </section>
+
+        <!-- SEO Content & Features Section -->
+        <article class="card content-card">
+            <h2>스마트한 랜덤 사다리 타기로 쉽고 공정하게!</h2>
+            <p>
+                친구, 직장 동료들과 점심 내기, 음료수 내기, 당번 정하기, 회식 벌칙 지정 등 일상 속 수많은 선택의 순간에 고민하지 마세요.
+                <strong>랜덤 사다리 타기 서비스</strong>는 참가자 이름만 입력하면 즉시 실행되며, 단계별 설정과 컬러풀한 경로 애니메이션을 통해 100% 공정한 무작위 매칭을 보장합니다.
+            </p>
+
+            <div class="info-graphics">
+                <div class="graphic-item">
+                    <i class="fa-solid fa-palette"></i>
+                    <h4>개별 컬러 경로 표시</h4>
+                    <p>각 참가자마다 고유한 색상이 부여되어 사다리를 따라 내려가는 과정을 눈으로 쉽게 확인할 수 있습니다.</p>
+                </div>
+                <div class="graphic-item">
+                    <i class="fa-solid fa-list-check"></i>
+                    <h4>직관적인 2단계 설정</h4>
+                    <p>참가자 설정과 사다리 하단 결과 설정을 분리하여 누구나 직관적이고 오류 없이 게임을 설정할 수 있습니다.</p>
+                </div>
+                <div class="graphic-item">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <h4>100% 공정한 무작위 알고리즘</h4>
+                    <p>수학적 난수 생성을 기반으로 무작위 가로줄을 생성하여 예측할 수 없는 즐거움을 줍니다.</p>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-col">
+                <h4>랜덤 사다리 타기</h4>
+                <p style="font-size: 0.85rem;">빠르고 공정한 무작위 추천 및 내기 게임을 제공하는 유틸리티 플랫폼입니다.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">misopick.kr 홈</a></li>
+                    <li><a href="ladder.html">사다리 타기 서비스</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>약관 및 정책</h4>
+                <ul>
+                    <li><a href="../privacy.html"><i class="fa-solid fa-user-shield"></i> 개인정보처리방침 (Privacy Policy)</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            &copy; 2026 Utility Web. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            50: '#f0f9ff',
-                            100: '#e0f2fe',
-                            500: '#0284c7',
-                            600: '#0284c7',
-                            700: '#0369a1',
-                        }
+        const canvas = document.getElementById('ladderCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        // 각 참가자마다 부여할 컬러 팔레트
+        const colorPalette = [
+            '#EF4444', '#F59E0B', '#10B981', '#3B82F6', 
+            '#8B5CF6', '#EC4899', '#06B6D4', '#84CC16', 
+            '#F97316', '#6366F1'
+        ];
+
+        let names = [];
+        let results = [];
+        let memberCount = 0;
+        let ladderLines = [];
+        let isAnimating = false;
+
+        window.onload = function() {
+            setupParticipants();
+        };
+
+        // STEP 1: 참가자 설정 처리
+        function setupParticipants() {
+            if (isAnimating) return;
+
+            const text = document.getElementById('nameInput').value;
+            names = text.split(/[\n,]+/).map(n => n.trim()).filter(n => n.length > 0);
+
+            if (names.length < 2) {
+                alert('최소 2명의 이름을 입력해 주세요.');
+                return;
+            }
+            if (names.length > 10) {
+                alert('최대 10명까지 입력 가능합니다. 상위 10명만 설정됩니다.');
+                names = names.slice(0, 10);
+            }
+
+            memberCount = names.length;
+
+            // STEP 2 카드 활성화
+            const step2Card = document.getElementById('step2Card');
+            step2Card.style.opacity = '1';
+            step2Card.style.pointerEvents = 'auto';
+            step2Card.querySelector('.step-badge').style.backgroundColor = '#10B981';
+
+            // STEP 2 입력창 구성 (사람 이름 대신 위치 번호 태그 표시하여 오해 완전 차단)
+            const container = document.getElementById('resultsGrid');
+            container.innerHTML = '';
+
+            for (let i = 0; i < memberCount; i++) {
+                const item = document.createElement('div');
+                item.className = 'result-item';
+                item.innerHTML = `
+                    <div class="slot-tag">
+                        <i class="fa-solid fa-location-dot"></i> ${i + 1}번 위치 결과
+                    </div>
+                    <input type="text" id="result_${i}" placeholder="결과 ${i+1}" value="${i === 0 ? '당첨' : '통과'}">
+                `;
+                container.appendChild(item);
+            }
+
+            // 시작 버튼 활성화
+            document.getElementById('startBtn').disabled = false;
+
+            buildLadderStructure();
+            renderBaseLadder();
+            document.getElementById('resultBox').style.display = 'none';
+        }
+
+        // 사다리 무작위 가로줄 구조 생성
+        function buildLadderStructure() {
+            ladderLines = [];
+            const rowCount = 7;
+            for (let r = 0; r < rowCount; r++) {
+                let row = new Array(memberCount - 1).fill(false);
+                for (let c = 0; c < memberCount - 1; c++) {
+                    if (c > 0 && row[c - 1]) {
+                        row[c] = false;
+                    } else {
+                        row[c] = Math.random() < 0.55;
+                    }
+                }
+                ladderLines.push(row);
+            }
+        }
+
+        // 기본 사다리 구도 렌더링
+        function renderBaseLadder() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const paddingX = 60;
+            const paddingTop = 50;
+            const paddingBottom = 50;
+            const spacingX = (canvas.width - paddingX * 2) / (memberCount - 1);
+            const spacingY = (canvas.height - paddingTop - paddingBottom) / (ladderLines.length + 1);
+
+            // 1. 이름 및 결과 텍스트
+            ctx.font = "bold 14px Noto Sans KR";
+            ctx.textAlign = "center";
+
+            for (let i = 0; i < memberCount; i++) {
+                const x = paddingX + i * spacingX;
+                ctx.fillStyle = colorPalette[i % colorPalette.length];
+                ctx.fillText(names[i], x, paddingTop - 15);
+
+                const resVal = document.getElementById(`result_${i}`) ? document.getElementById(`result_${i}`).value : '';
+                ctx.fillStyle = "#1F2937";
+                ctx.fillText(resVal || `결과${i+1}`, x, canvas.height - paddingBottom + 25);
+            }
+
+            // 2. 세로선
+            ctx.strokeStyle = "#D1D5DB";
+            ctx.lineWidth = 4;
+            for (let i = 0; i < memberCount; i++) {
+                const x = paddingX + i * spacingX;
+                ctx.beginPath();
+                ctx.moveTo(x, paddingTop);
+                ctx.lineTo(x, canvas.height - paddingBottom);
+                ctx.stroke();
+            }
+
+            // 3. 가로선
+            ctx.strokeStyle = "#9CA3AF";
+            ctx.lineWidth = 3;
+            for (let r = 0; r < ladderLines.length; r++) {
+                const y = paddingTop + (r + 1) * spacingY;
+                for (let c = 0; c < memberCount - 1; c++) {
+                    if (ladderLines[r][c]) {
+                        const x1 = paddingX + c * spacingX;
+                        const x2 = paddingX + (c + 1) * spacingX;
+                        ctx.beginPath();
+                        ctx.moveTo(x1, y);
+                        ctx.lineTo(x2, y);
+                        ctx.stroke();
                     }
                 }
             }
         }
-    </script>
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
-        body { font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif; }
-    </style>
-</head>
-<body class="bg-slate-50 text-slate-800 flex flex-col min-h-screen">
 
-    <!-- Header Navigation -->
-    <header class="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <a href="index.html" class="flex items-center space-x-2">
-                <div class="w-9 h-9 rounded-xl bg-brand-600 flex items-center justify-center text-white font-black text-lg shadow-sm">M</div>
-                <span class="text-xl font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span>
-            </a>
-            <a href="index.html" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg border border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-100 transition">
-                <i data-lucide="arrow-left" class="w-4 h-4"></i>
-                <span>전체 툴 보기</span>
-            </a>
-        </div>
-    </header>
+        // 사다리 타기 실행 및 애니메이션
+        function startLadderGame() {
+            if (isAnimating) return;
+            
+            // 최신 결과값 파싱
+            results = [];
+            for (let i = 0; i < memberCount; i++) {
+                const val = document.getElementById(`result_${i}`).value || `결과${i+1}`;
+                results.push(val);
+            }
 
-    <!-- Main Content Container -->
-    <main class="flex-grow max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        
-        <!-- Tool Title Card -->
-        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm mb-6">
-            <div class="flex items-center space-x-4 mb-4">
-                <div class="w-12 h-12 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center">
-                    <i data-lucide="git-merge" class="w-6 h-6"></i>
+            buildLadderStructure();
+            renderBaseLadder();
+
+            isAnimating = true;
+            document.getElementById('startBtn').disabled = true;
+            document.getElementById('resultBox').style.display = 'none';
+
+            const paddingX = 60;
+            const paddingTop = 50;
+            const paddingBottom = 50;
+            const spacingX = (canvas.width - paddingX * 2) / (memberCount - 1);
+            const spacingY = (canvas.height - paddingTop - paddingBottom) / (ladderLines.length + 1);
+
+            // 각 참가자별 경로 좌표 생성
+            let allPaths = [];
+            let finalMatches = [];
+
+            for (let i = 0; i < memberCount; i++) {
+                let path = [];
+                let currCol = i;
+                let currX = paddingX + currCol * spacingX;
+                let currY = paddingTop;
+
+                path.push({ x: currX, y: currY });
+
+                for (let r = 0; r < ladderLines.length; r++) {
+                    let nextY = paddingTop + (r + 1) * spacingY;
+                    path.push({ x: currX, y: nextY });
+
+                    if (currCol > 0 && ladderLines[r][currCol - 1]) {
+                        currCol--;
+                        currX = paddingX + currCol * spacingX;
+                        path.push({ x: currX, y: nextY });
+                    } else if (currCol < memberCount - 1 && ladderLines[r][currCol]) {
+                        currCol++;
+                        currX = paddingX + currCol * spacingX;
+                        path.push({ x: currX, y: nextY });
+                    }
+                }
+
+                path.push({ x: currX, y: canvas.height - paddingBottom });
+                allPaths.push(path);
+                finalMatches.push({ name: names[i], result: results[currCol], color: colorPalette[i % colorPalette.length] });
+            }
+
+            // 프레임 애니메이션 진행
+            let progress = 0;
+            const totalSteps = 120;
+
+            function animate() {
+                renderBaseLadder();
+
+                progress += 1;
+                let ratio = progress / totalSteps;
+                if (ratio > 1) ratio = 1;
+
+                for (let p = 0; p < memberCount; p++) {
+                    const path = allPaths[p];
+                    const color = colorPalette[p % colorPalette.length];
+
+                    ctx.strokeStyle = color;
+                    ctx.lineWidth = 5;
+                    ctx.beginPath();
+                    ctx.moveTo(path[0].x, path[0].y);
+
+                    let totalPathPoints = path.length;
+                    let currentPointIndex = Math.floor(ratio * (totalPathPoints - 1));
+
+                    for (let k = 1; k <= currentPointIndex; k++) {
+                        ctx.lineTo(path[k].x, path[k].y);
+                    }
+
+                    if (currentPointIndex < totalPathPoints - 1) {
+                        let subRatio = (ratio * (totalPathPoints - 1)) - currentPointIndex;
+                        let p1 = path[currentPointIndex];
+                        let p2 = path[currentPointIndex + 1];
+                        let interX = p1.x + (p2.x - p1.x) * subRatio;
+                        let interY = p1.y + (p2.y - p1.y) * subRatio;
+                        ctx.lineTo(interX, interY);
+                    }
+
+                    ctx.stroke();
+                }
+
+                if (progress < totalSteps) {
+                    requestAnimationFrame(animate);
+                } else {
+                    isAnimating = false;
+                    document.getElementById('startBtn').disabled = false;
+                    showResultBox(finalMatches);
+                }
+            }
+
+            animate();
+        }
+
+        // 결과 표시
+        function showResultBox(matches) {
+            const resultBox = document.getElementById('resultBox');
+            const resultContent = document.getElementById('resultContent');
+            
+            resultContent.innerHTML = matches.map(item => `
+                <div style="display:inline-block; margin: 0.4rem 0.8rem; padding: 0.4rem 0.8rem; background: white; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <span style="color:${item.color}; font-weight: bold;">${item.name}</span> ➔ 
+                    <span style="color:#111827;">${item.result}</span>
                 </div>
-                <div>
-                    <span class="text-xs font-bold text-slate-400 block">TOOL #01</span>
-                    <h1 class="text-2xl sm:text-3xl font-black text-slate-900">랜덤 사다리 타기</h1>
-                </div>
-            </div>
-            <p class="text-slate-600 text-sm sm:text-base leading-relaxed">벌칙, 내기, 당첨자 지정을 지원하는 사다리타기</p>
-        </div>
+            `).join('');
 
-        <!-- Tool Workspace Area -->
-        <div class="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-sm min-h-[400px] flex flex-col items-center justify-center text-center">
-            <!-- TODO: 실제 로직 개발 영역 -->
-            <div class="p-4 bg-slate-100 rounded-2xl mb-4">
-                <i data-lucide="git-merge" class="w-12 h-12 text-slate-400 mx-auto"></i>
-            </div>
-            <h2 class="text-xl font-bold text-slate-800 mb-2">랜덤 사다리 타기 기능 준비 중</h2>
-            <p class="text-slate-500 text-sm max-w-md">여기에 해당 웹툴의 실행 화면 및 인터랙티브 기능 로직이 들어갑니다.</p>
-        </div>
-
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-white border-t border-slate-200 py-8 mt-auto">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-            <p>© misopick.kr - 모든 서비스는 무료로 제공됩니다.</p>
-            <a href="index.html" class="hover:text-slate-800 transition">메인으로 돌아가기</a>
-        </div>
-    </footer>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            lucide.createIcons();
-        });
+            resultBox.style.display = 'block';
+        }
     </script>
 </body>
 </html>
