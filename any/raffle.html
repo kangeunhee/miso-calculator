@@ -3,92 +3,723 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>제비뽑기 / 당첨 추첨 - misopick.kr</title>
-    <meta name="description" content="명단 입력 후 랜덤 당첨자 무작위 추출">
+    <title>제비뽑기 / 당첨 추첨 - 무작위 당첨자 럭키 추첨기</title>
+    <meta name="description" content="응모자 명단만 입력하면 화려한 효과와 함께 무작위로 당첨자를 뽑아주는 온라인 제비뽑기 서비스! 회식, 이벤트, 경품 추첨 시 공정하고 흥미진진하게 결과를 확인해보세요.">
     
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            50: '#f0f9ff',
-                            100: '#e0f2fe',
-                            500: '#0284c7',
-                            600: '#0284c7',
-                            700: '#0369a1',
-                        }
-                    }
-                }
+    <!-- Google AdSense Script -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2888840483385554" crossorigin="anonymous"></script>
+
+    <!-- FontAwesome 아이콘 CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #4F46E5;
+            --primary-hover: #4338CA;
+            --secondary-color: #10B981;
+            --accent-gold: #F59E0B;
+            --bg-color: #F9FAFB;
+            --card-bg: #FFFFFF;
+            --text-main: #1F2937;
+            --text-sub: #4B5563;
+            --border-color: #E5E7EB;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Confetti Canvas */
+        #confettiCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* 헤더 스타일 */
+        header {
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .header-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .top-link {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            text-decoration: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            background-color: #EEF2FF;
+            transition: all 0.2s ease;
+        }
+
+        .top-link:hover {
+            background-color: var(--primary-color);
+            color: #FFFFFF;
+        }
+
+        /* 메인 컨테이너 */
+        main {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            flex: 1;
+        }
+
+        /* 카드 공통 스타일 */
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .step-badge {
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 0.8rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            margin-right: 0.3rem;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .input-group label {
+            font-weight: 600;
+        }
+
+        .input-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.95rem;
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.7rem 1.4rem;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
+
+        .btn-gold {
+            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+            color: white;
+            border: none;
+        }
+
+        .btn-gold:hover {
+            background: linear-gradient(135deg, #D97706 0%, #B45309 100%);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+        }
+
+        /* 2단계: 등수별 설정 Grid */
+        .prize-config-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .prize-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            background-color: #FFFBEB;
+            padding: 0.8rem;
+            border-radius: 8px;
+            border: 1px solid #FCD34D;
+        }
+
+        .prize-item input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        /* 무대 및 카운트다운 애니메이션 영역 */
+        .stage-card {
+            text-align: center;
+            background: linear-gradient(180deg, #312E81 0%, #1E1B4B 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lucky-box {
+            font-size: 4rem;
+            margin: 1.5rem 0;
+            color: #FBBF24;
+            display: inline-block;
+            transition: transform 0.1s ease;
+        }
+
+        .shake {
+            animation: shakeBox 0.4s infinite alternate;
+        }
+
+        @keyframes shakeBox {
+            0% { transform: rotate(-10deg) scale(1.1); }
+            100% { transform: rotate(10deg) scale(1.1); }
+        }
+
+        .countdown-text {
+            font-size: 3rem;
+            font-weight: 900;
+            color: #FCD34D;
+            min-height: 4.5rem;
+        }
+
+        /* 화려한 당첨 결과 카드 Grid */
+        .winner-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .winner-card {
+            background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);
+            border: 2px solid #F59E0B;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(245, 158, 11, 0.2);
+            animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .winner-card::before {
+            content: "WINNER";
+            position: absolute;
+            top: 8px;
+            right: -25px;
+            background: #EF4444;
+            color: white;
+            font-size: 0.65rem;
+            font-weight: 900;
+            padding: 2px 25px;
+            transform: rotate(45deg);
+        }
+
+        .winner-rank {
+            font-size: 0.9rem;
+            font-weight: 800;
+            color: #B45309;
+            text-transform: uppercase;
+            margin-bottom: 0.3rem;
+        }
+
+        .winner-name {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: #1E1B4B;
+        }
+
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0.5) translateY(30px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        /* SEO 컨텐츠 카드 */
+        .content-card h2 {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #EEF2FF;
+            padding-bottom: 0.5rem;
+        }
+
+        .content-card h3 {
+            font-size: 1.2rem;
+            margin: 1.5rem 0 0.5rem 0;
+            color: var(--text-main);
+        }
+
+        .content-card p {
+            color: var(--text-sub);
+            margin-bottom: 1rem;
+        }
+
+        .info-graphics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .graphic-item {
+            background-color: #F3F4F6;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .graphic-item i {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        /* 푸터 영역 */
+        footer {
+            background-color: #111827;
+            color: #9CA3AF;
+            padding: 3rem 1rem 1.5rem 1rem;
+            margin-top: auto;
+        }
+
+        .footer-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #374151;
+        }
+
+        .footer-col h4 {
+            color: white;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .footer-col ul {
+            list-style: none;
+        }
+
+        .footer-col ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-col a {
+            color: #9CA3AF;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-col a:hover {
+            color: white;
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 1.5rem;
+            font-size: 0.875rem;
+        }
+
+        @media (max-width: 640px) {
+            .card {
+                padding: 1.25rem;
             }
         }
-    </script>
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
-        body { font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 flex flex-col min-h-screen">
+<body>
 
-    <!-- Header Navigation -->
-    <header class="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <a href="index.html" class="flex items-center space-x-2">
-                <div class="w-9 h-9 rounded-xl bg-brand-600 flex items-center justify-center text-white font-black text-lg shadow-sm">M</div>
-                <span class="text-xl font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span>
+    <!-- Canvas for Confetti Fireworks -->
+    <canvas id="confettiCanvas"></canvas>
+
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <a href="raffle.html" class="logo">
+                <i class="fa-solid fa-ticket"></i> 제비뽑기 / 당첨 추첨
             </a>
-            <a href="index.html" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg border border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-100 transition">
-                <i data-lucide="arrow-left" class="w-4 h-4"></i>
-                <span>전체 툴 보기</span>
-            </a>
+            <!-- 오른쪽 상단 misopick.kr 링크 (index.html로 이동) -->
+            <a href="index.html" class="top-link"><i class="fa-solid fa-house"></i> misopick.kr</a>
         </div>
     </header>
 
-    <!-- Main Content Container -->
-    <main class="flex-grow max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        
-        <!-- Tool Title Card -->
-        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm mb-6">
-            <div class="flex items-center space-x-4 mb-4">
-                <div class="w-12 h-12 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center">
-                    <i data-lucide="ticket" class="w-6 h-6"></i>
+    <!-- Main Body -->
+    <main>
+        <!-- STEP 1: 응모자 명단 입력 카드 -->
+        <section class="card">
+            <h2 class="section-title">
+                <span class="step-badge">STEP 1</span> 응모자 명단 입력
+            </h2>
+            <div class="input-group">
+                <label for="candidateInput">응모자 이름을 쉼표(,)나 줄바꿈으로 구분하여 입력하세요:</label>
+                <textarea id="candidateInput" placeholder="예: 김철수, 이영희, 박민수, 정수진, 최동현, 강지민, 윤서준, 한소희">김철수, 이영희, 박민수, 정수진, 최동현, 강지민, 윤서준, 한소희</textarea>
+
+                <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                    <label for="winnerCountVal" style="font-weight:600;">당첨자 수:</label>
+                    <input type="number" id="winnerCountVal" min="1" max="20" value="3" style="width:70px; padding:0.4rem; border:1px solid var(--border-color); border-radius:6px; text-align:center;">
+                    <span>명</span>
                 </div>
-                <div>
-                    <span class="text-xs font-bold text-slate-400 block">TOOL #04</span>
-                    <h1 class="text-2xl sm:text-3xl font-black text-slate-900">제비뽑기 / 당첨 추첨</h1>
+
+                <div style="margin-top:0.5rem;">
+                    <button class="btn" onclick="setupPrizes()">
+                        <i class="fa-solid fa-gift"></i> 당첨자 수 확정 및 등수 지정으로 이동
+                    </button>
                 </div>
             </div>
-            <p class="text-slate-600 text-sm sm:text-base leading-relaxed">명단 입력 후 랜덤 당첨자 무작위 추출</p>
-        </div>
+        </section>
 
-        <!-- Tool Workspace Area -->
-        <div class="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-sm min-h-[400px] flex flex-col items-center justify-center text-center">
-            <!-- TODO: 실제 로직 개발 영역 -->
-            <div class="p-4 bg-slate-100 rounded-2xl mb-4">
-                <i data-lucide="ticket" class="w-12 h-12 text-slate-400 mx-auto"></i>
+        <!-- STEP 2: 등수별 명칭 지정 카드 (1단계 완료 후 활성화) -->
+        <section class="card" id="step2Card" style="opacity: 0.6; pointer-events: none;">
+            <h2 class="section-title">
+                <span class="step-badge" style="background-color: #6B7280;">STEP 2</span> 당첨 항목/등수 명칭 지정
+            </h2>
+            <p style="color: var(--text-sub); font-size: 0.9rem; margin-bottom: 1rem;">
+                각 당첨자 자리에 들어갈 등수 이름(예: 1등, 2등, 특별상 또는 에어팟, 상품권 등)을 자유롭게 설정해보세요.
+            </p>
+
+            <div id="prizeConfigGrid" class="prize-config-grid">
+                <!-- JavaScript로 등수별 입력창 자동 생성 -->
             </div>
-            <h2 class="text-xl font-bold text-slate-800 mb-2">제비뽑기 / 당첨 추첨 기능 준비 중</h2>
-            <p class="text-slate-500 text-sm max-w-md">여기에 해당 웹툴의 실행 화면 및 인터랙티브 기능 로직이 들어갑니다.</p>
-        </div>
+        </section>
 
+        <!-- Stage & Drawing Area -->
+        <section class="card stage-card">
+            <h2 style="font-size: 1.5rem; font-weight: 800; color: #FCD34D;">
+                <i class="fa-solid fa-trophy"></i> 럭키 추첨 무대
+            </h2>
+            <p style="opacity: 0.8; font-size: 0.9rem;">추첨 버튼을 누르면 카운트다운과 함께 행운의 당첨자가 공개됩니다!</p>
+            
+            <div id="luckyBox" class="lucky-box">
+                <i class="fa-solid fa-box-archive"></i>
+            </div>
+
+            <div id="countdownText" class="countdown-text">
+                READY
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <button class="btn btn-gold" id="drawBtn" onclick="startRaffle()" disabled>
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> 제비뽑기 추첨 시작!
+                </button>
+            </div>
+
+            <!-- Winner Cards Grid -->
+            <div id="winnerGrid" class="winner-grid">
+                <!-- 당첨자 공개 카드 자바스크립트 생성 -->
+            </div>
+        </section>
+
+        <!-- SEO Content & Features Section -->
+        <article class="card content-card">
+            <h2>화려하고 짜릿한 온라인 당첨자 추첨을 무료로!</h2>
+            <p>
+                이벤트 경품 추첨, 사내 회식 선물 뽑기, 발표 순서 결정까지!
+                덤덤한 텍스트 결과는 이제 그만. <strong>무작위 제비뽑기 / 당첨 추첨 서비스</strong>는 카운트다운과 함께 화려하게 쏟아지는 폭죽 효과로 추첨의 긴장감과 즐거움을 한층 더해줍니다.
+            </p>
+
+            <div class="info-graphics">
+                <div class="graphic-item">
+                    <i class="fa-solid fa-fire-flame-curved"></i>
+                    <h4>화려한 파티클 폭죽 연출</h4>
+                    <p>당첨자가 발표되는 즉시 화면 가득 퍼지는 파티클 폭죽으로 감동적인 순간을 선사합니다.</p>
+                </div>
+                <div class="graphic-item">
+                    <i class="fa-solid fa-award"></i>
+                    <h4>커스텀 등수/상품 설정</h4>
+                    <p> 단순 숫자 등수 외에도 에어팟, 커피 쿠폰 등 원하는 상품 명칭을 직관적으로 매칭할 수 있습니다.</p>
+                </div>
+                <div class="graphic-item">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <h4>100% 공정한 무작위 알고리즘</h4>
+                    <p>컴퓨터 난수 알고리즘을 준수하여 중복 당첨 없는 완벽한 무작위 추첨을 보장합니다.</p>
+                </div>
+            </div>
+
+            <h3>올바른 사용 가이드</h3>
+            <ol style="padding-left: 1.5rem; color: var(--text-sub); margin-bottom: 1rem;">
+                <li>응모자 명단을 쉼표나 줄바꿈으로 구분하여 입력창에 넣습니다.</li>
+                <li>뽑고자 하는 총 당첨자 수를 지정하고 [등수 지정으로 이동]을 클릭합니다.</li>
+                <li>각 당첨 슬롯별 명칭(1등, 2등, 상품명 등)을 입력합니다.</li>
+                <li>[제비뽑기 추첨 시작!] 버튼을 누르면 3초 카운트다운 후 당첨자 카드가 차례로 공개됩니다.</li>
+            </ol>
+
+            <h3>자주 묻는 질문 (FAQ)</h3>
+            <p><strong>Q. 한 사람이 여러 번 뽑힐 수도 있나요?</strong><br>
+            A. 기본적으로 중복 당첨을 방지하는 알고리즘이 적용되어 한 응모자는 단 한 번만 당첨됩니다.</p>
+            <p><strong>Q. 추첨 결과를 다시 초기화하고 재추첨할 수 있나요?</strong><br>
+            A. 언제든지 [추첨 시작] 버튼을 다시 누르면 새로운 무작위 결과로 재추첨됩니다.</p>
+        </article>
     </main>
 
     <!-- Footer -->
-    <footer class="bg-white border-t border-slate-200 py-8 mt-auto">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-            <p>© misopick.kr - 모든 서비스는 무료로 제공됩니다.</p>
-            <a href="index.html" class="hover:text-slate-800 transition">메인으로 돌아가기</a>
+    <footer>
+        <div class="footer-container">
+            <div class="footer-col">
+                <h4>제비뽑기 / 당첨 추첨</h4>
+                <p style="font-size: 0.85rem;">빠르고 공정한 무작위 추천 및 내기 게임을 제공하는 유틸리티 플랫폼입니다.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">misopick.kr 홈</a></li>
+                    <li><a href="raffle.html">제비뽑기 서비스</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>약관 및 정책</h4>
+                <ul>
+                    <li><a href="../privacy.html"><i class="fa-solid fa-user-shield"></i> 개인정보처리방침 (Privacy Policy)</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            &copy; 2026 Utility Web. All rights reserved.
         </div>
     </footer>
 
+    <!-- JavaScript Logic & Confetti Engine -->
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            lucide.createIcons();
-        });
+        let candidates = [];
+        let winnerCount = 3;
+        let isDrawing = false;
+
+        window.onload = function() {
+            setupPrizes();
+            initConfettiCanvas();
+        };
+
+        // STEP 1 명단 파싱 및 STEP 2 등수 지정 입력창 구성
+        function setupPrizes() {
+            if (isDrawing) return;
+
+            const text = document.getElementById('candidateInput').value;
+            candidates = text.split(/[\n,]+/).map(c => c.trim()).filter(c => c.length > 0);
+
+            if (candidates.length < 1) {
+                alert('최소 1명 이상의 응모자 이름을 입력해 주세요.');
+                return;
+            }
+
+            const winnerInputVal = parseInt(document.getElementById('winnerCountVal').value);
+            winnerCount = isNaN(winnerInputVal) || winnerInputVal < 1 ? 1 : winnerInputVal;
+
+            if (winnerCount > candidates.length) {
+                alert(`응모자 수(${candidates.length}명)보다 당첨자 수가 많을 수 없습니다. 당첨자 수가 ${candidates.length}명으로 자동 조정됩니다.`);
+                winnerCount = candidates.length;
+                document.getElementById('winnerCountVal').value = winnerCount;
+            }
+
+            // STEP 2 카드 활성화
+            const step2Card = document.getElementById('step2Card');
+            step2Card.style.opacity = '1';
+            step2Card.style.pointerEvents = 'auto';
+            step2Card.querySelector('.step-badge').style.backgroundColor = '#10B981';
+
+            // 등수 설정 그리드 생성
+            const container = document.getElementById('prizeConfigGrid');
+            container.innerHTML = '';
+
+            for (let i = 0; i < winnerCount; i++) {
+                const item = document.createElement('div');
+                item.className = 'prize-item';
+                item.innerHTML = `
+                    <label style="font-size: 0.85rem; font-weight:700; color:#D97706; text-align:center;">
+                        <i class="fa-solid fa-award"></i> ${i + 1}번 당첨 슬롯
+                    </label>
+                    <input type="text" id="prizeName_${i}" value="${i + 1}등 당첨" placeholder="상품 또는 등수">
+                `;
+                container.appendChild(item);
+            }
+
+            document.getElementById('drawBtn').disabled = false;
+            document.getElementById('winnerGrid').innerHTML = '';
+            document.getElementById('countdownText').innerHTML = 'READY';
+        }
+
+        // 제비뽑기 추첨 진행 (카운트다운 및 애니메이션)
+        function startRaffle() {
+            if (isDrawing || candidates.length === 0) return;
+
+            isDrawing = true;
+            document.getElementById('drawBtn').disabled = true;
+            document.getElementById('winnerGrid').innerHTML = '';
+
+            const luckyBox = document.getElementById('luckyBox');
+            const countdownText = document.getElementById('countdownText');
+
+            luckyBox.classList.add('shake');
+
+            let count = 3;
+            countdownText.innerHTML = count;
+
+            const timer = setInterval(() => {
+                count--;
+                if (count > 0) {
+                    countdownText.innerHTML = count;
+                } else {
+                    clearInterval(timer);
+                    luckyBox.classList.remove('shake');
+                    countdownText.innerHTML = "🎉 당첨자 발표! 🎉";
+                    executeDraw();
+                }
+            }, 800);
+        }
+
+        // 무작위 추첨 계산 및 화려한 결과 공개
+        function executeDraw() {
+            // 명단 셔플
+            let shuffled = [...candidates];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+
+            const winners = shuffled.slice(0, winnerCount);
+            const winnerGrid = document.getElementById('winnerGrid');
+
+            winners.forEach((winnerName, idx) => {
+                setTimeout(() => {
+                    const prizeTitle = document.getElementById(`prizeName_${idx}`).value || `${idx + 1}등 당첨`;
+                    const card = document.createElement('div');
+                    card.className = 'winner-card';
+                    card.innerHTML = `
+                        <div class="winner-rank"><i class="fa-solid fa-crown"></i> ${prizeTitle}</div>
+                        <div class="winner-name">${winnerName}</div>
+                    `;
+                    winnerGrid.appendChild(card);
+
+                    // 당첨 시 Confetti 폭죽 발사
+                    fireConfetti();
+
+                    if (idx === winners.length - 1) {
+                        isDrawing = false;
+                        document.getElementById('drawBtn').disabled = false;
+                    }
+                }, idx * 600);
+            });
+        }
+
+        // Confetti Engine (자체 구현 폭죽 엔진)
+        let canvas, ctx, particles = [];
+
+        function initConfettiCanvas() {
+            canvas = document.getElementById('confettiCanvas');
+            ctx = canvas.getContext('2d');
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+        }
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        function fireConfetti() {
+            const colors = ['#EF4444', '#F59E0B', '#10B981', '#3B82F6', '#8B5CF6', '#EC4899'];
+            for (let i = 0; i < 70; i++) {
+                particles.push({
+                    x: canvas.width / 2,
+                    y: canvas.height / 2,
+                    vx: (Math.random() - 0.5) * 18,
+                    vy: (Math.random() - 0.7) * 18,
+                    size: Math.random() * 8 + 4,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    life: 100
+                });
+            }
+            if (particles.length <= 70) {
+                requestAnimationFrame(updateConfetti);
+            }
+        }
+
+        function updateConfetti() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach((p, index) => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.3; // Gravity
+                p.life -= 1.5;
+
+                ctx.fillStyle = p.color;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+
+                if (p.life <= 0) {
+                    particles.splice(index, 1);
+                }
+            });
+
+            if (particles.length > 0) {
+                requestAnimationFrame(updateConfetti);
+            }
+        }
     </script>
 </body>
 </html>
