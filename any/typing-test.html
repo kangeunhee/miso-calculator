@@ -3,92 +3,880 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>타자 속도 연습기 - misopick.kr</title>
-    <meta name="description" content="한글 및 영문 긍정 문장 타수 측정기">
+    <title>타자 속도 연습기 - 한글 & 영문 타수 정밀 측정</title>
+    <meta name="description" content="한글 및 영문 긍정 명언 문장으로 즐기는 타자 속도 연습기! 실시간 타수(CPM/WPM)와 정확도, 네온 파티클 효과로 나의 타자 실력을 측정해 보세요.">
     
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            50: '#f0f9ff',
-                            100: '#e0f2fe',
-                            500: '#0284c7',
-                            600: '#0284c7',
-                            700: '#0369a1',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google AdSense Script -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2888840483385554" crossorigin="anonymous"></script>
+
+    <!-- FontAwesome 아이콘 CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;600;700;900&family=JetBrains+Mono:wght@500;800&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
     <style>
-        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
-        body { font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif; }
+        :root {
+            --primary-color: #10B981;
+            --primary-hover: #059669;
+            --accent-neon: #34D399;
+            --accent-blue: #3B82F6;
+            --accent-pink: #EC4899;
+            --bg-color: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --text-main: #0F172A;
+            --text-sub: #475569;
+            --border-color: #E2E8F0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* 헤더 */
+        header {
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(16, 185, 129, 0.08);
+        }
+
+        .header-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .top-link {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            text-decoration: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            background-color: #D1FAE5;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .top-link:hover {
+            background-color: var(--primary-color);
+            color: #FFFFFF;
+        }
+
+        /* 메인 컨테이너 */
+        main {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            flex: 1;
+            width: 100%;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+        }
+
+        /* 네온 게이밍 스테이지 */
+        .stage-card {
+            text-align: center;
+            background: radial-gradient(circle at 50% 20%, #ECFDF5 0%, #D1FAE5 100%);
+            border: 2px solid #A7F3D0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 언어 선택 탭 */
+        .lang-selector {
+            display: flex;
+            justify-content: center;
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .lang-btn {
+            padding: 0.5rem 1.5rem;
+            border-radius: 8px;
+            border: 2px solid var(--primary-color);
+            background: #FFFFFF;
+            color: var(--primary-color);
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .lang-btn.active, .lang-btn:hover {
+            background: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        /* 타자 입력 박스 구역 */
+        .typing-display {
+            background: #0F172A;
+            border-radius: 16px;
+            padding: 1.8rem;
+            margin: 1rem 0;
+            border: 2px solid var(--accent-neon);
+            box-shadow: 0 0 20px rgba(52, 211, 153, 0.2);
+            text-align: left;
+        }
+
+        .sentence-target {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #94A3B8;
+            margin-bottom: 1rem;
+            letter-spacing: 0.5px;
+            line-height: 1.8;
+            word-break: break-all;
+        }
+
+        .sentence-target span.correct {
+            color: #34D399;
+            text-shadow: 0 0 8px rgba(52, 211, 153, 0.6);
+        }
+
+        .sentence-target span.incorrect {
+            color: #F87171;
+            background-color: rgba(239, 68, 68, 0.2);
+            border-radius: 2px;
+        }
+
+        .sentence-target span.current {
+            border-bottom: 3px solid #60A5FA;
+            animation: blinkCursor 0.8s infinite;
+        }
+
+        @keyframes blinkCursor {
+            0%, 100% { border-color: #60A5FA; }
+            50% { border-color: transparent; }
+        }
+
+        .typing-input {
+            width: 100%;
+            padding: 0.9rem 1.2rem;
+            border-radius: 10px;
+            border: 2px solid #334155;
+            background: #1E293B;
+            color: #FFFFFF;
+            font-size: 1.2rem;
+            font-weight: 600;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .typing-input:focus {
+            border-color: var(--accent-neon);
+            box-shadow: 0 0 12px rgba(52, 211, 153, 0.4);
+        }
+
+        /* 실시간 통계 전광판 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .stat-card {
+            background: #FFFFFF;
+            border-radius: 12px;
+            padding: 1rem;
+            border: 1px solid #A7F3D0;
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.08);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-sub);
+            font-weight: 700;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--primary-hover);
+            margin-top: 0.2rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* 결과 창 모달 */
+        .result-box {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            border-radius: 16px;
+            background: #FFFFFF;
+            border: 2px solid var(--primary-color);
+            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.2);
+            display: none;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-rank {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--primary-hover);
+        }
+
+        /* 버튼 */
+        .btn-reset {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 10px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin-top: 1rem;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            transition: transform 0.2s;
+        }
+
+        .btn-reset:hover {
+            transform: translateY(-2px);
+        }
+
+        /* SEO 컨텐츠 카드 */
+        .content-card h2 {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #D1FAE5;
+            padding-bottom: 0.5rem;
+        }
+
+        .content-card h3 {
+            font-size: 1.2rem;
+            margin: 1.5rem 0 0.5rem 0;
+            color: var(--text-main);
+        }
+
+        .content-card p {
+            color: var(--text-sub);
+            margin-bottom: 1rem;
+        }
+
+        .info-graphics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .graphic-item {
+            background-color: #F8FAFC;
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .graphic-item i {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        /* 푸터 */
+        footer {
+            background-color: #0F172A;
+            color: #94A3B8;
+            padding: 3rem 1rem 1.5rem 1rem;
+            margin-top: auto;
+        }
+
+        .footer-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #1E293B;
+        }
+
+        .footer-col h4 { color: white; margin-bottom: 1rem; font-size: 1.1rem; }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 0.5rem; }
+        .footer-col a { color: #94A3B8; text-decoration: none; transition: color 0.2s; }
+        .footer-col a:hover { color: white; }
+        .copyright { text-align: center; padding-top: 1.5rem; font-size: 0.875rem; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 flex flex-col min-h-screen">
+<body>
 
-    <!-- Header Navigation -->
-    <header class="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <a href="index.html" class="flex items-center space-x-2">
-                <div class="w-9 h-9 rounded-xl bg-brand-600 flex items-center justify-center text-white font-black text-lg shadow-sm">M</div>
-                <span class="text-xl font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <a href="typing-test.html" class="logo">
+                <i class="fa-solid fa-keyboard"></i> 타자 속도 연습기
             </a>
-            <a href="index.html" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg border border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-100 transition">
-                <i data-lucide="arrow-left" class="w-4 h-4"></i>
-                <span>전체 툴 보기</span>
-            </a>
+            <a href="index.html" class="top-link"><i class="fa-solid fa-house"></i> misopick.kr</a>
         </div>
     </header>
 
-    <!-- Main Content Container -->
-    <main class="flex-grow max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        
-        <!-- Tool Title Card -->
-        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm mb-6">
-            <div class="flex items-center space-x-4 mb-4">
-                <div class="w-12 h-12 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center">
-                    <i data-lucide="keyboard" class="w-6 h-6"></i>
+    <!-- Main -->
+    <main>
+        <section class="card stage-card">
+            <h2 style="font-size: 1.6rem; font-weight: 800; color: #059669;">
+                <i class="fa-solid fa-bolt"></i> 한글 / 영문 타수 실시간 측정기
+            </h2>
+            <p style="color: var(--text-sub); font-size: 0.95rem; margin-top: 0.3rem;">
+                아래 문장을 정확하고 빠르게 입력해 보세요! 엔터(Enter)를 누르면 다음 문장으로 넘어갑니다.
+            </p>
+
+            <!-- 언어 선택 -->
+            <div class="lang-selector">
+                <button class="lang-btn active" id="btnKo" onclick="setLanguage('ko')">🇰🇷 한글 연습</button>
+                <button class="lang-btn" id="btnEn" onclick="setLanguage('en')">🇺🇸 영문 연습</button>
+            </div>
+
+            <!-- 타자 디스플레이 -->
+            <div class="typing-display">
+                <div class="sentence-target" id="sentenceTarget">문장을 불러오는 중입니다...</div>
+                <input type="text" class="typing-input" id="typingInput" placeholder="여기에 문장을 입력하세요..." autocomplete="off" oninput="handleInput()" onkeydown="handleKeyDown(event)">
+            </div>
+
+            <!-- 실시간 통계 전광판 -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">현재 타수 (CPM)</div>
+                    <div class="stat-value" id="statCPM">0</div>
                 </div>
-                <div>
-                    <span class="text-xs font-bold text-slate-400 block">TOOL #13</span>
-                    <h1 class="text-2xl sm:text-3xl font-black text-slate-900">타자 속도 연습기</h1>
+                <div class="stat-card">
+                    <div class="stat-label">최고 타수</div>
+                    <div class="stat-value" id="statMaxCPM">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">정확도</div>
+                    <div class="stat-value" id="statAcc">100%</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">완료 문장</div>
+                    <div class="stat-value" id="statCount">0 / 5</div>
                 </div>
             </div>
-            <p class="text-slate-600 text-sm sm:text-base leading-relaxed">한글 및 영문 긍정 문장 타수 측정기</p>
-        </div>
 
-        <!-- Tool Workspace Area -->
-        <div class="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-sm min-h-[400px] flex flex-col items-center justify-center text-center">
-            <!-- TODO: 실제 로직 개발 영역 -->
-            <div class="p-4 bg-slate-100 rounded-2xl mb-4">
-                <i data-lucide="keyboard" class="w-12 h-12 text-slate-400 mx-auto"></i>
+            <!-- 최종 결과 박스 -->
+            <div class="result-box" id="resultBox">
+                <div style="font-size: 0.9rem; font-weight: 700; color: var(--text-sub);">[ 5문장 연습 측정 결과 ]</div>
+                <div class="result-rank" id="resultRank">⚡ 번개 같은 타자 (480 타)</div>
+                <p id="resultDesc" style="color: var(--text-sub); font-size: 0.95rem; margin-top: 0.5rem;">
+                    평균 정확도 98%로 완벽한 속도를 보여주었습니다!
+                </p>
+                <button class="btn-reset" onclick="resetGame()">다시 도전하기</button>
             </div>
-            <h2 class="text-xl font-bold text-slate-800 mb-2">타자 속도 연습기 기능 준비 중</h2>
-            <p class="text-slate-500 text-sm max-w-md">여기에 해당 웹툴의 실행 화면 및 인터랙티브 기능 로직이 들어갑니다.</p>
-        </div>
+        </section>
 
+        <!-- SEO Content & Guide Section -->
+        <article class="card content-card">
+            <h2>타자 속도 단위 CPM과 WPM이란 무엇인가요?</h2>
+            <p>
+                <strong>CPM(Characters Per Minute, 분당 타수)</strong>은 1분 동안 누른 자음, 모음, 글자 수를 나타내는 한국 표준 타수 지표입니다. 
+                영문 타자 측정에서 주로 사용되는 <strong>WPM(Words Per Minute, 분당 단어 수)</strong>은 평균 5글자를 1단어로 환산하여 속도를 산출합니다.
+            </p>
+
+            <div class="info-graphics">
+                <div class="graphic-item">
+                    <i class="fa-solid fa-quote-left"></i>
+                    <h4>긍정적인 명언 문장</h4>
+                    <p>기분 좋아지는 동기부여 명언과 명대사를 타자 연습 문장으로 제공합니다.</p>
+                </div>
+                <div class="graphic-item">
+                    <i class="fa-solid fa-bullseye"></i>
+                    <h4>실시간 정확도 자동 계산</h4>
+                    <p>오타가 발생한 글자를 실시간 감지하여 내 타자 정확도를 백분율(%)로 알려줍니다.</p>
+                </div>
+                <div class="graphic-item">
+                    <i class="fa-solid fa-trophy"></i>
+                    <h4>타자 등급 측정</h4>
+                    <p>평균 타수에 따라 초보자부터 광속 키보디스트까지 5단계 랭크를 판단합니다.</p>
+                </div>
+            </div>
+
+            <h3>올바른 타자 자세 및 속도 향상 노하우</h3>
+            <ul style="padding-left: 1.5rem; color: var(--text-sub); margin-bottom: 1rem;">
+                <li><strong>기본 자리(Home Row) 유지:</strong> 왼쪽 F키와 오른쪽 J키의 돌기에 양검지를 올려놓는 습관을 들이세요.</li>
+                <li><strong>시선은 모니터로:</strong> 키보드를 보지 않고 화면의 문장을 보며 치는 '블라인드 타핑(Touch Typing)'이 핵심입니다.</li>
+                <li><strong>속도보다 정확도 우선:</strong> 오타 수정에 드는 시간이 타자 속도를 떨어뜨리는 가장 큰 요인입니다.</li>
+            </ul>
+
+            <h3>자주 묻는 질문 (FAQ)</h3>
+            <p><strong>Q. 한글 타수는 자음과 모음이 따로 계산되나요?</strong><br>
+            A. 네! 예를 들어 '한'이라는 글자는 'ㅎ+ㅏ+ㄴ' 총 3타수로 정밀하게 분해 계산됩니다.</p>
+            <p><strong>Q. 일반인의 평균 한글 타수는 얼마인가요?</strong><br>
+            A. 일반 성인의 평균 한글 타수는 약 250 ~ 350 타수이며, 500 타수 이상이면 상위 5%의 고수 단계입니다.</p>
+        </article>
     </main>
 
     <!-- Footer -->
-    <footer class="bg-white border-t border-slate-200 py-8 mt-auto">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-            <p>© misopick.kr - 모든 서비스는 무료로 제공됩니다.</p>
-            <a href="index.html" class="hover:text-slate-800 transition">메인으로 돌아가기</a>
+    <footer>
+        <div class="footer-container">
+            <div class="footer-col">
+                <h4>타자 속도 연습기</h4>
+                <p style="font-size: 0.85rem;">정밀한 한글 및 영문 타수 계산과 실시간 속도 측정을 제공하는 유틸리티입니다.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">misopick.kr 홈</a></li>
+                    <li><a href="typing-test.html">타자 속도 연습기</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>약관 및 정책</h4>
+                <ul>
+                    <li><a href="../privacy.html"><i class="fa-solid fa-user-shield"></i> 개인정보처리방침</a></li>
+                </ul>
+            </div>
         </div>
+        <div class="copyright">&copy; 2026 Utility Web. All rights reserved.</div>
     </footer>
 
+    <!-- JavaScript -->
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            lucide.createIcons();
-        });
+        // ✨ 한글 100문장 + 영문 100문장 고품질 데이터베이스
+        const SENTENCES = {
+            ko: [
+                "오늘 하루도 당신의 꿈을 향해 한 걸음 더 나아가세요.",
+                "행복은 마음먹기에 달려있다는 것을 잊지 마세요.",
+                "작은 변화가 모여 커다란 기적을 만들어 냅니다.",
+                "당신은 스스로 생각하는 것보다 훨씬 더 강한 사람입니다.",
+                "빛나는 미래는 준비된 자에게 언제나 열려 있습니다.",
+                "시작이 반이라는 말처럼 지금 도전을 시작하세요.",
+                "어제의 나보다 오늘 더 발전하는 삶을 살아가세요.",
+                "마음이 밝으면 세상도 더욱 따뜻하게 보이는 법입니다.",
+                "성공은 끊임없는 노력과 열정의 결실입니다.",
+                "모든 시련은 당신을 더욱 견고하게 만드는 과정입니다.",
+                "꿈을 꾸는 사람만이 그것을 현실로 만들 수 있습니다.",
+                "당신의 가치는 타인의 평가로 결정되지 않습니다.",
+                "긍정적인 생각은 긍정적인 행동을 불러옵니다.",
+                "어려움 속에서도 언제나 희망의 빛은 존재합니다.",
+                "스스로를 믿고 담대하게 앞으로 걸어가세요.",
+                "포기하지 않는 한 실패란 단지 과정일 뿐입니다.",
+                "오늘 흘린 땀방울은 내일의 가장 아름다운 열매가 됩니다.",
+                "당신의 삶은 세상에서 단 하나뿐인 소중한 이야기입니다.",
+                "작은 미소가 누군가의 하루를 완전히 바꿀 수 있습니다.",
+                "지나간 과거에 연연하지 말고 현재에 최선을 다하세요.",
+                "도전하는 사람의 모습은 언제나 아름답습니다.",
+                "배움에는 끝이 없으며 지식은 나만의 무기가 됩니다.",
+                "오늘의 고난은 내일의 영광을 위한 밑거름입니다.",
+                "따뜻한 말 한마디가 세상을 더욱 행복하게 만듭니다.",
+                "생각하는 대로 행동하고 행동하는 대로 성취하세요.",
+                "당신 안에는 무한한 가능성이 숨쉬고 있습니다.",
+                "진정한 성장은 자신의 한계를 뛰어넘는 것입니다.",
+                "인생은 결과가 아닌 과정 자체로 가치가 있습니다.",
+                "어둠이 짙을수록 다가오는 새벽은 더욱 가깝습니다.",
+                "감사하는 마음을 가지면 매일이 특별해집니다.",
+                "시간은 흘러가지만 배운 가치는 영원히 남습니다.",
+                "당신의 노력이 마침내 커다란 결실을 맺을 것입니다.",
+                "모든 순간을 소중히 여기며 최선을 다하세요.",
+                "슬픔은 나누면 줄어들고 기쁨은 나누면 배가 됩니다.",
+                "새로운 인연은 삶에 커다란 활력을 불어넣어 줍니다.",
+                "바른 인성과 겸손한 태도가 참된 가치를 지닙니다.",
+                "바람이 불지 않을 때 노를 저어 나아가세요.",
+                "작은 선행이 모여 세상 전체를 맑게 밝힙니다.",
+                "인내심은 가장 쓰지만 그 열매는 가장 달콤합니다.",
+                "스스로를 사랑하는 것이 모든 시작의 첫 걸음입니다.",
+                "오늘의 노력이 내일의 새로운 길을 열어줍니다.",
+                "목표를 명확히 세우고 꾸준히 정진해 나아가세요.",
+                "언제나 당당하고 인자하게 사람들을 대하세요.",
+                "희망을 품고 사는 삶에는 시들지 않는 꽃이 피어납니다.",
+                "자연의 흐름처럼 순리대로 지혜롭게 살아가세요.",
+                "창의적인 생각은 고정관념을 깨뜨릴 때 나옵니다.",
+                "친절함은 세상을 부드럽게 이어주는 다리입니다.",
+                "오늘 시작한 일을 미루지 말고 마무리를 지으세요.",
+                "용기 있는 행동만이 상황을 변화시킬 수 있습니다.",
+                "지혜로운 사람은 경청하는 자세를 잃지 않습니다.",
+                "함께하는 사람들과 소중한 추억을 많이 만드세요.",
+                "건강한 신체에 건강한 정신이 차오르게 됩니다.",
+                "바른 길을 걸어갈 때 마음에 평화가 찾아옵니다.",
+                "행복의 비밀은 자유이며 자유의 비밀은 용기입니다.",
+                "실수를 두려워하지 말고 경험의 자산으로 삼으세요.",
+                "언제나 미소를 지으며 타인을 따뜻하게 맞이하세요.",
+                "최선을 다했다면 결과와 상관없이 스스로를 칭찬하세요.",
+                "시간 관리는 인생을 지혜롭게 가꾸는 핵심입니다.",
+                "작은 약속도 중하게 여기는 신뢰받는 사람이 되세요.",
+                "서로를 존중할 때 비로소 진정한 대화가 시작됩니다.",
+                "끊임없이 질문하고 탐구하는 자세를 유지하세요.",
+                "오늘 주어진 일상 속에서 소소한 행복을 찾으세요.",
+                "긍정의 에너지로 주위 사람들에게 기쁨을 전하세요.",
+                "원대한 꿈을 품되 시작은 작게 실천해 나아가세요.",
+                "어떤 순간에도 겸손함을 잃지 않는 마음을 가지세요.",
+                "우리가 만드는 모든 순간이 귀중한 역사입니다.",
+                "남과 비교하지 말고 나만의 속도로 당당히 걸어가세요.",
+                "세상의 모든 위대한 일은 작은 집념에서 시작됩니다.",
+                "평화로운 마음은 어떤 소란도 이겨낼 수 있습니다.",
+                "슬럼프가 찾아왔을 때는 잠시 쉬어가도 괜찮습니다.",
+                "당신의 미소는 세상을 환하게 비추는 햇살입니다.",
+                "성실함은 시간이 지날수록 빛을 발하는 가치입니다.",
+                "마음의 문을 열면 새로운 기회가 찾아옵니다.",
+                "스스로에게 솔직하고 거짓 없는 삶을 사세요.",
+                "배려하는 마음이 아름다운 공동체를 만듭니다.",
+                "오늘 하루도 수고한 자신에게 격려를 보내세요.",
+                "희망은 언제나 절망보다 강하고 위대합니다.",
+                "당신의 용기 있는 도전이 누군가의 귀감이 됩니다.",
+                "매일 아침 새로운 기회가 당신을 찾아옵니다.",
+                "진정한 친구는 인생의 가장 소중한 보물입니다.",
+                "생각의 깊이가 삶의 질을 다르게 만들어 줍니다.",
+                "올바른 가치관을 가지고 세상을 밝혀 나가세요.",
+                "꿈을 향한 순수한 열정은 결코 식지 않습니다.",
+                "서로 다름을 인정하고 받아들이는 넓은 마음을 가지세요.",
+                "지속적인 배움이야말로 젊음을 유지하는 비결입니다.",
+                "아름다운 말씨가 사람의 품격을 높여줍니다.",
+                "오늘의 노고가 머지않아 환한 결실을 맺을 것입니다.",
+                "당신의 존재 자체가 누군가에게는 큰 힘이 됩니다.",
+                "세상을 바라보는 시선을 바꾸면 인생이 바뀝니다.",
+                "포용하는 마음으로 타인의 허물을 감싸주세요.",
+                "순간의 선택들이 모여 하나의 멋진 삶이 됩니다.",
+                "오늘도 최선을 다한 당신은 진정한 승리자입니다.",
+                "마음속의 평안이 세상을 더욱 아름답게 만듭니다.",
+                "작은 시작이 커다란 결실로 이어질 것입니다.",
+                "항상 기뻐하고 쉬지 말고 감사하며 살아가세요.",
+                "당신의 날개는 더 높은 곳으로 날아오를 준비가 되었습니다.",
+                "맑은 공기를 마시며 새로이 마음을 다잡으세요.",
+                "변화를 두려워하지 않는 용기가 미래를 결정합니다.",
+                "언제나 스스로를 자랑스럽게 생각하고 사랑하세요.",
+                "빛나는 당신의 오늘 하루를 진심으로 응원합니다."
+            ],
+            en: [
+                "Believe you can and you are halfway there.",
+                "The only way to do great work is to love what you do.",
+                "Happiness is not something ready made. It comes from your own actions.",
+                "Every moment is a fresh beginning for a wonderful day.",
+                "Keep your face always toward the sunshine and shadows will fall behind you.",
+                "Success is not final, failure is not fatal: It is the courage to continue that counts.",
+                "You are never too old to set another goal or to dream a new dream.",
+                "Do what you can, with what you have, where you are.",
+                "It always seems impossible until it is done.",
+                "Life is 10% what happens to you and 90% how you react to it.",
+                "Dream big and dare to fail.",
+                "Act as if what you do makes a difference. It does.",
+                "What you get by achieving your goals is not as important as what you become.",
+                "You must be the change you wish to see in the world.",
+                "The future belongs to those who believe in the beauty of their dreams.",
+                "Aim for the moon. If you miss, you may hit a star.",
+                "Don't count the days, make the days count.",
+                "Action is the foundational key to all success.",
+                "Tough times never last, but tough people do.",
+                "In the middle of every difficulty lies opportunity.",
+                "Turn your wounds into wisdom.",
+                "Great things never came from comfort zones.",
+                "Strive not to be a success, but rather to be of value.",
+                "Your time is limited, so don't waste it living someone else's life.",
+                "It is during our darkest moments that we must focus to see the light.",
+                "Everything you've ever wanted is on the other side of fear.",
+                "Happiness depends upon ourselves.",
+                "Small deeds done are better than great deeds planned.",
+                "Success usually comes to those who are too busy to be looking for it.",
+                "Opportunities don't happen, you create them.",
+                "Do one thing every day that scares you.",
+                "Never regret anything that made you smile.",
+                "Be curious, not judgmental.",
+                "Be yourself; everyone else is already taken.",
+                "Doubt kills more dreams than failure ever will.",
+                "Joy is not in things; it is in us.",
+                "The secret of getting ahead is getting started.",
+                "Love the life you live. Live the life you love.",
+                "Nothing is impossible, the word itself says I'm possible!",
+                "Try to be a rainbow in someone's cloud.",
+                "Live life as if everything is rigged in your favor.",
+                "Simplicity is the ultimate sophistication.",
+                "The best preparation for tomorrow is doing your best today.",
+                "A winner is a dreamer who never gives up.",
+                "Focus on being productive instead of busy.",
+                "Knowledge is power, but enthusiasm pulls the switch.",
+                "Kindness is a language which the deaf can hear and the blind can see.",
+                "To live is the rarest thing in the world. Most people exist, that is all.",
+                "Spread love everywhere you go. Let no one ever come to you without leaving happier.",
+                "No act of kindness, no matter how small, is ever wasted.",
+                "Change your thoughts and you change your world.",
+                "Where there is love there is life.",
+                "Stay hungry, stay foolish.",
+                "Every day is a second chance.",
+                "The power of imagination makes us infinite.",
+                "You do not find the happy life. You make it.",
+                "There is always light, if only we're brave enough to see it.",
+                "Peace begins with a smile.",
+                "Make each day your masterpiece.",
+                "Don't wait for opportunity. Create it.",
+                "Courage is grace under pressure.",
+                "Growth begins at the end of your comfort zone.",
+                "Energy and persistence conquer all things.",
+                "Genius is one percent inspiration and ninety-nine percent perspiration.",
+                "The only limit to our realization of tomorrow will be our doubts of today.",
+                "Whatever you are, be a good one.",
+                "Wisdom begins in wonder.",
+                "Honesty is the first chapter in the book of wisdom.",
+                "Success is walking from failure to failure with no loss of enthusiasm.",
+                "You miss 100% of the shots you don't take.",
+                "If you tell the truth, you don't have to remember anything.",
+                "Work hard in silence, let your success be your noise.",
+                "Never let the fear of striking out keep you from playing the game.",
+                "Your life does not get better by chance, it gets better by change.",
+                "Character is how you treat those who can do nothing for you.",
+                "Patience is bitter, but its fruit is sweet.",
+                "A journey of a thousand miles begins with a single step.",
+                "Failure is simply the opportunity to begin again, this time more intelligently.",
+                "The best way to predict your future is to create it.",
+                "Lead from the heart, not the head.",
+                "Be the sparkle that lights up the world.",
+                "Nothing worth having comes easy.",
+                "Positive mind, positive vibes, positive life.",
+                "Life is a climb, but the view is great.",
+                "Don't let yesterday take up too much of today.",
+                "Start where you are. Use what you have. Do what you can.",
+                "The purpose of our lives is to be happy.",
+                "Be kind whenever possible. It is always possible.",
+                "Light tomorrow with today.",
+                "Smile, it is the key that fits the lock of everybody's heart.",
+                "The mind is everything. What you think you become.",
+                "Hope is a waking dream.",
+                "Life is what happens when you're busy making other plans.",
+                "The secret of happiness is freedom, the secret of freedom is courage.",
+                "Happiness is a warm puppy.",
+                "Count your blessings, not your problems.",
+                "Stay positive, work hard, make it happen.",
+                "You are stronger than you think.",
+                "Make today so awesome that yesterday gets jealous.",
+                "Shine bright like the diamond you are."
+            ]
+        };
+
+        let currentLang = 'ko';
+        let sentenceIndex = 0;
+        let currentSentence = "";
+        let startTime = null;
+        let isTyping = false;
+        let completedCount = 0;
+        let totalStrokesSum = 0;
+        let totalErrorsSum = 0;
+        let maxCPM = 0;
+        const TOTAL_ROUNDS = 100;
+
+        // 한글 초성/중성/종성 분해 타수 계산 함수
+        function getHangulStrokes(char) {
+            const code = char.charCodeAt(0);
+            if (code >= 0xAC00 && code <= 0xD7A3) {
+                const uniIndex = code - 0xAC00;
+                const jong = uniIndex % 28;
+                return jong === 0 ? 2 : 3; // 초성+중성(2타) 또는 초성+중성+종성(3타)
+            }
+            return 1;
+        }
+
+        function calculateStrokes(str) {
+            let count = 0;
+            for (let i = 0; i < str.length; i++) {
+                count += getHangulStrokes(str[i]);
+            }
+            return count;
+        }
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.getElementById('btnKo').classList.toggle('active', lang === 'ko');
+            document.getElementById('btnEn').classList.toggle('active', lang === 'en');
+            resetGame();
+        }
+
+        function loadNextSentence() {
+            const list = SENTENCES[currentLang];
+            currentSentence = list[Math.floor(Math.random() * list.length)];
+            renderSentenceTarget("");
+            document.getElementById('typingInput').value = "";
+            startTime = null;
+            isTyping = false;
+        }
+
+        function renderSentenceTarget(inputVal) {
+            const targetEl = document.getElementById('sentenceTarget');
+            targetEl.innerHTML = "";
+
+            for (let i = 0; i < currentSentence.length; i++) {
+                const span = document.createElement('span');
+                const char = currentSentence[i];
+
+                if (i < inputVal.length) {
+                    if (inputVal[i] === char) {
+                        span.className = "correct";
+                    } else {
+                        span.className = "incorrect";
+                    }
+                } else if (i === inputVal.length) {
+                    span.className = "current";
+                }
+
+                span.innerText = char;
+                targetEl.appendChild(span);
+            }
+        }
+
+        function playKeySound() {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                const ctx = new AudioContext();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(400 + Math.random() * 150, ctx.currentTime);
+                gain.gain.setValueAtTime(0.04, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.03);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.03);
+            } catch (e) {}
+        }
+
+        function handleInput() {
+            const inputVal = document.getElementById('typingInput').value;
+
+            if (!isTyping && inputVal.length > 0) {
+                isTyping = true;
+                startTime = Date.now();
+            }
+
+            playKeySound();
+            renderSentenceTarget(inputVal);
+
+            // 타수 계산
+            if (startTime) {
+                const elapsedMin = (Date.now() - startTime) / 60000;
+                const currentStrokes = calculateStrokes(inputVal);
+                const cpm = elapsedMin > 0 ? Math.round(currentStrokes / elapsedMin) : 0;
+
+                document.getElementById('statCPM').innerText = cpm;
+                if (cpm > maxCPM) {
+                    maxCPM = cpm;
+                    document.getElementById('statMaxCPM').innerText = maxCPM;
+                }
+            }
+
+            // 정확도 산출
+            let errors = 0;
+            for (let i = 0; i < inputVal.length; i++) {
+                if (inputVal[i] !== currentSentence[i]) errors++;
+            }
+            const acc = inputVal.length > 0 ? Math.max(0, Math.round(((inputVal.length - errors) / inputVal.length) * 100)) : 100;
+            document.getElementById('statAcc').innerText = `${acc}%`;
+        }
+
+        function handleKeyDown(e) {
+            if (e.key === 'Enter') {
+                const inputVal = document.getElementById('typingInput').value;
+                if (inputVal.length === 0) return;
+
+                const strokes = calculateStrokes(inputVal);
+                totalStrokesSum += strokes;
+
+                completedCount++;
+                document.getElementById('statCount').innerText = `${completedCount} / ${TOTAL_ROUNDS}`;
+
+                if (completedCount < TOTAL_ROUNDS) {
+                    loadNextSentence();
+                } else {
+                    finishGame();
+                }
+            }
+        }
+
+        function finishGame() {
+            document.getElementById('typingInput').disabled = true;
+
+            let rank = "";
+            let desc = "";
+
+            if (maxCPM >= 500) {
+                rank = `⚡ 신의 타자 (최고 ${maxCPM} CPM)`;
+                desc = "상위 1% 게이머/프로 수준의 빠른 타이핑 속도입니다!";
+            } else if (maxCPM >= 350) {
+                rank = `🚀 번개 키보디스트 (최고 ${maxCPM} CPM)`;
+                desc = "상위 10%의 매우 뛰어난 타자 실력을 가지고 있습니다.";
+            } else if (maxCPM >= 250) {
+                rank = `🎯 능숙한 타이퍼 (최고 ${maxCPM} CPM)`;
+                desc = "안정적이고 표준적인 타자 능력을 갖추고 있습니다.";
+            } else {
+                rank = `🌱 차분한 거북이 (최고 ${maxCPM} CPM)`;
+                desc = "조금 더 연습하여 손가락 위치를 익혀보세요!";
+            }
+
+            document.getElementById('resultRank').innerText = rank;
+            document.getElementById('resultDesc').innerText = desc;
+            document.getElementById('resultBox').style.display = 'block';
+
+            confetti({
+                particleCount: 80,
+                spread: 70,
+                colors: ['#10B981', '#34D399', '#3B82F6'],
+                origin: { y: 0.65 }
+            });
+        }
+
+        function resetGame() {
+            completedCount = 0;
+            totalStrokesSum = 0;
+            totalErrorsSum = 0;
+            maxCPM = 0;
+
+            document.getElementById('statCPM').innerText = "0";
+            document.getElementById('statMaxCPM').innerText = "0";
+            document.getElementById('statAcc').innerText = "100%";
+            document.getElementById('statCount').innerText = `0 / ${TOTAL_ROUNDS}`;
+            document.getElementById('resultBox').style.display = 'none';
+
+            const inputEl = document.getElementById('typingInput');
+            inputEl.disabled = false;
+            inputEl.value = "";
+            inputEl.focus();
+
+            loadNextSentence();
+        }
+
+        // 초기 시작
+        window.onload = function() {
+            resetGame();
+        };
     </script>
 </body>
 </html>

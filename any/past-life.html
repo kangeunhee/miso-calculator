@@ -3,92 +3,711 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>전생 / 칭호 생성기 - misopick.kr</title>
-    <meta name="description" content="나의 전생과 특이한 칭호 알아보기">
+    <title>전생 / 칭호 생성기 - 신비로운 전생 직업 & 전설의 칭호 테스트</title>
+    <meta name="description" content="시공간을 넘어선 나의 전생은 무엇이었을까? 이름과 생년월일을 입력하고 나의 전생 직업, 판타지 칭호, 운명의 서사를 화려한 스캐닝으로 확인해보세요!">
     
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            50: '#f0f9ff',
-                            100: '#e0f2fe',
-                            500: '#0284c7',
-                            600: '#0284c7',
-                            700: '#0369a1',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google AdSense Script -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2888840483385554" crossorigin="anonymous"></script>
+
+    <!-- FontAwesome 아이콘 CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;600;700;900&family=Cinzel:wght@600;800;900&family=JetBrains+Mono:wght@500;800&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
     <style>
-        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
-        body { font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif; }
+        :root {
+            --primary-color: #D97706;
+            --primary-hover: #B45309;
+            --accent-gold: #F59E0B;
+            --accent-purple: #8B5CF6;
+            --accent-crimson: #E11D48;
+            --bg-color: #0F172A;
+            --card-bg: #1E293B;
+            --text-main: #F8FAFC;
+            --text-sub: #94A3B8;
+            --border-color: #334155;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* 헤더 */
+        header {
+            background-color: rgba(30, 41, 59, 0.9);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid #78350F;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 15px rgba(245, 158, 11, 0.15);
+        }
+
+        .header-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--accent-gold);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'Cinzel', serif;
+        }
+
+        .top-link {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--accent-gold);
+            text-decoration: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            background-color: rgba(245, 158, 11, 0.1);
+            border: 1px solid var(--primary-color);
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .top-link:hover {
+            background-color: var(--primary-color);
+            color: #FFFFFF;
+        }
+
+        /* 메인 컨테이너 */
+        main {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            flex: 1;
+            width: 100%;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+        }
+
+        /* 스테이지 카드 */
+        .stage-card {
+            text-align: center;
+            background: radial-gradient(circle at 50% 20%, #291E3B 0%, #0F172A 100%);
+            border: 2px solid #B45309;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 신비로운 마법진 스캐너 박스 */
+        .magic-circle-box {
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 20px;
+            padding: 2.5rem 1.5rem;
+            margin: 1.5rem 0;
+            border: 2px solid var(--accent-gold);
+            box-shadow: inset 0 0 30px rgba(245, 158, 11, 0.2), 0 0 25px rgba(245, 158, 11, 0.15);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* 신비한 마법진 배경 아이콘 */
+        .bg-magic-icon {
+            font-size: 8rem;
+            color: rgba(245, 158, 11, 0.05);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            transition: transform 10s linear;
+        }
+
+        .bg-magic-icon.spinning {
+            animation: rotateMagic 12s infinite linear;
+        }
+
+        @keyframes rotateMagic {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            width: 100%;
+            max-width: 450px;
+            margin-top: 1.2rem;
+            z-index: 10;
+        }
+
+        .mystic-input {
+            width: 100%;
+            padding: 1rem 1.2rem;
+            border-radius: 12px;
+            border: 2px solid #78350F;
+            background: #0F172A;
+            color: var(--accent-gold);
+            font-size: 1rem;
+            font-weight: 700;
+            outline: none;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .mystic-input:focus {
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.5);
+            border-color: var(--accent-gold);
+        }
+
+        /* 버튼 양식 */
+        .control-panel {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+            z-index: 10;
+        }
+
+        .btn-action {
+            background: linear-gradient(135deg, #D97706 0%, #B45309 100%);
+            color: white;
+            border: none;
+            padding: 0.9rem 2.5rem;
+            border-radius: 30px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(217, 119, 6, 0.4);
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(245, 158, 11, 0.6);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid var(--accent-gold);
+            color: var(--accent-gold);
+            box-shadow: none;
+            padding: 0.8rem 1.8rem;
+            font-size: 0.95rem;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(245, 158, 11, 0.2);
+            color: #FFFFFF;
+        }
+
+        /* 결과 화면 디자인 */
+        .result-container {
+            display: none;
+            animation: fadeIn 0.8s ease;
+            width: 100%;
+            z-index: 10;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .past-title-badge {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #C084FC;
+            margin-top: 0.5rem;
+        }
+
+        .past-job-name {
+            font-size: 2.3rem;
+            font-weight: 900;
+            color: var(--accent-gold);
+            font-family: 'Cinzel', 'Noto Sans KR', serif;
+            text-shadow: 0 0 15px rgba(245, 158, 11, 0.6);
+            margin: 0.3rem 0 1rem 0;
+        }
+
+        .title-box {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(225, 29, 72, 0.2) 100%);
+            border: 2px dashed var(--accent-purple);
+            border-radius: 12px;
+            padding: 1.2rem;
+            margin: 1rem 0 1.5rem 0;
+        }
+
+        .title-text {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: #F472B6;
+            letter-spacing: 1px;
+        }
+
+        /* 명성 & 운명 스탯 */
+        .fame-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+            text-align: left;
+        }
+
+        .fame-card {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid #475569;
+            padding: 1rem;
+            border-radius: 10px;
+        }
+
+        .fame-title {
+            font-size: 0.85rem;
+            color: var(--text-sub);
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+
+        .fame-value {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--accent-gold);
+        }
+
+        /* SEO 컨텐츠 카드 */
+        .content-card h2 {
+            font-size: 1.5rem;
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #78350F;
+            padding-bottom: 0.5rem;
+        }
+
+        .content-card h3 {
+            font-size: 1.2rem;
+            margin: 1.5rem 0 0.5rem 0;
+            color: var(--text-main);
+        }
+
+        .content-card p {
+            color: var(--text-sub);
+            margin-bottom: 1rem;
+        }
+
+        .info-graphics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .graphic-item {
+            background-color: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .graphic-item i {
+            font-size: 2.5rem;
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+        }
+
+        /* 푸터 */
+        footer {
+            background-color: #0B0F19;
+            color: #64748B;
+            padding: 3rem 1rem 1.5rem 1rem;
+            margin-top: auto;
+            border-top: 1px solid #1E293B;
+        }
+
+        .footer-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #1E293B;
+        }
+
+        .footer-col h4 { color: white; margin-bottom: 1rem; font-size: 1.1rem; }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 0.5rem; }
+        .footer-col a { color: #64748B; text-decoration: none; transition: color 0.2s; }
+        .footer-col a:hover { color: white; }
+        .copyright { text-align: center; padding-top: 1.5rem; font-size: 0.875rem; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 flex flex-col min-h-screen">
+<body>
 
-    <!-- Header Navigation -->
-    <header class="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <a href="index.html" class="flex items-center space-x-2">
-                <div class="w-9 h-9 rounded-xl bg-brand-600 flex items-center justify-center text-white font-black text-lg shadow-sm">M</div>
-                <span class="text-xl font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <a href="past-life.html" class="logo">
+                <i class="fa-solid fa-crown"></i> PAST LIFE GENERATOR
             </a>
-            <a href="index.html" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg border border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-100 transition">
-                <i data-lucide="arrow-left" class="w-4 h-4"></i>
-                <span>전체 툴 보기</span>
-            </a>
+            <a href="index.html" class="top-link"><i class="fa-solid fa-house"></i> misopick.kr</a>
         </div>
     </header>
 
-    <!-- Main Content Container -->
-    <main class="flex-grow max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        
-        <!-- Tool Title Card -->
-        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm mb-6">
-            <div class="flex items-center space-x-4 mb-4">
-                <div class="w-12 h-12 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center">
-                    <i data-lucide="crown" class="w-6 h-6"></i>
+    <!-- Main -->
+    <main>
+        <section class="card stage-card">
+            <h2 style="font-size: 1.6rem; font-weight: 800; color: var(--accent-gold);">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> 시공간을 넘어선 전생 & 칭호 탐색기
+            </h2>
+            <p style="color: var(--text-sub); font-size: 0.95rem; margin-top: 0.3rem;">
+                당신의 이름과 생년월일에 새겨진 아카식 레코드(시공간 영혼 기록)를 스캔합니다.
+            </p>
+
+            <!-- 마법진 스캐너 컨솔 -->
+            <div class="magic-circle-box">
+                <i class="fa-solid fa-hat-wizard bg-magic-icon" id="magicCircle"></i>
+
+                <!-- 입력 화면 -->
+                <div id="inputZone" style="width: 100%; display: flex; flex-direction: column; align-items: center; z-index: 10;">
+                    <i class="fa-solid fa-scroll" style="font-size: 3rem; color: var(--accent-gold); margin-bottom: 0.5rem;"></i>
+                    <div style="color: var(--text-sub); font-size: 0.95rem;">영혼의 정보를 아래에 기록하세요</div>
+
+                    <div class="input-group">
+                        <input type="text" id="userName" class="mystic-input" placeholder="성함 입력 (예: 홍길동)" maxlength="10">
+                        <input type="date" id="userBirth" class="mystic-input" value="1998-05-15">
+                    </div>
+
+                    <div class="control-panel">
+                        <button class="btn-action" onclick="runPastLifeScan()">
+                            <i class="fa-solid fa-eye"></i> 전생 & 칭호 소환하기
+                        </button>
+                    </div>
                 </div>
-                <div>
-                    <span class="text-xs font-bold text-slate-400 block">TOOL #25</span>
-                    <h1 class="text-2xl sm:text-3xl font-black text-slate-900">전생 / 칭호 생성기</h1>
+
+                <!-- 스캔 진행 텍스트 -->
+                <div id="scanningText" style="display: none; color: var(--accent-gold); font-weight: 800; font-size: 1.2rem; margin: 2rem 0; z-index: 10;">
+                    <i class="fa-solid fa-dharmachakra fa-spin"></i> 아카식 레코드 시공간 문을 개방 중입니다...
+                </div>
+
+                <!-- 결과 화면 -->
+                <div class="result-container" id="resultContainer">
+                    <div style="font-size: 0.85rem; font-weight: 800; color: var(--text-sub);">[ 영혼 스캔 완료 ]</div>
+                    <div class="past-title-badge" id="resUserLabel">홍길동 님의 전생 직업</div>
+                    <div class="past-job-name" id="resPastJob">대제국의 궁정 마법학자</div>
+
+                    <!-- 부여받은 칭호 -->
+                    <div class="title-box">
+                        <div style="font-size: 0.85rem; color: #E9D5FF; margin-bottom: 0.3rem;"><i class="fa-solid fa-award"></i> 부여받은 전설의 칭호</div>
+                        <div class="title-text" id="resTitle">"별빛을 삼킨 영원의 지혜자"</div>
+                    </div>
+
+                    <!-- 스탯 & 명성 카드 -->
+                    <div class="fame-grid">
+                        <div class="fame-card">
+                            <div class="fame-title"><i class="fa-solid fa-globe"></i> 주요 주활동 대륙</div>
+                            <div class="fame-value" id="resRegion">아틀란티스 대제국</div>
+                        </div>
+                        <div class="fame-card">
+                            <div class="fame-title"><i class="fa-solid fa-fire"></i> 역사적 명성 수치</div>
+                            <div class="fame-value" id="resFame">98,500 / 100,000</div>
+                        </div>
+                        <div class="fame-card">
+                            <div class="fame-title"><i class="fa-solid fa-gem"></i> 운명의 보물/소지품</div>
+                            <div class="fame-value" id="resItem">청색 별빛의 수정구</div>
+                        </div>
+                        <div class="fame-card">
+                            <div class="fame-title"><i class="fa-solid fa-skull"></i> 전생에서의 최후</div>
+                            <div class="fame-value" id="resEnd">대마법 연구 성공 후 승천</div>
+                        </div>
+                    </div>
+
+                    <div style="background: rgba(15, 23, 42, 0.9); border-radius: 12px; padding: 1.3rem; text-align: left; border: 1px solid var(--border-color); margin-top: 1rem;">
+                        <h4 style="color: var(--accent-gold); font-size: 1rem; margin-bottom: 0.4rem;"><i class="fa-solid fa-book-open"></i> 전생의 서사 및 삶의 기록</h4>
+                        <p id="resDesc" style="color: var(--text-sub); font-size: 0.95rem; margin-bottom: 1rem;">전생 설명이 출력됩니다.</p>
+
+                        <h4 style="color: #C084FC; font-size: 1rem; margin-bottom: 0.4rem;"><i class="fa-solid fa-link"></i> 현생에 미치는 영혼의 영향</h4>
+                        <p id="resImpact" style="color: var(--text-sub); font-size: 0.95rem;">영향 정보가 출력됩니다.</p>
+                    </div>
+
+                    <div class="control-panel">
+                        <button class="btn-action" onclick="restartScan()">
+                            <i class="fa-solid fa-rotate-right"></i> 다시 탐색하기
+                        </button>
+                        <button class="btn-action btn-secondary" onclick="copyResult()">
+                            <i class="fa-solid fa-share-nodes"></i> 결과 복사하기
+                        </button>
+                    </div>
                 </div>
             </div>
-            <p class="text-slate-600 text-sm sm:text-base leading-relaxed">나의 전생과 특이한 칭호 알아보기</p>
-        </div>
+        </section>
 
-        <!-- Tool Workspace Area -->
-        <div class="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-sm min-h-[400px] flex flex-col items-center justify-center text-center">
-            <!-- TODO: 실제 로직 개발 영역 -->
-            <div class="p-4 bg-slate-100 rounded-2xl mb-4">
-                <i data-lucide="crown" class="w-12 h-12 text-slate-400 mx-auto"></i>
+        <!-- SEO Content & Guide Section -->
+        <article class="card content-card">
+            <h2>전생(Past Life)과 칭호의 신화적 및 심리학적 의의</h2>
+            <p>
+                인류는 오랜 역사 동안 <strong>"나는 이전 세상에서 어떤 삶을 살았을까?"</strong>라는 영원한 질문을 던져왔습니다. 
+                동양의 불교 및 인도 철학의 **윤회사상(Samsara)**과 서양 점성술의 **아카식 레코드(Akashic Records)**에 이르기까지, 
+                전생에 대한 탐구는 단순한 호기심을 넘어 **현재 나 자신의 성격, 재능, 및 상처(콤플렉스)**를 이해하는 심리학적 자아 반영의 기회로 여겨집니다.
+            </p>
+
+            <div class="info-graphics">
+                <div class="graphic-item">
+                    <i class="fa-solid fa-dharmachakra"></i>
+                    <h4>윤회와 업(Karma)</h4>
+                    <p>과거의 경험이 현재 영혼의 성향과 잠재 능력으로 연결된다는 동양적 관점.</p>
+                </div>
+                <div class="graphic-item">
+                    <i class="fa-solid fa-feather-pointed"></i>
+                    <h4>원형 심리학(Archetype)</h4>
+                    <p>칼 융의 분석심리학처럼 내면의 기사, 마법사, 왕 등의 원형을 찾아내는 과정.</p>
+                </div>
+                <div class="graphic-item">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <h4>칭호의 상징성</h4>
+                    <p>나의 특별한 가치와 정체성을 한 문장으로 시각화하여 자존감을 높여주는 언어적 유희.</p>
+                </div>
             </div>
-            <h2 class="text-xl font-bold text-slate-800 mb-2">전생 / 칭호 생성기 기능 준비 중</h2>
-            <p class="text-slate-500 text-sm max-w-md">여기에 해당 웹툴의 실행 화면 및 인터랙티브 기능 로직이 들어갑니다.</p>
-        </div>
 
+            <h3>재미로 보는 전생 유형 4대 원형</h3>
+            <ul style="padding-left: 1.5rem; color: var(--text-sub); margin-bottom: 1rem;">
+                <li><strong>지혜의 영혼 (학자/마법사/연금술사):</strong> 탐구심이 강하고 직관력이 뛰어난 현자 스타일</li>
+                <li><strong>용맹의 영혼 (기사/장군/모험가):</strong> 행동력이 뛰어나고 정의감이 넘치는 리더 스타일</li>
+                <li><strong>예술의 영혼 (음유시인/화가/궁정 광대):</strong> 감수성이 풍부하고 대중의 마음을 움직이는 감성 스타일</li>
+                <li><strong>풍요의 영혼 (거상/영주/방랑 거상):</strong> 사교성이 좋고 자원을 효율적으로 다루는 수완가 스타일</li>
+            </ul>
+
+            <h3>자주 묻는 질문 (FAQ)</h3>
+            <p><strong>Q. 결과는 어떤 원리로 생성되나요?</strong><br>
+            A. 본 생성기는 입력된 이름의 수리학적 해시값과 생년월일의 주파수 패턴을 조합하여 수천 가지 고유 조합 중 최적의 서사를 도출합니다.</p>
+            <p><strong>Q. 매번 입력할 때마다 결과가 달라지나요?</strong><br>
+            A. 동일한 이름과 생년월일을 입력하면 고유한 영혼 코드가 유지되어 언제나 동일한 운명의 결과가 도출됩니다.</p>
+        </article>
     </main>
 
     <!-- Footer -->
-    <footer class="bg-white border-t border-slate-200 py-8 mt-auto">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-            <p>© misopick.kr - 모든 서비스는 무료로 제공됩니다.</p>
-            <a href="index.html" class="hover:text-slate-800 transition">메인으로 돌아가기</a>
+    <footer>
+        <div class="footer-container">
+            <div class="footer-col">
+                <h4>전생 / 칭호 생성기</h4>
+                <p style="font-size: 0.85rem;">영혼의 수리학 알고리즘으로 전생의 신분과 화려한 판타지 칭호를 선사하는 엔터테인먼트 유틸리티입니다.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">misopick.kr 홈</a></li>
+                    <li><a href="past-life.html">전생 / 칭호 생성기</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>약관 및 정책</h4>
+                <ul>
+                    <li><a href="../privacy.html"><i class="fa-solid fa-user-shield"></i> 개인정보처리방침</a></li>
+                </ul>
+            </div>
         </div>
+        <div class="copyright">&copy; 2026 Utility Web. All rights reserved.</div>
     </footer>
 
+    <!-- JavaScript -->
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            lucide.createIcons();
-        });
+        const pastLives = [
+            {
+                job: "대제국의 궁정 마법학자",
+                title: "별빛을 삼킨 영원의 지혜자",
+                region: "아틀란티스 대제국",
+                fame: "98,500 / 100,000",
+                item: "청색 별빛의 수정구",
+                ending: "대마법 연구 성공 후 승천",
+                desc: "수많은 별자리의 운행을 읽어 대제국의 기상과 미래를 예측했던 최고의 지혜자였습니다. 국왕조차 당신의 조언 없이는 국정을 결정하지 못했습니다.",
+                impact: "현생에서 통찰력이 뛰어나고, 남들이 보지 못하는 사건의 본질을 빠르게 파악하는 능력이 있습니다."
+            },
+            {
+                job: "전설의 성기사단 총사령관",
+                title: "불멸의 빛을 품은 용맹의 선봉장",
+                region: "엘도라도 왕국",
+                fame: "99,200 / 100,000",
+                item: "태양의 검 (검의 성물)",
+                ending: "왕국을 구하고 명예로운 은퇴",
+                desc: "수천 명의 기사단을 이끌고 최전선에서 왕국을 수호했던 전설적인 영웅이었습니다. 당신의 기함이 펄럭이면 적들은 두려움에 떨었습니다.",
+                impact: "현생에서 리더십이 강하며, 불의를 보면 참지 못하고 정의를 추구하는 기질이 남아있습니다."
+            },
+            {
+                job: "바다를 지배한 해적왕",
+                title: "칠해(七海)의 폭풍을 부르는 자유인",
+                region: "카리브해 무인도 제국",
+                fame: "95,400 / 100,000",
+                item: "황금 나침반과 항해일지",
+                ending: "전설의 보물을 숨긴 뒤 유유자적",
+                desc: "그 어떤 정규군 함대도 당신의 쾌속선을 잡지 못했습니다. 자유를 사랑하고 바다의 모든 비밀을 알고 있던 거침없는 탐험가였습니다.",
+                impact: "현생에서 규칙에 매이는 것을 싫어하고 새로운 도전과 여행을 끊임없이 갈망합니다."
+            },
+            {
+                job: "실크로드의 대부호 거상",
+                title: "만물에 금빛 숨결을 불어넣는 손",
+                region: "페르시아 만의 성채",
+                fame: "92,100 / 100,000",
+                item: "만능 계산판과 비단 주머니",
+                ending: "후학 양성 후 만년의 평화",
+                desc: "동서양을 오가며 황금과 비단을 교역했던 대부호였습니다. 정확한 안목과 신용으로 국가 간의 전쟁조차 상업 협상으로 막아냈습니다.",
+                impact: "현생에서 경제적 감각이 뛰어나며 협상 및 설득 능력에서 탁월한 재능을 발휘합니다."
+            },
+            {
+                job: "숲의 비밀을 간직한 엘프 약초사",
+                title: "바람과 들꽃의 소리를 듣는 치유자",
+                region: "세계수 고대 숲",
+                fame: "89,900 / 100,000",
+                item: "영원히 시들지 않는 약초 병",
+                ending: "세계수 깊은 곳에서 정령으로 환생",
+                desc: "자연의 소리를 들으며 죽어가는 사람도 살려내던 신비로운 치유자였습니다. 당신이 거니는 길마다 고운 꽃이 피어났습니다.",
+                impact: "현생에서 공감 능력이 매우 뛰어치며, 식물이나 동물을 사랑하고 마음을 편안하게 해주는 힐링 에너지가 있습니다."
+            },
+            {
+                job: "조선 왕조의 비밀 어사 (암행어사)",
+                title: "어둠 속에서 정의의 등불을 밝히는 자",
+                region: "한양 및 팔도강산",
+                fame: "94,800 / 100,000",
+                item: "마패와 청렴결백의 장검",
+                ending: "백성들의 찬사를 받으며 좌의정 등극",
+                desc: "신분을 숨기고 전국을 누비며 탐관오리를 징벌하고 억울한 백성을 구했던 정의의 수호자였습니다.",
+                impact: "현생에서 관찰력이 매우 예리하며 거짓말을 금방 간파하는 예리한 촉을 지니고 있습니다."
+            },
+            {
+                job: "바빌로니아 천문학자 & 점성술사",
+                title: "운명의 톱니바퀴를 돌리는 자",
+                region: "지구라트 신전 탑",
+                fame: "91,300 / 100,000",
+                item: "청동 점성반",
+                ending: "새로운 별을 발견하고 역사에 등재",
+                desc: "밤하늘의 행성 이동을 계측하여 국가의 흥망성쇠를 점쳤던 천재적인 과학자이자 사제였습니다.",
+                impact: "현생에서 패턴을 분석하고 수학적/논리적 추론을 즐기는 지적인 호기심이 왕성합니다."
+            },
+            {
+                job: "중세 르네상스 천재 연금술사",
+                title: "현자의 돌을 연성한 기적의 창조자",
+                region: "피렌체 공화국",
+                fame: "96,700 / 100,000",
+                item: "불멸의 연금술 플라스크",
+                ending: "비밀 실험실에서 영생의 비밀 완성",
+                desc: "비금속을 황금으로 바꾸고 완벽한 약을 연성했던 비밀스러운 연구자였습니다. 수많은 사상가들이 당신의 집 앞을 지켰습니다.",
+                impact: "현생에서 무에서 유를 창조하는 창의성과 유일무이한 기획력이 돋보입니다."
+            }
+        ];
+
+        // 이름 + 생년월일 결합 해시 함수
+        function generateHash(str) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                hash = str.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            return Math.abs(hash);
+        }
+
+        function runPastLifeScan() {
+            const nameInput = document.getElementById('userName').value.trim();
+            const birthInput = document.getElementById('userBirth').value;
+
+            if (!nameInput) {
+                alert("성함을 입력해 주세요!");
+                return;
+            }
+
+            // 마법진 회전 시작
+            document.getElementById('magicCircle').classList.add('spinning');
+            
+            // 오디오 비프음 생성 (브라우저 지원 시)
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5 노트
+                gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.4);
+            } catch (e) {}
+
+            document.getElementById('inputZone').style.display = 'none';
+            document.getElementById('scanningText').style.display = 'block';
+
+            setTimeout(() => {
+                document.getElementById('magicCircle').classList.remove('spinning');
+                document.getElementById('scanningText').style.display = 'none';
+                document.getElementById('resultContainer').style.display = 'block';
+
+                const combinedKey = `${nameInput}_${birthInput}`;
+                const hash = generateHash(combinedKey);
+                const lifeIdx = hash % pastLives.length;
+                const result = pastLives[lifeIdx];
+
+                document.getElementById('resUserLabel').innerText = `${nameInput} 님의 전생 신분`;
+                document.getElementById('resPastJob').innerText = result.job;
+                document.getElementById('resTitle').innerText = `"${result.title}"`;
+                document.getElementById('resRegion').innerText = result.region;
+                document.getElementById('resFame').innerText = result.fame;
+                document.getElementById('resItem').innerText = result.item;
+                document.getElementById('resEnd').innerText = result.ending;
+                document.getElementById('resDesc').innerText = result.desc;
+                document.getElementById('resImpact').innerText = result.impact;
+
+                confetti({
+                    particleCount: 100,
+                    spread: 80,
+                    colors: ['#D97706', '#F59E0B', '#8B5CF6', '#E11D48'],
+                    origin: { y: 0.6 }
+                });
+            }, 1800);
+        }
+
+        function restartScan() {
+            document.getElementById('inputZone').style.display = 'flex';
+            document.getElementById('resultContainer').style.display = 'none';
+            document.getElementById('userName').value = '';
+        }
+
+        function copyResult() {
+            const name = document.getElementById('userName').value.trim() || "사용자";
+            const job = document.getElementById('resPastJob').innerText;
+            const title = document.getElementById('resTitle').innerText;
+            const text = `[전생 / 칭호 생성기 결과]\n${name} 님의 전생: [${job}]\n부여받은 칭호: ${title}\nhttps://misopick.kr/past-life.html`;
+
+            navigator.clipboard.writeText(text).then(() => {
+                alert("전생 분석 결과가 클립보드에 복사되었습니다!");
+            }).catch(() => {
+                alert("복사에 실패했습니다.");
+            });
+        }
     </script>
 </body>
 </html>

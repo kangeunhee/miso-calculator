@@ -3,92 +3,578 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>스트레스 지수 진단 - misopick.kr</title>
-    <meta name="description" content="자가 진단을 통한 현재 스트레스 수준 측정">
+    <title>스트레스 지수 진단 - 자가 진단을 통한 현재 심리/신체 스트레스 수준 측정</title>
+    <meta name="description" content="현재 나의 정신적, 신체적 스트레스 수준은 어느 정도일까요? 정밀 자가 진단 문항을 통해 스트레스 지수를 측정하고 단계별 힐링 솔루션을 확인해보세요.">
     
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            50: '#f0f9ff',
-                            100: '#e0f2fe',
-                            500: '#0284c7',
-                            600: '#0284c7',
-                            700: '#0369a1',
-                        }
-                    }
-                }
+    <!-- Google AdSense Script -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2888840483385554" crossorigin="anonymous"></script>
+
+    <!-- FontAwesome 아이콘 CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;600;700;900&family=Gowun+Batang:wght@400;700&family=JetBrains+Mono:wght@500;800&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #0EA5E9;
+            --primary-hover: #0284C7;
+            --accent-blue: #38BDF8;
+            --accent-purple: #8B5CF6;
+            --accent-green: #10B981;
+            --bg-color: #F0F9FF;
+            --card-bg: #FFFFFF;
+            --text-main: #0F172A;
+            --text-sub: #475569;
+            --border-color: #BAE6FD;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* 헤더 */
+        header {
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(14, 165, 233, 0.08);
+        }
+
+        .header-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .top-link {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            text-decoration: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            background-color: #E0F2FE;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .top-link:hover {
+            background-color: var(--primary-color);
+            color: #FFFFFF;
+        }
+
+        /* 메인 컨테이너 */
+        main {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            flex: 1;
+            width: 100%;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .stage-card {
+            text-align: center;
+            background: radial-gradient(circle at 50% 20%, #F8FAFC 0%, #E0F2FE 100%);
+            border: 2px solid #7DD3FC;
+            position: relative;
+        }
+
+        /* 문항 리스트 영역 */
+        .question-list {
+            text-align: left;
+            margin: 2rem 0;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .question-item {
+            background: #FFFFFF;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.04);
+        }
+
+        .question-title {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.6rem;
+        }
+
+        @media(max-width: 600px) {
+            .options-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
-    </script>
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
-        body { font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif; }
+
+        .option-label {
+            background: #F8FAFC;
+            border: 2px solid #E2E8F0;
+            border-radius: 8px;
+            padding: 0.6rem 0.4rem;
+            text-align: center;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-sub);
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.2rem;
+        }
+
+        .option-label:hover {
+            border-color: var(--primary-color);
+            background: #F0F9FF;
+            color: var(--primary-color);
+        }
+
+        .option-label input[type="radio"] {
+            accent-color: var(--primary-color);
+            margin-top: 0.2rem;
+        }
+
+        /* 컨트롤 버튼 */
+        .control-panel {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-action {
+            background: linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%);
+            color: white;
+            border: none;
+            padding: 0.9rem 2.5rem;
+            border-radius: 30px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(14, 165, 233, 0.4);
+        }
+
+        .btn-secondary {
+            background: #FFFFFF;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            box-shadow: none;
+            padding: 0.8rem 1.8rem;
+            font-size: 0.95rem;
+        }
+
+        .btn-secondary:hover {
+            background: #E0F2FE;
+            color: var(--primary-hover);
+        }
+
+        /* 결과 화면 스타일 */
+        .result-container {
+            display: none;
+            animation: fadeIn 0.6s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .score-badge {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: var(--primary-color);
+            font-family: 'JetBrains Mono', monospace;
+            text-shadow: 0 0 15px rgba(14, 165, 233, 0.3);
+            margin: 0.5rem 0;
+        }
+
+        .score-title {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--accent-purple);
+            margin-bottom: 1.5rem;
+        }
+
+        /* SEO 컨텐츠 카드 */
+        .content-card h2 {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #E0F2FE;
+            padding-bottom: 0.5rem;
+        }
+
+        .content-card h3 {
+            font-size: 1.2rem;
+            margin: 1.5rem 0 0.5rem 0;
+            color: var(--text-main);
+        }
+
+        .content-card p {
+            color: var(--text-sub);
+            margin-bottom: 1rem;
+        }
+
+        .info-graphics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .graphic-item {
+            background-color: #F8FAFC;
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .graphic-item i {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        /* 푸터 */
+        footer {
+            background-color: #0F172A;
+            color: #94A3B8;
+            padding: 3rem 1rem 1.5rem 1rem;
+            margin-top: auto;
+            border-top: 1px solid #334155;
+        }
+
+        .footer-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #1E293B;
+        }
+
+        .footer-col h4 { color: white; margin-bottom: 1rem; font-size: 1.1rem; }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 0.5rem; }
+        .footer-col a { color: #94A3B8; text-decoration: none; transition: color 0.2s; }
+        .footer-col a:hover { color: white; }
+        .copyright { text-align: center; padding-top: 1.5rem; font-size: 0.875rem; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 flex flex-col min-h-screen">
+<body>
 
-    <!-- Header Navigation -->
-    <header class="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <a href="index.html" class="flex items-center space-x-2">
-                <div class="w-9 h-9 rounded-xl bg-brand-600 flex items-center justify-center text-white font-black text-lg shadow-sm">M</div>
-                <span class="text-xl font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <a href="stress-test.html" class="logo">
+                <i class="fa-solid fa-face-smile"></i> 스트레스 지수 진단
             </a>
-            <a href="index.html" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg border border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-100 transition">
-                <i data-lucide="arrow-left" class="w-4 h-4"></i>
-                <span>전체 툴 보기</span>
-            </a>
+            <a href="index.html" class="top-link"><i class="fa-solid fa-house"></i> misopick.kr</a>
         </div>
     </header>
 
-    <!-- Main Content Container -->
-    <main class="flex-grow max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        
-        <!-- Tool Title Card -->
-        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm mb-6">
-            <div class="flex items-center space-x-4 mb-4">
-                <div class="w-12 h-12 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center">
-                    <i data-lucide="smile" class="w-6 h-6"></i>
+    <!-- Main -->
+    <main>
+        <section class="card stage-card">
+            <h2 style="font-size: 1.6rem; font-weight: 800; color: #0369A1;">
+                <i class="fa-solid fa-heart-pulse"></i> 정밀 스트레스 자가 진단 테스트
+            </h2>
+            <p style="color: var(--text-sub); font-size: 0.95rem; margin-top: 0.3rem;">
+                최근 한 달간 나의 심리적·신체적 상태를 반영하는 12가지 문항에 솔직하게 체크해 주세요.
+            </p>
+
+            <!-- 진단 문항 영역 -->
+            <div id="testContainer">
+                <div class="question-list" id="questionList">
+                    <!-- JavaScript로 동적 렌더링 -->
                 </div>
-                <div>
-                    <span class="text-xs font-bold text-slate-400 block">TOOL #28</span>
-                    <h1 class="text-2xl sm:text-3xl font-black text-slate-900">스트레스 지수 진단</h1>
+
+                <div class="control-panel">
+                    <button class="btn-action" onclick="calculateStress()">
+                        <i class="fa-solid fa-square-poll-vertical"></i> 정밀 스트레스 결과 보기
+                    </button>
                 </div>
             </div>
-            <p class="text-slate-600 text-sm sm:text-base leading-relaxed">자가 진단을 통한 현재 스트레스 수준 측정</p>
-        </div>
 
-        <!-- Tool Workspace Area -->
-        <div class="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-sm min-h-[400px] flex flex-col items-center justify-center text-center">
-            <!-- TODO: 실제 로직 개발 영역 -->
-            <div class="p-4 bg-slate-100 rounded-2xl mb-4">
-                <i data-lucide="smile" class="w-12 h-12 text-slate-400 mx-auto"></i>
+            <!-- 결과 출력 영역 -->
+            <div class="result-container" id="resultContainer">
+                <div style="font-size: 0.9rem; font-weight: 800; color: var(--text-sub);">[ 정밀 분석 완료 ]</div>
+                <div class="score-badge" id="resScore">65점</div>
+                <div class="score-title" id="resTitle">"적절한 휴식과 마음의 여유가 필요한 상태입니다"</div>
+
+                <div style="background: #FFFFFF; border-radius: 12px; padding: 1.5rem; text-align: left; border: 1px solid var(--border-color); margin-top: 1rem;">
+                    <h4 style="color: var(--primary-color); font-size: 1.1rem; margin-bottom: 0.5rem;"><i class="fa-solid fa-stethoscope"></i> 심층 심리 및 신체 상태 분석</h4>
+                    <p id="resDesc" style="color: var(--text-sub); font-size: 0.95rem; margin-bottom: 1rem;">설명이 출력됩니다.</p>
+                    
+                    <h4 style="color: var(--accent-purple); font-size: 1.1rem; margin-bottom: 0.5rem;"><i class="fa-solid fa-seedling"></i> 맞춤형 힐링 처방전 & 솔루션</h4>
+                    <p id="resSolution" style="color: var(--text-sub); font-size: 0.95rem;">솔루션이 출력됩니다.</p>
+                </div>
+
+                <div class="control-panel">
+                    <button class="btn-action" onclick="restartTest()">
+                        <i class="fa-solid fa-rotate-right"></i> 다시 진단하기
+                    </button>
+                    <button class="btn-action btn-secondary" onclick="copyResult()">
+                        <i class="fa-solid fa-share-nodes"></i> 진단 결과 복사하기
+                    </button>
+                </div>
             </div>
-            <h2 class="text-xl font-bold text-slate-800 mb-2">스트레스 지수 진단 기능 준비 중</h2>
-            <p class="text-slate-500 text-sm max-w-md">여기에 해당 웹툴의 실행 화면 및 인터랙티브 기능 로직이 들어갑니다.</p>
-        </div>
+        </section>
 
+        <!-- SEO Content & Guide Section -->
+        <article class="card content-card">
+            <h2>정밀 스트레스 진단과 마음 돌봄의 필요성</h2>
+            <p>
+                현대 사회를 살아가는 우리에게 스트레스는 피할 수 없는 과제입니다. 
+                12가지 다차원 문항(정신적, 신체적, 대인관계, 수면 영역)을 통해 자신의 현재 스트레스 농도를 입체적으로 파악하고, 
+                번아웃으로 이어지기 전에 적절한 이완과 휴식 루틴을 찾는 것이 지혜로운 자기 관리의 시작입니다.
+            </p>
+
+            <div class="info-graphics">
+                <div class="graphic-item">
+                    <i class="fa-solid fa-brain"></i>
+                    <h4>정신적 피로 완화</h4>
+                    <p>과도한 생각의 굴레에서 벗어나 뇌에 온전한 쉼표를 선물하세요.</p>
+                </div>
+                <div class="graphic-item">
+                    <i class="fa-solid fa-bed"></i>
+                    <h4>수면 질 향상</h4>
+                    <p>긴장을 풀고 깊은 수면을 유도하여 다음 날 활력을 되찾습니다.</p>
+                </div>
+                <div class="graphic-item">
+                    <i class="fa-solid fa-face-smile-beam"></i>
+                    <h4>회복탄력성 증진</h4>
+                    <p>스스로를 돌보는 루틴을 통해 일상의 감정 기복을 부드럽게 조율합니다.</p>
+                </div>
+            </div>
+
+            <h3>영역별 스트레스 대처 가이드</h3>
+            <ul style="padding-left: 1.5rem; color: var(--text-sub); margin-bottom: 1rem;">
+                <li><strong>신체적 긴장 해소:</strong> 따뜻한 물 반신욕이나 가벼운 스트레칭으로 굳은 어깨와 근육을 이완하세요.</li>
+                <li><strong>디지털 디톡스:</strong> 알림 소음과 SNS 피드에서 벗어나 조용한 산책 시간을 가져보세요.</li>
+                <li><strong>감정 표현과 소유욕 내려놓기:</strong> 마음속 무거운 걱정들을 일기에 적어 객관적으로 바라보세요.</li>
+            </ul>
+
+            <h3>자주 묻는 질문 (FAQ)</h3>
+            <p><strong>Q. 진단 결과는 신뢰할 수 있나요?</strong><br>
+            A. 본 테스트는 정신 건강 자가 진단 척도를 바탕으로 일상 속 스트레스 수준을 입체적으로 점검하도록 설계되었습니다.</p>
+            <p><strong>Q. 점수가 높게 나오면 어떻게 해야 하나요?</strong><br>
+            A. 모든 일정과 책임을 잠시 내려놓고 온전히 좋아하는 취미나 충분한 수면에 집중해 보세요.</p>
+        </article>
     </main>
 
     <!-- Footer -->
-    <footer class="bg-white border-t border-slate-200 py-8 mt-auto">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-            <p>© misopick.kr - 모든 서비스는 무료로 제공됩니다.</p>
-            <a href="index.html" class="hover:text-slate-800 transition">메인으로 돌아가기</a>
+    <footer>
+        <div class="footer-container">
+            <div class="footer-col">
+                <h4>스트레스 지수 진단</h4>
+                <p style="font-size: 0.85rem;">12가지 정밀 문항을 통해 현재의 심리적·신체적 스트레스 수준을 측정하고 맞춤형 힐링 처방전을 제공합니다.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">misopick.kr 홈</a></li>
+                    <li><a href="stress-test.html">스트레스 지수 진단</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>약관 및 정책</h4>
+                <ul>
+                    <li><a href="../privacy.html"><i class="fa-solid fa-user-shield"></i> 개인정보처리방침</a></li>
+                </ul>
+            </div>
         </div>
+        <div class="copyright">&copy; 2026 Utility Web. All rights reserved.</div>
     </footer>
 
+    <!-- JavaScript -->
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            lucide.createIcons();
-        });
+        // 12가지로 대폭 확장된 정밀 진단 문항
+        const questions = [
+            "최근 사소한 일에도 쉽게 짜증이 나거나 화가 난다.",
+            "이유 없이 피로감이 지속되고 아침에 일어나기 힘들다.",
+            "미래에 대한 막연한 불안감이나 걱정 때문에 잠들기 어렵다.",
+            "집중력이 떨어져 일이나 학업에서 실수가 잦아졌다.",
+            "사람들을 만나는 것이 귀찮고 혼자만의 공간에 숨고 싶다.",
+            "이유 없는 두통, 소화불량, 근육 긴장 등 신체적 불편함이 있다.",
+            "내가 하고 있는 일에 대해 보람을 느끼기 어렵고 무기력하다.",
+            "주변의 소음이나 자극에 예민하게 반응하게 된다.",
+            "내가 통제할 수 없는 일들 때문에 마음이 조급하고 불안하다.",
+            "식욕이 급격히 떨어지거나 반대로 폭식하는 경향이 생겼다.",
+            "평소보다 기억력이 깜빡깜빡하고 건망증이 심해졌다.",
+            "휴식을 취해도 마음이 편안하지 않고 늘 긴장되어 있다."
+        ];
+
+        const options = [
+            { text: "전혀 아님", score: 0 },
+            { text: "가끔 느낌", score: 1 },
+            { text: "자주 느낌", score: 2 },
+            { text: "매우 그렇다", score: 3 }
+        ];
+
+        function renderQuestions() {
+            const listEl = document.getElementById('questionList');
+            let html = '';
+            questions.forEach((q, qIdx) => {
+                html += `
+                    <div class="question-item">
+                        <div class="question-title">
+                            <span style="color:var(--primary-color);">Q${qIdx + 1}.</span> ${q}
+                        </div>
+                        <div class="options-grid">
+                `;
+                options.forEach((opt, oIdx) => {
+                    html += `
+                        <label class="option-label">
+                            <span>${opt.text}</span>
+                            <input type="radio" name="q${qIdx}" value="${opt.score}" ${oIdx === 0 ? 'checked' : ''}>
+                        </label>
+                    `;
+                });
+                html += `</div></div>`;
+            });
+            listEl.innerHTML = html;
+        }
+
+        function calculateStress() {
+            let totalScore = 0;
+            questions.forEach((q, qIdx) => {
+                const radios = document.getElementsByName(`q${qIdx}`);
+                for (let r of radios) {
+                    if (r.checked) {
+                        totalScore += parseInt(r.value);
+                        break;
+                    }
+                }
+            });
+
+            // 최대 36점 기준 백분율 환산
+            const percent = Math.round((totalScore / 36) * 100);
+
+            document.getElementById('testContainer').style.display = 'none';
+            document.getElementById('resultContainer').style.display = 'block';
+
+            document.getElementById('resScore').innerText = `${percent}점`;
+
+            let title = "";
+            let desc = "";
+            let solution = "";
+
+            if (percent <= 20) {
+                title = "🌿 평온하고 안정된 힐링 에너지가 가득한 상태";
+                desc = "현재 스트레스 관리가 매우 이상적으로 이루어지고 있으며, 심리적 안정감과 평화로운 일상을 누리고 계십니다.";
+                solution = "지금처럼 긍정적인 생활 루틴을 유지하시고, 주변 사람들과 소소한 즐거움을 나누어 보세요.";
+            } else if (percent <= 40) {
+                title = "🌤️ 가벼운 긴장감이 존재하는 일상적인 상태";
+                desc = "학업이나 업무로 인해 약간의 피로감이 있으나, 충분히 스스로 조절하고 통제할 수 있는 건강한 수준의 긴장감입니다.";
+                solution = "주말에 가벼운 야외 산책이나 좋아하는 취미 활동을 통해 가볍게 에너지를 충전해 주세요.";
+            } else if (percent <= 60) {
+                title = "🌥️ 적절한 휴식과 마음의 여유가 필요한 주의 단계";
+                desc = "누적된 피로와 긴장감으로 인해 심신이 지쳐가고 있습니다. 사소한 자극에도 쉽게 예민해질 수 있는 시기입니다.";
+                solution = "오늘 저녁은 스마트폰을 멀리하고 따뜻한 반신욕이나 깊은 복식 호흡으로 몸과 마음의 긴장을 부드럽게 이완시켜 주세요.";
+            } else if (percent <= 80) {
+                title = "⚡ 경고! 만성 피로와 과도한 스트레스 누적 단계";
+                desc = "심신이 한계치에 다다라 있을 가능성이 높습니다. 집중력이 떨어지고 신체적 불편함이나 무기력증이 동반되고 있습니다.";
+                solution = "모든 무거운 책임을 잠시 내려놓고 1~2일간 온전한 휴식과 충분한 수면에 집중하며 마음의 짐을 덜어내세요.";
+            } else {
+                title = "🚨 위험! 즉각적인 번아웃 예방과 휴식이 시급한 상태";
+                desc = "스트레스 지수가 매우 높아 신체적, 정신적 건강에 적신호가 켜졌습니다. 스스로를 혹사하고 있지 않은지 진지하게 돌아보아야 합니다.";
+                solution = "당장 일정을 조정하여 전문가의 상담이나 강력한 휴식 루틴을 실행하고, 모든 자극을 차단한 채 오롯이 회복에만 집중하세요.";
+            }
+
+            document.getElementById('resTitle').innerText = `"${title}"`;
+            document.getElementById('resDesc').innerText = desc;
+            document.getElementById('resSolution').innerText = solution;
+
+            confetti({
+                particleCount: 90,
+                spread: 80,
+                colors: ['#0EA5E9', '#38BDF8', '#8B5CF6'],
+                origin: { y: 0.6 }
+            });
+        }
+
+        function restartTest() {
+            document.getElementById('testContainer').style.display = 'block';
+            document.getElementById('resultContainer').style.display = 'none';
+            renderQuestions();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function copyResult() {
+            const score = document.getElementById('resScore').innerText;
+            const title = document.getElementById('resTitle').innerText;
+            const text = `[스트레스 지수 정밀 진단 결과]\n나의 스트레스 지수: ${score} ${title}\nhttps://misopick.kr/stress-test.html`;
+
+            navigator.clipboard.writeText(text).then(() => {
+                alert("진단 결과가 클립보드에 복사되었습니다!");
+            }).catch(() => {
+                alert("복사에 실패했습니다.");
+            });
+        }
+
+        window.onload = renderQuestions;
     </script>
 </body>
 </html>

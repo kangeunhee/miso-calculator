@@ -3,91 +3,525 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>눈싸움 타이머 / 시력 - misopick.kr</title>
-    <meta name="description" content="눈 안 감기 타이머 및 화면 가늠 테스트">
+    <title>눈싸움 타이머 & 시력 가늠 테스트 - 눈 안 감기 챌린지</title>
+    <meta name="description" content="눈 안 감기 눈싸움 타이머로 나의 집중력 레벨과 눈 건강 상태를 테스트하세요! 화면 가늠 시력 점검과 안구 건강 가이드를 함께 제공합니다.">
     
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            50: '#f0f9ff',
-                            100: '#e0f2fe',
-                            500: '#0284c7',
-                            600: '#0284c7',
-                            700: '#0369a1',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google AdSense Script -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2888840483385554" crossorigin="anonymous"></script>
+
+    <!-- FontAwesome 아이콘 CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;600;700;900&family=JetBrains+Mono:wght@500;800&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
     <style>
-        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
-        body { font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif; }
+        :root {
+            --primary-color: #10B981;
+            --primary-hover: #059669;
+            --accent-cyan: #06B6D4;
+            --accent-yellow: #F59E0B;
+            --bg-color: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --text-main: #0F172A;
+            --text-sub: #475569;
+            --border-color: #E2E8F0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* 헤더 */
+        header {
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(16, 185, 129, 0.08);
+        }
+
+        .header-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .top-link {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            text-decoration: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            background-color: #D1FAE5;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .top-link:hover {
+            background-color: var(--primary-color);
+            color: #FFFFFF;
+        }
+
+        /* 메인 컨테이너 */
+        main {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            flex: 1;
+            width: 100%;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+        }
+
+        /* 스테이지 카드 */
+        .stage-card {
+            text-align: center;
+            background: radial-gradient(circle at 50% 20%, #ECFDF5 0%, #D1FAE5 100%);
+            border: 2px solid #A7F3D0;
+            position: relative;
+        }
+
+        /* 통계 전광판 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: #FFFFFF;
+            border-radius: 12px;
+            padding: 1rem;
+            border: 1px solid #A7F3D0;
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.08);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-sub);
+            font-weight: 700;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--primary-hover);
+            margin-top: 0.2rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* 타이머 가상 콘솔 */
+        .timer-display-box {
+            background: #0F172A;
+            border-radius: 20px;
+            padding: 2.5rem 1.5rem;
+            margin: 1.5rem 0;
+            border: 3px solid var(--primary-color);
+            box-shadow: 0 0 30px rgba(16, 185, 129, 0.25);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        .timer-time {
+            font-size: 4.5rem;
+            font-weight: 900;
+            color: #34D399;
+            font-family: 'JetBrains Mono', monospace;
+            text-shadow: 0 0 20px rgba(52, 211, 153, 0.7);
+            line-height: 1;
+        }
+
+        .timer-rank {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--accent-yellow);
+            margin-top: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.4rem 1.2rem;
+            border-radius: 20px;
+            border: 1px solid rgba(245, 158, 11, 0.4);
+        }
+
+        /* 시력 / 화면 가늠 미니 점검 박스 */
+        .sight-test-zone {
+            background: #FFFFFF;
+            border-radius: 12px;
+            padding: 1.2rem;
+            border: 2px dashed #A7F3D0;
+            margin-top: 1.5rem;
+        }
+
+        .sight-symbol {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--text-main);
+            letter-spacing: 8px;
+            user-select: none;
+            margin: 0.5rem 0;
+        }
+
+        /* 컨트롤 버튼 그룹 */
+        .control-panel {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-start {
+            background: linear-gradient(135deg, #10B981 0%, #047857 100%);
+            color: white;
+            border: none;
+            padding: 0.9rem 2.5rem;
+            border-radius: 30px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .btn-start:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-stop {
+            background: linear-gradient(135deg, #EF4444 0%, #B91C1C 100%);
+            color: white;
+            border: none;
+            padding: 0.9rem 2.5rem;
+            border-radius: 30px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+            transition: all 0.2s;
+            display: none;
+        }
+
+        /* SEO 컨텐츠 카드 */
+        .content-card h2 {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #D1FAE5;
+            padding-bottom: 0.5rem;
+        }
+
+        .content-card h3 {
+            font-size: 1.2rem;
+            margin: 1.5rem 0 0.5rem 0;
+            color: var(--text-main);
+        }
+
+        .content-card p {
+            color: var(--text-sub);
+            margin-bottom: 1rem;
+        }
+
+        .info-graphics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .graphic-item {
+            background-color: #F8FAFC;
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .graphic-item i {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        /* 푸터 */
+        footer {
+            background-color: #0F172A;
+            color: #94A3B8;
+            padding: 3rem 1rem 1.5rem 1rem;
+            margin-top: auto;
+        }
+
+        .footer-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #1E293B;
+        }
+
+        .footer-col h4 { color: white; margin-bottom: 1rem; font-size: 1.1rem; }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 0.5rem; }
+        .footer-col a { color: #94A3B8; text-decoration: none; transition: color 0.2s; }
+        .footer-col a:hover { color: white; }
+        .copyright { text-align: center; padding-top: 1.5rem; font-size: 0.875rem; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 flex flex-col min-h-screen">
+<body>
 
-    <!-- Header Navigation -->
-    <header class="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <a href="index.html" class="flex items-center space-x-2">
-                <div class="w-9 h-9 rounded-xl bg-brand-600 flex items-center justify-center text-white font-black text-lg shadow-sm">M</div>
-                <span class="text-xl font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <a href="staring-timer.html" class="logo">
+                <i class="fa-solid fa-eye"></i> 눈싸움 타이머 / 시력
             </a>
-            <a href="index.html" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg border border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-100 transition">
-                <i data-lucide="arrow-left" class="w-4 h-4"></i>
-                <span>전체 툴 보기</span>
-            </a>
+            <a href="index.html" class="top-link"><i class="fa-solid fa-house"></i> misopick.kr</a>
         </div>
     </header>
 
-    <!-- Main Content Container -->
-    <main class="flex-grow max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        
-        <!-- Tool Title Card -->
-        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm mb-6">
-            <div class="flex items-center space-x-4 mb-4">
-                <div class="w-12 h-12 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center">
-                    <i data-lucide="eye" class="w-6 h-6"></i>
+    <!-- Main -->
+    <main>
+        <section class="card stage-card">
+            <h2 style="font-size: 1.6rem; font-weight: 800; color: #047857;">
+                <i class="fa-solid fa-stopwatch"></i> 눈 안 감기 눈싸움 타이머 & 시력 가늠
+            </h2>
+            <p style="color: var(--text-sub); font-size: 0.95rem; margin-top: 0.3rem;">
+                시작 버튼을 누른 후 눈을 감지 않고 견뎌보세요! 눈을 감거나 깜빡였을 때 <strong>눈 감음(Stop)</strong> 버튼을 누르세요.
+            </p>
+
+            <!-- 통계 전광판 -->
+            <div class="stats-grid" style="margin-top: 1.5rem;">
+                <div class="stat-card">
+                    <div class="stat-label">현재 기록</div>
+                    <div class="stat-value" id="statCurrent">0.00초</div>
                 </div>
-                <div>
-                    <span class="text-xs font-bold text-slate-400 block">TOOL #18</span>
-                    <h1 class="text-2xl sm:text-3xl font-black text-slate-900">눈싸움 타이머 / 시력</h1>
+                <div class="stat-card">
+                    <div class="stat-label">최고 신기록</div>
+                    <div class="stat-value" id="statBest">0.00초</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">도전 횟수</div>
+                    <div class="stat-value" id="statCount">0회</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">집중력 랭킹</div>
+                    <div class="stat-value" id="statLevel" style="font-size: 1.2rem; line-height: 2.2rem;">대기 중</div>
                 </div>
             </div>
-            <p class="text-slate-600 text-sm sm:text-base leading-relaxed">눈 안 감기 타이머 및 화면 가늠 테스트</p>
-        </div>
 
-        <!-- Tool Workspace Area -->
-        <div class="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-sm min-h-[400px] flex flex-col items-center justify-center text-center">
-            <!-- TODO: 실제 로직 개발 영역 -->
-            <div class="p-4 bg-slate-100 rounded-2xl mb-4">
-                <i data-lucide="eye" class="w-12 h-12 text-slate-400 mx-auto"></i>
+            <!-- 디스플레이 콘솔 -->
+            <div class="timer-display-box">
+                <div class="timer-time" id="timerDisplay">00:00.00</div>
+                <div class="timer-rank" id="rankBadge">👀 눈을 감지 않고 화면을 응시하세요</div>
             </div>
-            <h2 class="text-xl font-bold text-slate-800 mb-2">눈싸움 타이머 / 시력 기능 준비 중</h2>
-            <p class="text-slate-500 text-sm max-w-md">여기에 해당 웹툴의 실행 화면 및 인터랙티브 기능 로직이 들어갑니다.</p>
-        </div>
 
+            <!-- 시력 화면 가늠 미니 점검 -->
+            <div class="sight-test-zone">
+                <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-sub);">[ 시력 & 화면 가늠 미니 테스트 ]</div>
+                <div class="sight-symbol" id="sightSymbol">C Ɔ ∩ ∪</div>
+                <p style="font-size: 0.85rem; color: var(--text-sub);">타이머가 작동하는 동안 위 기호의 뚫린 방향을 정확히 구별해 보세요.</p>
+            </div>
+
+            <!-- 버튼 컨트롤 -->
+            <div class="control-panel">
+                <button class="btn-start" id="btnStart" onclick="startStaringTimer()">
+                    <i class="fa-solid fa-play"></i> 눈싸움 도전 시작 (Space)
+                </button>
+                <button class="btn-stop" id="btnStop" onclick="stopStaringTimer()">
+                    <i class="fa-solid fa-eye-slash"></i> 눈 감았음! (기록 측정)
+                </button>
+            </div>
+        </section>
+
+        <!-- SEO Content & Guide Section -->
+        <article class="card content-card">
+            <h2>눈 깜빡임과 안구 건강의 중요성</h2>
+            <p>
+                평소 사람은 1분에 평균 15~20회 정도 눈을 깜빡여 눈물막을 형성하고 안구를 보호합니다. 
+                그러나 스마트폰이나 모니터 화면에 집중하면 깜빡임 횟수가 1분에 5회 이하로 급격히 줄어들어 **안구건조증**과 피로감을 유발할 수 있습니다.
+            </p>
+
+            <div class="info-graphics">
+                <div class="graphic-item">
+                    <i class="fa-solid fa-droplet"></i>
+                    <h4>눈물막 보호</h4>
+                    <p>적절한 깜빡임은 수분과 기름층을 공급하여 안구 표면 상처를 방지합니다.</p>
+                </div>
+                <div class="graphic-item">
+                    <i class="fa-solid fa-clock"></i>
+                    <h4>20-20-20 법칙</h4>
+                    <p>20분 화면을 본 후 20초 동안 20피트(약 6m) 떨어진 곳을 바라보며 눈을 휴식하세요.</p>
+                </div>
+                <div class="graphic-item">
+                    <i class="fa-solid fa-eye"></i>
+                    <h4>시력 보호 습관</h4>
+                    <p>눈 안 감기 챌린지 후에는 눈을 지그시 감아 수분을 보충해 주는 것이 좋습니다.</p>
+                </div>
+            </div>
+
+            <h3>눈 안 감기 버티기 등급 기준</h3>
+            <ul style="padding-left: 1.5rem; color: var(--text-sub); margin-bottom: 1rem;">
+                <li><strong>10초 미만:</strong> 안구건조증 주의 등급 (눈물막 증발 빠름)</li>
+                <li><strong>10초 ~ 30초:</strong> 일반적인 평범한 안구 유지력</li>
+                <li><strong>30초 ~ 1분:</strong> 우수한 눈 집중력 및 건강한 상태</li>
+                <li><strong>1분 이상:</strong> 초인적인 집중력의 '神의 눈' 등급</li>
+            </ul>
+
+            <h3>자주 묻는 질문 (FAQ)</h3>
+            <p><strong>Q. 눈 안 감기를 오래 참으면 눈에 안 좋은가요?</strong><br>
+            A. 과도하게 참으면 안구 표면이 건조해지므로 테스트 후에는 인공눈물을 넣거나 눈을 10초간 지그시 감아주세요.</p>
+            <p><strong>Q. 가늠 테스트 기호는 어떤 역할을 하나요?</strong><br>
+            A. 타이머 작동 중 눈이 뻑뻑해짐에 따라 시야 가독성이 변하는지 점검하는 간이 안구 테스트입니다.</p>
+        </article>
     </main>
 
     <!-- Footer -->
-    <footer class="bg-white border-t border-slate-200 py-8 mt-auto">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-            <p>© misopick.kr - 모든 서비스는 무료로 제공됩니다.</p>
-            <a href="index.html" class="hover:text-slate-800 transition">메인으로 돌아가기</a>
+    <footer>
+        <div class="footer-container">
+            <div class="footer-col">
+                <h4>눈싸움 타이머 / 시력</h4>
+                <p style="font-size: 0.85rem;">눈 안 감기 타이머와 시력 가늠 측정을 제공하는 건강 유틸리티입니다.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">misopick.kr 홈</a></li>
+                    <li><a href="staring-timer.html">눈싸움 타이머</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>약관 및 정책</h4>
+                <ul>
+                    <li><a href="../privacy.html"><i class="fa-solid fa-user-shield"></i> 개인정보처리방침</a></li>
+                </ul>
+            </div>
         </div>
+        <div class="copyright">&copy; 2026 Utility Web. All rights reserved.</div>
     </footer>
 
+    <!-- JavaScript -->
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            lucide.createIcons();
+        let startTime = 0;
+        let timerInterval = null;
+        let isRunning = false;
+        let bestTime = 0;
+        let count = 0;
+
+        const symbols = ["C Ɔ ∩ ∪", "∪ ∩ Ɔ C", "∩ ∪ C Ɔ", "Ɔ C ∪ ∩"];
+
+        function getRank(seconds) {
+            if (seconds < 10) return "🥉 초보자 (건조함 주의)";
+            if (seconds < 30) return "🥈 보통 (일반 안구 상태)";
+            if (seconds < 60) return "🥇 숙련자 (강한 집중력)";
+            return "👑 神의 눈 (초인적 안구력)";
+        }
+
+        function startStaringTimer() {
+            if (isRunning) return;
+
+            isRunning = true;
+            startTime = Date.now();
+            count++;
+
+            document.getElementById('statCount').innerText = `${count}회`;
+            document.getElementById('btnStart').style.display = 'none';
+            document.getElementById('btnStop').style.display = 'inline-flex';
+
+            // 시력 기호 랜덤 변경
+            const randomSym = symbols[Math.floor(Math.random() * symbols.length)];
+            document.getElementById('sightSymbol').innerText = randomSym;
+
+            timerInterval = setInterval(() => {
+                const elapsed = (Date.now() - startTime) / 1000;
+                const minutes = Math.floor(elapsed / 60).toString().padStart(2, '0');
+                const secs = Math.floor(elapsed % 60).toString().padStart(2, '0');
+                const ms = Math.floor((elapsed % 1) * 100).toString().padStart(2, '0');
+
+                document.getElementById('timerDisplay').innerText = `${minutes}:${secs}.${ms}`;
+                document.getElementById('statCurrent').innerText = `${elapsed.toFixed(2)}초`;
+
+                const rank = getRank(elapsed);
+                document.getElementById('rankBadge').innerText = rank;
+                document.getElementById('statLevel').innerText = rank.split(' ')[1];
+            }, 10);
+        }
+
+        function stopStaringTimer() {
+            if (!isRunning) return;
+
+            clearInterval(timerInterval);
+            isRunning = false;
+
+            const elapsed = (Date.now() - startTime) / 1000;
+            
+            if (elapsed > bestTime) {
+                bestTime = elapsed;
+                document.getElementById('statBest').innerText = `${bestTime.toFixed(2)}초`;
+
+                confetti({
+                    particleCount: 60,
+                    spread: 60,
+                    colors: ['#10B981', '#34D399', '#F59E0B'],
+                    origin: { y: 0.7 }
+                });
+            }
+
+            document.getElementById('btnStart').style.display = 'inline-flex';
+            document.getElementById('btnStop').style.display = 'none';
+        }
+
+        // 스페이스바 제어
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                e.preventDefault();
+                if (!isRunning) {
+                    startStaringTimer();
+                } else {
+                    stopStaringTimer();
+                }
+            }
         });
     </script>
 </body>

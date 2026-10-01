@@ -3,92 +3,630 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>에임 정밀도 테스트 - misopick.kr</title>
-    <meta name="description" content="무작위 표적 정밀 타격 에임 연습 게임">
+    <title>에임 정밀도 테스트 - Aim Trainer & 반응속도 측정</title>
+    <meta name="description" content="FPS 게이머를 위한 에임 정밀도 및 타격 반응속도 테스트! 무작위 표적을 정밀 타격하여 명중률(%)과 반응시간(ms)을 측정하고 에임 실력을 향상시키세요.">
     
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            50: '#f0f9ff',
-                            100: '#e0f2fe',
-                            500: '#0284c7',
-                            600: '#0284c7',
-                            700: '#0369a1',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google AdSense Script -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2888840483385554" crossorigin="anonymous"></script>
+
+    <!-- FontAwesome 아이콘 CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;600;700;900&family=JetBrains+Mono:wght@500;800&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
     <style>
-        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
-        body { font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif; }
+        :root {
+            --primary-color: #EF4444;
+            --primary-hover: #DC2626;
+            --accent-cyan: #06B6D4;
+            --accent-yellow: #F59E0B;
+            --bg-color: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --text-main: #0F172A;
+            --text-sub: #475569;
+            --border-color: #E2E8F0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* 헤더 */
+        header {
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(239, 68, 68, 0.08);
+        }
+
+        .header-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .top-link {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            text-decoration: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            background-color: #FEE2E2;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .top-link:hover {
+            background-color: var(--primary-color);
+            color: #FFFFFF;
+        }
+
+        /* 메인 컨테이너 */
+        main {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            flex: 1;
+            width: 100%;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+        }
+
+        /* 스테이지 카드 */
+        .stage-card {
+            text-align: center;
+            background: radial-gradient(circle at 50% 20%, #FEF2F2 0%, #FEE2E2 100%);
+            border: 2px solid #FCA5A5;
+            position: relative;
+        }
+
+        /* 통계 전광판 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: #FFFFFF;
+            border-radius: 12px;
+            padding: 1rem;
+            border: 1px solid #FCA5A5;
+            box-shadow: 0 4px 10px rgba(239, 68, 68, 0.08);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-sub);
+            font-weight: 700;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--primary-hover);
+            margin-top: 0.2rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Aim Canvas 스테이지 박스 */
+        .canvas-wrapper {
+            position: relative;
+            background: #0F172A;
+            border-radius: 16px;
+            padding: 10px;
+            border: 3px solid var(--primary-color);
+            box-shadow: 0 0 25px rgba(239, 68, 68, 0.25);
+            margin: 1.5rem 0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        canvas {
+            background: #1E293B;
+            border-radius: 12px;
+            cursor: crosshair;
+            touch-action: none;
+            width: 100%;
+            max-width: 900px;
+            height: 420px;
+        }
+
+        /* 게임 가이드 오버레이 */
+        .game-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.88);
+            backdrop-filter: blur(4px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 12px;
+            z-index: 10;
+            color: white;
+            padding: 1rem;
+        }
+
+        .btn-start-game {
+            background: linear-gradient(135deg, #EF4444 0%, #B91C1C 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2.8rem;
+            border-radius: 30px;
+            font-weight: 800;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 4px 18px rgba(239, 68, 68, 0.4);
+            transition: all 0.2s;
+            margin-top: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .btn-start-game:hover {
+            transform: scale(1.03);
+            box-shadow: 0 6px 22px rgba(239, 68, 68, 0.5);
+        }
+
+        /* 설정 모드 박스 */
+        .mode-selector {
+            display: flex;
+            justify-content: center;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .mode-btn {
+            background: #FFFFFF;
+            border: 2px solid #FCA5A5;
+            padding: 0.5rem 1.2rem;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--primary-hover);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .mode-btn.active, .mode-btn:hover {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        /* SEO 컨텐츠 카드 */
+        .content-card h2 {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #FEE2E2;
+            padding-bottom: 0.5rem;
+        }
+
+        .content-card h3 {
+            font-size: 1.2rem;
+            margin: 1.5rem 0 0.5rem 0;
+            color: var(--text-main);
+        }
+
+        .content-card p {
+            color: var(--text-sub);
+            margin-bottom: 1rem;
+        }
+
+        .info-graphics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .graphic-item {
+            background-color: #F8FAFC;
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .graphic-item i {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        /* 푸터 */
+        footer {
+            background-color: #0F172A;
+            color: #94A3B8;
+            padding: 3rem 1rem 1.5rem 1rem;
+            margin-top: auto;
+        }
+
+        .footer-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #1E293B;
+        }
+
+        .footer-col h4 { color: white; margin-bottom: 1rem; font-size: 1.1rem; }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 0.5rem; }
+        .footer-col a { color: #94A3B8; text-decoration: none; transition: color 0.2s; }
+        .footer-col a:hover { color: white; }
+        .copyright { text-align: center; padding-top: 1.5rem; font-size: 0.875rem; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 flex flex-col min-h-screen">
+<body>
 
-    <!-- Header Navigation -->
-    <header class="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <a href="index.html" class="flex items-center space-x-2">
-                <div class="w-9 h-9 rounded-xl bg-brand-600 flex items-center justify-center text-white font-black text-lg shadow-sm">M</div>
-                <span class="text-xl font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <a href="aim-test.html" class="logo">
+                <i class="fa-solid fa-crosshairs"></i> 에임 정밀도 테스트
             </a>
-            <a href="index.html" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg border border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-100 transition">
-                <i data-lucide="arrow-left" class="w-4 h-4"></i>
-                <span>전체 툴 보기</span>
-            </a>
+            <a href="index.html" class="top-link"><i class="fa-solid fa-house"></i> misopick.kr</a>
         </div>
     </header>
 
-    <!-- Main Content Container -->
-    <main class="flex-grow max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        
-        <!-- Tool Title Card -->
-        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm mb-6">
-            <div class="flex items-center space-x-4 mb-4">
-                <div class="w-12 h-12 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center">
-                    <i data-lucide="target" class="w-6 h-6"></i>
+    <!-- Main -->
+    <main>
+        <section class="card stage-card">
+            <h2 style="font-size: 1.6rem; font-weight: 800; color: #DC2626;">
+                <i class="fa-solid fa-bullseye"></i> FPS 에임 정밀도 & 반응속도 측정기
+            </h2>
+            <p style="color: var(--text-sub); font-size: 0.95rem; margin-top: 0.3rem;">
+                화면에 무작위로 생성되는 표적을 최대한 빠르게 클릭하세요! 총 30개의 표적을 타격합니다.
+            </p>
+
+            <!-- 난이도 설정 모드 -->
+            <div class="mode-selector" style="margin-top: 1.2rem;">
+                <button class="mode-btn active" onclick="setDifficulty('easy', this)">EASY (큰 과녁)</button>
+                <button class="mode-btn" onclick="setDifficulty('normal', this)">NORMAL (표준 과녁)</button>
+                <button class="mode-btn" onclick="setDifficulty('hard', this)">HARD (미니 과녁)</button>
+            </div>
+
+            <!-- 통계 전광판 -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">진행률</div>
+                    <div class="stat-value" id="statProgress">0 / 30</div>
                 </div>
-                <div>
-                    <span class="text-xs font-bold text-slate-400 block">TOOL #19</span>
-                    <h1 class="text-2xl sm:text-3xl font-black text-slate-900">에임 정밀도 테스트</h1>
+                <div class="stat-card">
+                    <div class="stat-label">평균 반응속도</div>
+                    <div class="stat-value" id="statReaction">0 ms</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">명중률 (Accuracy)</div>
+                    <div class="stat-value" id="statAccuracy">100%</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">최종 점수 (Score)</div>
+                    <div class="stat-value" id="statScore">0</div>
                 </div>
             </div>
-            <p class="text-slate-600 text-sm sm:text-base leading-relaxed">무작위 표적 정밀 타격 에임 연습 게임</p>
-        </div>
 
-        <!-- Tool Workspace Area -->
-        <div class="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-sm min-h-[400px] flex flex-col items-center justify-center text-center">
-            <!-- TODO: 실제 로직 개발 영역 -->
-            <div class="p-4 bg-slate-100 rounded-2xl mb-4">
-                <i data-lucide="target" class="w-12 h-12 text-slate-400 mx-auto"></i>
+            <!-- 캔버스 게임 화면 -->
+            <div class="canvas-wrapper">
+                <canvas id="aimCanvas" width="800" height="420"></canvas>
+                
+                <div class="game-overlay" id="gameOverlay">
+                    <i class="fa-solid fa-circle-dot" style="font-size: 3.5rem; color: #EF4444; margin-bottom: 0.8rem;"></i>
+                    <h3 style="font-size: 1.6rem; font-weight: 800;" id="overlayTitle">에임 정밀도 테스트 준비</h3>
+                    <p style="color: #94A3B8; margin-top: 0.4rem; font-size: 0.95rem;" id="overlayDesc">
+                        시작 버튼을 누르면 첫번째 과녁이 무작위 위치에 나타납니다.
+                    </p>
+                    <button class="btn-start-game" onclick="startGame()">
+                        <i class="fa-solid fa-play"></i> 테스트 시작하기
+                    </button>
+                </div>
             </div>
-            <h2 class="text-xl font-bold text-slate-800 mb-2">에임 정밀도 테스트 기능 준비 중</h2>
-            <p class="text-slate-500 text-sm max-w-md">여기에 해당 웹툴의 실행 화면 및 인터랙티브 기능 로직이 들어갑니다.</p>
-        </div>
+        </section>
 
+        <!-- SEO Content & Guide Section -->
+        <article class="card content-card">
+            <h2>FPS 게임에서 에임 정밀도가 중요한 이유</h2>
+            <p>
+                발로란트(Valorant), 오버워치(Overwatch), 배틀그라운드(PUBG), 서든어택 등 현대 FPS 게임에서는 
+                단 0.1초의 반응속도와 정밀한 첫 탄 헤드샷(Headshot) 클릭 능력이 승패를 좌우합니다. 
+                주기적인 Aim Trainer 연습은 **마우스 프릭(Flick)**과 **플리킹(Flicking) 감각**을 극대화시켜 줍니다.
+            </p>
+
+            <div class="info-graphics">
+                <div class="graphic-item">
+                    <i class="fa-solid fa-gauge-high"></i>
+                    <h4>DPI & 감도 최적화</h4>
+                    <p>마우스 DPI(400~1600)와 인게임 감도를 수직/수평 일정하게 맞추어 마우스 가속을 끄세요.</p>
+                </div>
+                <div class="graphic-item">
+                    <i class="fa-solid fa-mouse"></i>
+                    <h4>끌어치기 (Flicking)</h4>
+                    <p>눈으로 목표를 포착한 순간부터 손목/팔근육이 기억하는 거리만큼 정밀하게 이동시키는 기술입니다.</p>
+                </div>
+                <div class="graphic-item">
+                    <i class="fa-solid fa-brain"></i>
+                    <h4>반응속도 (Reaction Time)</h4>
+                    <p>시각 자극을 받은 후 손가락 근육 신호가 전달되기까지의 시간을 200ms 이하로 단축시킵니다.</p>
+                </div>
+            </div>
+
+            <h3>에임 트레이닝 모범 가이드</h3>
+            <ul style="padding-left: 1.5rem; color: var(--text-sub); margin-bottom: 1rem;">
+                <li><strong>마우스 가속 차단:</strong> 윈도우 제어판 [마우스 속도] 설정에서 '포인터 정확도 향상' 옵션을 반드시 해제하세요.</li>
+                <li><strong>일정한 자세 유지:</strong> 의자 높이와 팔꿈치 각도, 마우스 패드 상의 팔 위치를 항상 일정하게 유지합니다.</li>
+                <li><strong>속도보다 정확도 우선:</strong> 초기에는 무조건 빗나가지 않는 100% 명중률에 집중한 뒤 속도를 차츰 늘려가세요.</li>
+            </ul>
+
+            <h3>자주 묻는 질문 (FAQ)</h3>
+            <p><strong>Q. 평균적인 게이머의 반응속도는 얼마인가요?</strong><br>
+            A. 일반인의 평균 반응시간은 약 230ms~270ms이며, 상위권 FPS 프로게이머는 150ms~190ms 수준을 유지합니다.</p>
+            <p><strong>Q. 모니터 주사율(Hz)이 에임에 영향을 미치나요?</strong><br>
+            A. 144Hz 이상의 고주사율 모니터는 프레임 잔상을 줄여 이동하는 과녁을 훨씬 명확하고 정밀하게 포착할 수 있게 돕습니다.</p>
+        </article>
     </main>
 
     <!-- Footer -->
-    <footer class="bg-white border-t border-slate-200 py-8 mt-auto">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-            <p>© misopick.kr - 모든 서비스는 무료로 제공됩니다.</p>
-            <a href="index.html" class="hover:text-slate-800 transition">메인으로 돌아가기</a>
+    <footer>
+        <div class="footer-container">
+            <div class="footer-col">
+                <h4>에임 정밀도 테스트</h4>
+                <p style="font-size: 0.85rem;">FPS 게이머를 위한 실시간 에임 타격, 명중률 및 반응속도 분석 트레이너입니다.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">misopick.kr 홈</a></li>
+                    <li><a href="aim-test.html">에임 정밀도 테스트</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>약관 및 정책</h4>
+                <ul>
+                    <li><a href="../privacy.html"><i class="fa-solid fa-user-shield"></i> 개인정보처리방침</a></li>
+                </ul>
+            </div>
         </div>
+        <div class="copyright">&copy; 2026 Utility Web. All rights reserved.</div>
     </footer>
 
+    <!-- JavaScript -->
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            lucide.createIcons();
+        const canvas = document.getElementById('aimCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let isPlaying = false;
+        let targetCount = 0;
+        const maxTargets = 30;
+        let hits = 0;
+        let totalClicks = 0;
+        
+        let targetRadius = 25; // Easy: 32, Normal: 24, Hard: 16
+        let currentTarget = null;
+        let targetSpawnTime = 0;
+        let reactionTimes = [];
+        let particles = [];
+
+        function setDifficulty(level, btn) {
+            document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            if (level === 'easy') targetRadius = 32;
+            else if (level === 'normal') targetRadius = 24;
+            else if (level === 'hard') targetRadius = 16;
+        }
+
+        function spawnTarget() {
+            if (targetCount >= maxTargets) {
+                endGame();
+                return;
+            }
+
+            const margin = targetRadius + 20;
+            const x = margin + Math.random() * (canvas.width - margin * 2);
+            const y = margin + Math.random() * (canvas.height - margin * 2);
+
+            currentTarget = { x, y, r: targetRadius };
+            targetSpawnTime = Date.now();
+            targetCount++;
+
+            document.getElementById('statProgress').innerText = `${targetCount} / ${maxTargets}`;
+        }
+
+        function createParticles(x, y) {
+            for (let i = 0; i < 12; i++) {
+                particles.push({
+                    x: x,
+                    y: y,
+                    vx: (Math.random() - 0.5) * 8,
+                    vy: (Math.random() - 0.5) * 8,
+                    radius: Math.random() * 4 + 2,
+                    alpha: 1,
+                    color: '#EF4444'
+                });
+            }
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 파티클 그리기
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                ctx.save();
+                ctx.globalAlpha = p.alpha;
+                ctx.fillStyle = p.color;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+
+                p.x += p.vx;
+                p.y += p.vy;
+                p.alpha -= 0.04;
+
+                if (p.alpha <= 0) particles.splice(i, 1);
+            }
+
+            // 표적 과녁 그리기
+            if (currentTarget && isPlaying) {
+                const { x, y, r } = currentTarget;
+
+                // 외곽 빨간 링
+                ctx.beginPath();
+                ctx.arc(x, y, r, 0, Math.PI * 2);
+                ctx.fillStyle = '#EF4444';
+                ctx.shadowColor = 'rgba(239, 68, 68, 0.6)';
+                ctx.shadowBlur = 15;
+                ctx.fill();
+                ctx.shadowBlur = 0;
+
+                // 흰색 링
+                ctx.beginPath();
+                ctx.arc(x, y, r * 0.65, 0, Math.PI * 2);
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fill();
+
+                // 중심 빨간 점
+                ctx.beginPath();
+                ctx.arc(x, y, r * 0.3, 0, Math.PI * 2);
+                ctx.fillStyle = '#EF4444';
+                ctx.fill();
+            }
+
+            if (isPlaying || particles.length > 0) {
+                requestAnimationFrame(draw);
+            }
+        }
+
+        canvas.addEventListener('pointerdown', (e) => {
+            if (!isPlaying || !currentTarget) return;
+
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+
+            const clickX = (e.clientX - rect.left) * scaleX;
+            const clickY = (e.clientY - rect.top) * scaleY;
+
+            totalClicks++;
+
+            const dist = Math.hypot(clickX - currentTarget.x, clickY - currentTarget.y);
+
+            if (dist <= currentTarget.r) {
+                // 명중
+                const reaction = Date.now() - targetSpawnTime;
+                reactionTimes.push(reaction);
+                hits++;
+
+                createParticles(currentTarget.x, currentTarget.y);
+                spawnTarget();
+            }
+
+            updateStats();
         });
+
+        function updateStats() {
+            const accuracy = totalClicks > 0 ? Math.round((hits / totalClicks) * 100) : 100;
+            const avgReaction = reactionTimes.length > 0 ? Math.round(reactionTimes.reduce((a, b) => a + b, 0) / reactionTimes.length) : 0;
+            
+            // 점수 계산: (명중수 * 1000) / (평균반응속도 + 1) * (명중률 / 100)
+            const score = avgReaction > 0 ? Math.round((hits * 100000) / avgReaction * (accuracy / 100)) : 0;
+
+            document.getElementById('statAccuracy').innerText = `${accuracy}%`;
+            document.getElementById('statReaction').innerText = `${avgReaction} ms`;
+            document.getElementById('statScore').innerText = score;
+        }
+
+        function startGame() {
+            isPlaying = true;
+            targetCount = 0;
+            hits = 0;
+            totalClicks = 0;
+            reactionTimes = [];
+            particles = [];
+
+            document.getElementById('gameOverlay').style.display = 'none';
+            document.getElementById('statProgress').innerText = `0 / ${maxTargets}`;
+            document.getElementById('statAccuracy').innerText = `100%`;
+            document.getElementById('statReaction').innerText = `0 ms`;
+            document.getElementById('statScore').innerText = `0`;
+
+            spawnTarget();
+            draw();
+        }
+
+        function endGame() {
+            isPlaying = false;
+            currentTarget = null;
+
+            const accuracy = totalClicks > 0 ? Math.round((hits / totalClicks) * 100) : 0;
+            const avgReaction = reactionTimes.length > 0 ? Math.round(reactionTimes.reduce((a, b) => a + b, 0) / reactionTimes.length) : 0;
+            const score = avgReaction > 0 ? Math.round((hits * 100000) / avgReaction * (accuracy / 100)) : 0;
+
+            document.getElementById('overlayTitle').innerText = `테스트 완료! Score: ${score}`;
+            document.getElementById('overlayDesc').innerHTML = `
+                평균 반응속도: <strong style="color:#22D3EE;">${avgReaction} ms</strong> | 명중률: <strong style="color:#34D399;">${accuracy}%</strong>
+            `;
+            document.getElementById('gameOverlay').style.display = 'flex';
+
+            if (accuracy >= 85 && avgReaction <= 250) {
+                confetti({
+                    particleCount: 70,
+                    spread: 60,
+                    colors: ['#EF4444', '#22D3EE', '#34D399'],
+                    origin: { y: 0.7 }
+                });
+            }
+        }
     </script>
 </body>
 </html>

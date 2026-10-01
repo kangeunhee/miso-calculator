@@ -3,92 +3,667 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SNS 특수 폰트 변환기 - misopick.kr</title>
-    <meta name="description" content="인스타그램 프로필용 예쁜 폰트 생성">
+    <title>SNS 특수 폰트 변환기 - 인스타그램 프로필 바이오 폰트 생성기</title>
+    <meta name="description" content="인스타그램, 트위터, 틱톡 프로필 및 피드용 예쁜 유니코드 폰트 변환기입니다. Cursive, Gothic, Circle, Bold 등 다양한 스타일 폰트와 이모지 기호를 원클릭으로 복사하세요.">
     
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            50: '#f0f9ff',
-                            100: '#e0f2fe',
-                            500: '#0284c7',
-                            600: '#0284c7',
-                            700: '#0369a1',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google AdSense Script -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2888840483385554" crossorigin="anonymous"></script>
+
+    <!-- FontAwesome 아이콘 CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;600;700;900&family=JetBrains+Mono:wght@500;800&display=swap" rel="stylesheet">
+
     <style>
-        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
-        body { font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif; }
+        :root {
+            --primary-gradient: linear-gradient(135deg, #833AB4 0%, #FD1D1D 50%, #FCB045 100%);
+            --accent-pink: #E1306C;
+            --bg-color: #0F172A;
+            --card-bg: #1E293B;
+            --text-main: #F8FAFC;
+            --text-sub: #94A3B8;
+            --border-color: #334155;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* 헤더 */
+        header {
+            background-color: rgba(30, 41, 59, 0.9);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .header-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .top-link {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #C13584;
+            text-decoration: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            background-color: rgba(225, 48, 108, 0.1);
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .top-link:hover {
+            background: var(--accent-pink);
+            color: #FFFFFF;
+        }
+
+        /* 메인 컨테이너 */
+        main {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            flex: 1;
+            width: 100%;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .stage-card {
+            text-align: center;
+            background: radial-gradient(circle at 50% 0%, #1E293B 0%, #0F172A 100%);
+            border: 2px solid #E1306C;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        /* 입력 영역 */
+        .input-box-wrapper {
+            max-width: 750px;
+            margin: 1.8rem auto 1rem auto;
+            position: relative;
+        }
+
+        .font-input {
+            width: 100%;
+            padding: 1.2rem 1.5rem;
+            border-radius: 16px;
+            border: 2px solid #334155;
+            background: #0B0F19;
+            color: #FFFFFF;
+            font-size: 1.15rem;
+            outline: none;
+            transition: all 0.2s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .font-input:focus {
+            border-color: #E1306C;
+            box-shadow: 0 0 20px rgba(225, 48, 108, 0.3);
+        }
+
+        /* 이모지 및 필터 버튼 */
+        .btn-group-row {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 0.8rem;
+        }
+
+        .decor-btn {
+            background: #0B0F19;
+            border: 1px solid var(--border-color);
+            color: var(--text-sub);
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .decor-btn:hover, .decor-btn.active {
+            border-color: var(--accent-pink);
+            color: #FFF;
+            background: rgba(225, 48, 108, 0.2);
+        }
+
+        /* 결과 리스트 그리드 */
+        .font-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.2rem;
+            margin-top: 2rem;
+            text-align: left;
+        }
+
+        .font-item-card {
+            background: #0B0F19;
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 1.2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 0.8rem;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .font-item-card:hover {
+            transform: translateY(-3px);
+            border-color: #E1306C;
+            box-shadow: 0 6px 20px rgba(225, 48, 108, 0.15);
+        }
+
+        .font-style-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #C13584;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .font-converted-text {
+            font-size: 1.25rem;
+            color: var(--text-main);
+            word-break: break-all;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-copy-item {
+            align-self: flex-end;
+            background: linear-gradient(135deg, #833AB4 0%, #FD1D1D 100%);
+            color: white;
+            border: none;
+            padding: 0.5rem 1.2rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .btn-copy-item:hover {
+            opacity: 0.9;
+            transform: scale(1.03);
+        }
+
+        /* 토스트 알림 */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: rgba(225, 48, 108, 0.95);
+            color: white;
+            padding: 0.8rem 1.8rem;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* SEO 컨텐츠 카드 */
+        .content-card h2 {
+            font-size: 1.5rem;
+            color: #E1306C;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #334155;
+            padding-bottom: 0.5rem;
+        }
+
+        .content-card h3 {
+            font-size: 1.2rem;
+            margin: 1.5rem 0 0.5rem 0;
+            color: #FFFFFF;
+        }
+
+        .content-card p {
+            color: var(--text-sub);
+            margin-bottom: 1rem;
+        }
+
+        .info-graphics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .graphic-item {
+            background-color: #0F172A;
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .graphic-item i {
+            font-size: 2.5rem;
+            color: #FD1D1D;
+            margin-bottom: 1rem;
+        }
+
+        /* 푸터 */
+        footer {
+            background-color: #0B0F19;
+            color: #64748B;
+            padding: 3rem 1rem 1.5rem 1rem;
+            margin-top: auto;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .footer-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #1E293B;
+        }
+
+        .footer-col h4 { color: white; margin-bottom: 1rem; font-size: 1.1rem; }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 0.5rem; }
+        .footer-col a { color: #64748B; text-decoration: none; transition: color 0.2s; }
+        .footer-col a:hover { color: white; }
+        .copyright { text-align: center; padding-top: 1.5rem; font-size: 0.875rem; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 flex flex-col min-h-screen">
+<body>
 
-    <!-- Header Navigation -->
-    <header class="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <a href="index.html" class="flex items-center space-x-2">
-                <div class="w-9 h-9 rounded-xl bg-brand-600 flex items-center justify-center text-white font-black text-lg shadow-sm">M</div>
-                <span class="text-xl font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <a href="fancy-fonts.html" class="logo">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> SNS 특수 폰트 변환기
             </a>
-            <a href="index.html" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg border border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-100 transition">
-                <i data-lucide="arrow-left" class="w-4 h-4"></i>
-                <span>전체 툴 보기</span>
-            </a>
+            <a href="index.html" class="top-link"><i class="fa-solid fa-house"></i> misopick.kr</a>
         </div>
     </header>
 
-    <!-- Main Content Container -->
-    <main class="flex-grow max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        
-        <!-- Tool Title Card -->
-        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm mb-6">
-            <div class="flex items-center space-x-4 mb-4">
-                <div class="w-12 h-12 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center">
-                    <i data-lucide="sparkle" class="w-6 h-6"></i>
+    <!-- Main -->
+    <main>
+        <section class="card stage-card">
+            <h2 style="font-size: 1.6rem; font-weight: 800; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-align: center;">
+                ✨ 인스타 프로필용 예쁜 특수 폰트 생성기
+            </h2>
+            <p style="color: var(--text-sub); font-size: 0.95rem; text-align: center; margin-top: 0.3rem;">
+                영문 영문자/숫자를 입력하면 인스타그램 Bio, 트위터, 틱톡에 사용 가능한 폰트로 자동 변환됩니다.
+            </p>
+
+            <!-- 입력창 -->
+            <div class="input-box-wrapper">
+                <input type="text" id="inputText" class="font-input" value="kangeunhee" placeholder="영문 문장을 입력하세요 (예: Hello World)" oninput="convertFonts()">
+            </div>
+
+            <!-- 추천 문구 (Preset) -->
+            <div class="btn-group-row">
+                <span style="font-size: 0.8rem; color: #94A3B8; align-self: center;">추천문구:</span>
+                <button class="decor-btn" onclick="setPreset('Live your life')">Live your life</button>
+                <button class="decor-btn" onclick="setPreset('Dreamer')">Dreamer</button>
+                <button class="decor-btn" onclick="setPreset('Daily Log')">Daily Log</button>
+                <button class="decor-btn" onclick="setPreset('Stay Gold')">Stay Gold</button>
+            </div>
+
+            <!-- 데코 이모지 퀵 추가 -->
+            <div class="btn-group-row">
+                <button class="decor-btn" onclick="addDecor('✦ ')">✦ 별표</button>
+                <button class="decor-btn" onclick="addDecor('♡ ')">♡ 하트</button>
+                <button class="decor-btn" onclick="addDecor('⚡ ')">⚡ 번개</button>
+                <button class="decor-btn" onclick="addDecor('🌸 ')">🌸 벚꽃</button>
+                <button class="decor-btn" onclick="addDecor('🪐 ')">🪐 행성</button>
+            </div>
+
+            <!-- 카테고리 필터 버튼 -->
+            <div class="btn-group-row" style="margin-top: 1.2rem; border-top: 1px dashed #334155; padding-top: 1rem;">
+                <button class="decor-btn filter-btn active" onclick="filterStyle('all', this)">전체보기</button>
+                <button class="decor-btn filter-btn" onclick="filterStyle('cursive', this)">✒️ 필기체</button>
+                <button class="decor-btn filter-btn" onclick="filterStyle('gothic', this)">🏰 고딕체</button>
+                <button class="decor-btn filter-btn" onclick="filterStyle('symbol', this)">⭕ 기호/원형</button>
+                <button class="decor-btn filter-btn" onclick="filterStyle('clean', this)">✨ 심플/볼드</button>
+            </div>
+
+            <!-- 변환 결과 그리드 -->
+            <div class="font-grid" id="fontResultGrid">
+                <!-- 자바스크립트로 동적 폰트 카드 생성 -->
+            </div>
+        </section>
+
+        <!-- SEO Content & Guide Section -->
+        <article class="card content-card">
+            <h2>인스타그램 특수 폰트 변환기 활용 가이드</h2>
+            <p>
+                인스타그램, 트위터, TikTok, 릴스 피드 등에서 남들과 다른 개성 있는 프로필(Bio)이나 아이디를 연출하고 싶을 때 <strong>유니코드(Unicode) 기반 특수 폰트</strong>를 활용해 보세요. 
+                별도의 앱 설치나 폰트 다운로드 없이 복사 & 붙여넣기만으로 즉시 적용됩니다.
+            </p>
+
+            <div class="info-graphics">
+                <div class="graphic-item">
+                    <i class="fa-brands fa-instagram"></i>
+                    <h4>인스타그램 Bio 최적화</h4>
+                    <p>자기소개란과 게시물 캡션에 인스타 감성의 기하학적 폰트 적용.</p>
                 </div>
-                <div>
-                    <span class="text-xs font-bold text-slate-400 block">TOOL #35</span>
-                    <h1 class="text-2xl sm:text-3xl font-black text-slate-900">SNS 특수 폰트 변환기</h1>
+                <div class="graphic-item">
+                    <i class="fa-solid fa-copy"></i>
+                    <h4>원클릭 바로 복사</h4>
+                    <p>원하는 필체 카드의 버튼만 누르면 클립보드에 자동 복사 완료.</p>
+                </div>
+                <div class="graphic-item">
+                    <i class="fa-solid fa-mobile-screen-button"></i>
+                    <h4>모든 디바이스 호환</h4>
+                    <p>iOS 아이폰, 안드로이드, PC 브라우저 구분 없이 깨짐 없이 표시.</p>
                 </div>
             </div>
-            <p class="text-slate-600 text-sm sm:text-base leading-relaxed">인스타그램 프로필용 예쁜 폰트 생성</p>
-        </div>
 
-        <!-- Tool Workspace Area -->
-        <div class="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-sm min-h-[400px] flex flex-col items-center justify-center text-center">
-            <!-- TODO: 실제 로직 개발 영역 -->
-            <div class="p-4 bg-slate-100 rounded-2xl mb-4">
-                <i data-lucide="sparkle" class="w-12 h-12 text-slate-400 mx-auto"></i>
-            </div>
-            <h2 class="text-xl font-bold text-slate-800 mb-2">SNS 특수 폰트 변환기 기능 준비 중</h2>
-            <p class="text-slate-500 text-sm max-w-md">여기에 해당 웹툴의 실행 화면 및 인터랙티브 기능 로직이 들어갑니다.</p>
-        </div>
+            <h3>지원하는 주요 특수 폰트 스타일</h3>
+            <ul style="padding-left: 1.5rem; color: var(--text-sub); margin-bottom: 1rem;">
+                <li><strong>Cursive (필기체):</strong> 𝓕𝓪𝓷𝓬𝔂 𝓕𝓸𝓷𝓽 / 𝒻𝒶𝓃𝒸𝓎 𝒻𝑜𝓃𝓉</li>
+                <li><strong>Gothic (필기체/고딕):</strong> 𝔉𝔞𝔫𝔠𝔶 𝔉𝔬𝔫𝔱 / 𝖁𝖆𝖓𝖈𝖞 𝕱𝖔𝖓𝖙</li>
+                <li><strong>Circle (원형 폰트):</strong> ⓕⓐⓝⓒⓨ ⓕⓞⓝⓣ / 🅵🅰🅽🅲🆈 🅵🅾🅽🆃</li>
+                <li><strong>Monospace (타자기체):</strong> 𝑾𝒘𝒏𝒄𝒚 𝑭𝒐𝒏𝒕</li>
+                <li><strong>Small Caps (소문자 대문자화):</strong> ғᴀɴᴄʏ ғᴏɴᴛ</li>
+            </ul>
 
+            <h3>자주 묻는 질문 (FAQ)</h3>
+            <p><strong>Q. 한글도 특수 폰트로 변환되나요?</strong><br>
+            A. 유니코드 폰트 규격 특성상 영문(A-Z, a-z) 및 숫자(0-9) 위주로 변환이 지원되며, 한글은 주변에 예쁜 특수기호나 이모지를 조합하는 방식을 추천합니다.</p>
+            <p><strong>Q. 복사한 글자가 엑스(X) 박스로 깨져 보여요!</strong><br>
+            A. 구형 스마트폰이나 아주 오래된 OS 버전에서는 일부 최신 유니코드 기호가 호환되지 않을 수 있습니다.</p>
+        </article>
     </main>
 
+    <!-- 토스트 알림 -->
+    <div class="toast" id="toastMsg">
+        <i class="fa-solid fa-circle-check"></i> 클립보드에 복사되었습니다!
+    </div>
+
     <!-- Footer -->
-    <footer class="bg-white border-t border-slate-200 py-8 mt-auto">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-            <p>© misopick.kr - 모든 서비스는 무료로 제공됩니다.</p>
-            <a href="index.html" class="hover:text-slate-800 transition">메인으로 돌아가기</a>
+    <footer>
+        <div class="footer-container">
+            <div class="footer-col">
+                <h4>SNS 특수 폰트 변환기</h4>
+                <p style="font-size: 0.85rem;">인스타그램, 트위터, 틱톡 프로필 자기소개를 꾸밀 수 있는 예쁜 유니코드 폰트 생성 유틸리티입니다.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">misopick.kr 홈</a></li>
+                    <li><a href="fancy-fonts.html">SNS 특수 폰트 변환기</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>약관 및 정책</h4>
+                <ul>
+                    <li><a href="../privacy.html"><i class="fa-solid fa-user-shield"></i> 개인정보처리방침</a></li>
+                </ul>
+            </div>
         </div>
+        <div class="copyright">&copy; 2026 Utility Web. All rights reserved.</div>
     </footer>
 
+    <!-- JavaScript -->
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            lucide.createIcons();
-        });
+        let currentFilter = 'all';
+
+        // 폰트 스타일 데이터 정의
+        const fontStyles = [
+            {
+                name: "Bold Cursive (볼드 필기체)",
+                category: "cursive",
+                map: (text) => convertUnicode(text, 0x1D4D0, 0x1D4EA, 0x1D7CE)
+            },
+            {
+                name: "Light Cursive (감성 필기체)",
+                category: "cursive",
+                map: (text) => convertScriptLight(text)
+            },
+            {
+                name: "Fraktur Gothic (고딕체)",
+                category: "gothic",
+                map: (text) => convertUnicode(text, 0x1D504, 0x1D51E, 0x1D7CE)
+            },
+            {
+                name: "Bold Fraktur (볼드 고딕)",
+                category: "gothic",
+                map: (text) => convertUnicode(text, 0x1D56C, 0x1D586, 0x1D7CE)
+            },
+            {
+                name: "Circle Outline (원형 테두리)",
+                category: "symbol",
+                map: (text) => convertCircle(text, false)
+            },
+            {
+                name: "Circle Solid (원형 블랙)",
+                category: "symbol",
+                map: (text) => convertCircle(text, true)
+            },
+            {
+                name: "Squared Solid (사각 네온)",
+                category: "symbol",
+                map: (text) => convertSquared(text)
+            },
+            {
+                name: "Small Caps (스몰 캡스)",
+                category: "clean",
+                map: (text) => convertSmallCaps(text)
+            },
+            {
+                name: "Monospace (타자기체)",
+                category: "clean",
+                map: (text) => convertUnicode(text, 0x1D670, 0x1D68A, 0x1D7F6)
+            },
+            {
+                name: "Sans Bold (세련된 볼드)",
+                category: "clean",
+                map: (text) => convertUnicode(text, 0x1D5A0, 0x1D5BA, 0x1D7EC)
+            },
+            {
+                name: "Double Struck (공간 폰트)",
+                category: "clean",
+                map: (text) => convertUnicode(text, 0x1D538, 0x1D552, 0x1D7D8)
+            }
+        ];
+
+        // Light Cursive(감성 필기체) 전용 변환 함수 (소문자/대문자 예외 완벽 대응)
+        function convertScriptLight(str) {
+            const lowerMap = {
+                'a':'𝒶', 'b':'𝒷', 'c':'𝒸', 'd':'𝒹', 'e':'ℯ', 'f':'𝒻', 'g':'ℊ', 'h':'𝒽',
+                'i':'𝒾', 'j':'𝒿', 'k':'𝓀', 'l':'𝓁', 'm':'𝓂', 'n':'𝓃', 'o':'ℴ', 'p':'𝓅',
+                'q':'𝓆', 'r':'𝓇', 's':'𝓈', 't':'𝓉', 'u':'𝓊', 'v':'𝓋', 'w':'𝓌', 'x':'𝓍',
+                'y':'𝓎', 'z':'𝓏'
+            };
+            const upperMap = {
+                'A':'𝒜', 'B':'ℬ', 'C':'𝒞', 'D':'𝒟', 'E':'ℰ', 'F':'ℱ', 'G':'𝒢', 'H':'ℋ',
+                'I':'ℐ', 'J':'𝒥', 'K':'𝒦', 'L':'ℒ', 'M':'ℳ', 'N':'𝒩', 'O':'𝒪', 'P':'𝒫',
+                'Q':'𝒬', 'R':'ℛ', 'S':'𝒮', 'T':'𝒯', 'U':'𝒰', 'V':'𝒱', 'W':'𝒲', 'X':'𝒳',
+                'Y':'𝒴', 'Z':'𝒵'
+            };
+
+            return str.split('').map(char => {
+                if (lowerMap[char]) return lowerMap[char];
+                if (upperMap[char]) return upperMap[char];
+                return char;
+            }).join('');
+        }
+
+        // 일반 유니코드 오프셋 변환
+        function convertUnicode(str, upperStart, lowerStart, digitStart) {
+            return str.split('').map(char => {
+                const code = char.charCodeAt(0);
+                if (code >= 65 && code <= 90) { // A-Z
+                    return String.fromCodePoint(upperStart + (code - 65));
+                } else if (code >= 97 && code <= 122) { // a-z
+                    return String.fromCodePoint(lowerStart + (code - 97));
+                } else if (code >= 48 && code <= 57) { // 0-9
+                    return String.fromCodePoint(digitStart + (code - 48));
+                }
+                return char;
+            }).join('');
+        }
+
+        // 원형 폰트 변환
+        function convertCircle(str, isSolid) {
+            return str.split('').map(char => {
+                const code = char.charCodeAt(0);
+                if (code >= 65 && code <= 90) {
+                    return String.fromCodePoint((isSolid ? 0x1F150 : 0x24B6) + (code - 65));
+                } else if (code >= 97 && code <= 122) {
+                    return String.fromCodePoint((isSolid ? 0x1F150 : 0x24D0) + (code - 97));
+                } else if (code >= 49 && code <= 57) {
+                    return String.fromCodePoint(0x2460 + (code - 49));
+                }
+                return char;
+            }).join('');
+        }
+
+        // 사각 폰트 변환
+        function convertSquared(str) {
+            return str.split('').map(char => {
+                const code = char.charCodeAt(0);
+                if ((code >= 65 && code <= 90) || (code >= 97 && code <= 122)) {
+                    const upperCode = char.toUpperCase().charCodeAt(0);
+                    return String.fromCodePoint(0x1F170 + (upperCode - 65));
+                }
+                return char;
+            }).join('');
+        }
+
+        // Small Caps 변환
+        function convertSmallCaps(str) {
+            const map = {
+                'a':'ᴀ','b':'ʙ','c':'ᴄ','d':'ᴅ','e':'ᴇ','f':'ғ','g':'ɢ','h':'ʜ','i':'ɪ','j':'ᴊ',
+                'k':'ᴋ','l':'ʟ','m':'ᴍ','n':'ɴ','o':'ᴏ','p':'ᴘ','q':'ǫ','r':'ʀ','s':'s','t':'ᴛ',
+                'u':'ᴜ','v':'ᴠ','w':'ᴡ','x':'x','y':'ʏ','z':'ᴢ'
+            };
+            return str.split('').map(c => map[c.toLowerCase()] || c).join('');
+        }
+
+        // 카테고리 필터링
+        function filterStyle(category, btnEl) {
+            currentFilter = category;
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            btnEl.classList.add('active');
+            convertFonts();
+        }
+
+        // 추천 문구 입력
+        function setPreset(text) {
+            const input = document.getElementById('inputText');
+            input.value = text;
+            convertFonts();
+        }
+
+        // 이모지 데코 추가
+        function addDecor(decor) {
+            const input = document.getElementById('inputText');
+            input.value = decor + input.value;
+            convertFonts();
+        }
+
+        // 폰트 변환 및 화면 렌더링
+        function convertFonts() {
+            const input = document.getElementById('inputText').value || "Instagram Bio";
+            const container = document.getElementById('fontResultGrid');
+            container.innerHTML = '';
+
+            const filteredList = fontStyles.filter(item => currentFilter === 'all' || item.category === currentFilter);
+
+            filteredList.forEach(style => {
+                const converted = style.map(input);
+                const card = document.createElement('div');
+                card.className = 'font-item-card';
+                card.innerHTML = `
+                    <div>
+                        <div class="font-style-label">${style.name}</div>
+                        <div class="font-converted-text">${converted}</div>
+                    </div>
+                    <button class="btn-copy-item" onclick="copyToClipboard('${escapeQuotes(converted)}')">
+                        <i class="fa-solid fa-copy"></i> 복사
+                    </button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function escapeQuotes(str) {
+            return str.replace(/'/g, "\\'").replace(/"/g, '\\"');
+        }
+
+        // 복사 및 토스트
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast();
+            }).catch(() => {
+                alert("복사에 실패했습니다.");
+            });
+        }
+
+        function showToast() {
+            const toast = document.getElementById('toastMsg');
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
+        }
+
+        window.onload = () => {
+            convertFonts();
+        };
     </script>
 </body>
 </html>

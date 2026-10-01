@@ -3,92 +3,637 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>닮은 동물상 테스트 - misopick.kr</title>
-    <meta name="description" content="분위기 키워드로 찾아보는 동물상 결과">
+    <title>닮은 동물상 테스트 - 나의 분위기와 매력으로 알아보는 동물상 진단</title>
+    <meta name="description" content="나는 강아지상, 고양이상, 토끼상, 여우상 중 어떤 얼굴상일까? 분위기 키워드와 매력 포인트를 선택하고 나와 찰떡궁합인 동물상과 스타일링 팁을 확인해보세요!">
     
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            50: '#f0f9ff',
-                            100: '#e0f2fe',
-                            500: '#0284c7',
-                            600: '#0284c7',
-                            700: '#0369a1',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google AdSense Script -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2888840483385554" crossorigin="anonymous"></script>
+
+    <!-- FontAwesome 아이콘 CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;600;700;900&family=Gowun+Batang:wght@400;700&family=JetBrains+Mono:wght@500;800&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
     <style>
-        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
-        body { font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif; }
+        :root {
+            --primary-color: #EC4899;
+            --primary-hover: #DB2777;
+            --accent-pink: #F472B6;
+            --accent-purple: #C084FC;
+            --accent-yellow: #FBBF24;
+            --bg-color: #FDF2F8;
+            --card-bg: #FFFFFF;
+            --text-main: #1F2937;
+            --text-sub: #4B5563;
+            --border-color: #FBCFE8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* 헤더 */
+        header {
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(236, 72, 153, 0.08);
+        }
+
+        .header-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .top-link {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            text-decoration: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            background-color: #FCE7F3;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .top-link:hover {
+            background-color: var(--primary-color);
+            color: #FFFFFF;
+        }
+
+        /* 메인 컨테이너 */
+        main {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            flex: 1;
+            width: 100%;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .stage-card {
+            text-align: center;
+            background: radial-gradient(circle at 50% 20%, #FFFFFF 0%, #FCE7F3 100%);
+            border: 2px solid #F472B6;
+            position: relative;
+        }
+
+        /* 입력 폼 영역 */
+        .input-box {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            max-width: 500px;
+            margin: 1.5rem auto;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-sub);
+            margin-bottom: 0.4rem;
+        }
+
+        .text-input, .select-input {
+            width: 100%;
+            padding: 0.9rem 1.2rem;
+            border-radius: 12px;
+            border: 2px solid #FBCFE8;
+            background: #FAFAFA;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-main);
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .text-input:focus, .select-input:focus {
+            border-color: var(--primary-color);
+            background: #FFFFFF;
+            box-shadow: 0 0 10px rgba(236, 72, 153, 0.2);
+        }
+
+        /* 컨트롤 버튼 */
+        .control-panel {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-action {
+            background: linear-gradient(135deg, #EC4899 0%, #DB2777 100%);
+            color: white;
+            border: none;
+            padding: 0.9rem 2.5rem;
+            border-radius: 30px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3);
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(236, 72, 153, 0.4);
+        }
+
+        .btn-secondary {
+            background: #FFFFFF;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            box-shadow: none;
+            padding: 0.8rem 1.8rem;
+            font-size: 0.95rem;
+        }
+
+        .btn-secondary:hover {
+            background: #FCE7F3;
+            color: var(--primary-hover);
+        }
+
+        /* 결과 화면 스타일 */
+        .result-container {
+            display: none;
+            animation: fadeIn 0.6s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animal-emoji {
+            font-size: 4rem;
+            margin-bottom: 0.5rem;
+            animation: bounce 1.5s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .animal-title {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--primary-color);
+            font-family: 'Gowun Batang', serif;
+            margin-bottom: 0.5rem;
+        }
+
+        .animal-subtitle {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--accent-purple);
+            margin-bottom: 1.5rem;
+        }
+
+        /* 스탯 그리드 */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+            text-align: left;
+        }
+
+        .stat-card {
+            background: #FDF2F8;
+            border: 1px solid #FBCFE8;
+            padding: 1rem;
+            border-radius: 12px;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-sub);
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+
+        .stat-value {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--primary-color);
+        }
+
+        /* SEO 컨텐츠 카드 */
+        .content-card h2 {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #FCE7F3;
+            padding-bottom: 0.5rem;
+        }
+
+        .content-card h3 {
+            font-size: 1.2rem;
+            margin: 1.5rem 0 0.5rem 0;
+            color: var(--text-main);
+        }
+
+        .content-card p {
+            color: var(--text-sub);
+            margin-bottom: 1rem;
+        }
+
+        .info-graphics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .graphic-item {
+            background-color: #FAFAFA;
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .graphic-item i {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        /* 푸터 */
+        footer {
+            background-color: #1F2937;
+            color: #9CA3AF;
+            padding: 3rem 1rem 1.5rem 1rem;
+            margin-top: auto;
+            border-top: 1px solid #374151;
+        }
+
+        .footer-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #374151;
+        }
+
+        .footer-col h4 { color: white; margin-bottom: 1rem; font-size: 1.1rem; }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 0.5rem; }
+        .footer-col a { color: #9CA3AF; text-decoration: none; transition: color 0.2s; }
+        .footer-col a:hover { color: white; }
+        .copyright { text-align: center; padding-top: 1.5rem; font-size: 0.875rem; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 flex flex-col min-h-screen">
+<body>
 
-    <!-- Header Navigation -->
-    <header class="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <a href="index.html" class="flex items-center space-x-2">
-                <div class="w-9 h-9 rounded-xl bg-brand-600 flex items-center justify-center text-white font-black text-lg shadow-sm">M</div>
-                <span class="text-xl font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <a href="animal-lookalike.html" class="logo">
+                <i class="fa-solid fa-dog"></i> 닮은 동물상 테스트
             </a>
-            <a href="index.html" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg border border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-100 transition">
-                <i data-lucide="arrow-left" class="w-4 h-4"></i>
-                <span>전체 툴 보기</span>
-            </a>
+            <a href="index.html" class="top-link"><i class="fa-solid fa-house"></i> misopick.kr</a>
         </div>
     </header>
 
-    <!-- Main Content Container -->
-    <main class="flex-grow max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        
-        <!-- Tool Title Card -->
-        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm mb-6">
-            <div class="flex items-center space-x-4 mb-4">
-                <div class="w-12 h-12 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center">
-                    <i data-lucide="dog" class="w-6 h-6"></i>
+    <!-- Main -->
+    <main>
+        <section class="card stage-card">
+            <h2 style="font-size: 1.6rem; font-weight: 800; color: #DB2777;">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> 나의 분위기 키워드로 찾는 동물상 테스트
+            </h2>
+            <p style="color: var(--text-sub); font-size: 0.95rem; margin-top: 0.3rem;">
+                이름과 본인의 매력 포인트를 선택하여 나와 가장 닮은 동물상을 정밀 진단해보세요!
+            </p>
+
+            <!-- 입력 폼 영역 -->
+            <div id="inputContainer">
+                <div class="input-box">
+                    <div class="form-group">
+                        <label><i class="fa-solid fa-signature"></i> 성함 또는 닉네임</label>
+                        <input type="text" id="userName" class="text-input" placeholder="이름을 입력하세요 (예: 김민수)">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fa-solid fa-eye"></i> 나의 가장 자신 있는 눈매/인상</label>
+                        <select class="select-input" id="eyeType">
+                            <option value="round">동글동글하고 순둥한 눈매</option>
+                            <option value="sharp">시크하고 또렷한 고양이형 눈매</option>
+                            <option value="clear">맑고 초롱초롱한 청순형 눈매</option>
+                            <option value="deep">그윽하고 분위기 있는 딥한 눈매</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fa-solid fa-face-smile"></i> 평소 주변에서 자주 듣는 분위기</label>
+                        <select class="select-input" id="vibeType">
+                            <option value="cute">밝고 애교가 많다는 소리를 듣는다</option>
+                            <option value="chic">도도하고 세련된 매력이 있다</option>
+                            <option value="gentle">다정하고 포근한 인상이다</option>
+                            <option value="smart">지적이고 깔끔한 스마트형이다</option>
+                        </select>
+                    </div>
                 </div>
-                <div>
-                    <span class="text-xs font-bold text-slate-400 block">TOOL #29</span>
-                    <h1 class="text-2xl sm:text-3xl font-black text-slate-900">닮은 동물상 테스트</h1>
+
+                <div class="control-panel">
+                    <button class="btn-action" onclick="analyzeAnimal()">
+                        <i class="fa-solid fa-face-grin-stars"></i> 내 동물상 확인하기
+                    </button>
                 </div>
             </div>
-            <p class="text-slate-600 text-sm sm:text-base leading-relaxed">분위기 키워드로 찾아보는 동물상 결과</p>
-        </div>
 
-        <!-- Tool Workspace Area -->
-        <div class="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-sm min-h-[400px] flex flex-col items-center justify-center text-center">
-            <!-- TODO: 실제 로직 개발 영역 -->
-            <div class="p-4 bg-slate-100 rounded-2xl mb-4">
-                <i data-lucide="dog" class="w-12 h-12 text-slate-400 mx-auto"></i>
+            <!-- 결과 출력 영역 -->
+            <div class="result-container" id="resultContainer">
+                <div class="animal-emoji" id="resEmoji">🐶</div>
+                <div style="font-size: 0.85rem; font-weight: 800; color: var(--text-sub);" id="resUserName">김민수 님의 닮은 동물상</div>
+                <div class="animal-title" id="resAnimalName">다정다감 멍뭉이 (강아지상)</div>
+                <div class="animal-subtitle" id="resSubTitle">"주변을 환하게 밝히는 해피 바이러스 소유자"</div>
+
+                <!-- 스탯 그리드 -->
+                <div class="stat-grid">
+                    <div class="stat-card">
+                        <div class="stat-label"><i class="fa-solid fa-heart"></i> 매력 지수 포인트</div>
+                        <div class="stat-value" id="resCharm">98 / 100 ST</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label"><i class="fa-solid fa-star"></i> 연애 인기 순위</div>
+                        <div class="stat-value" id="resPopular">상위 3% 복덩이</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label"><i class="fa-solid fa-handshake"></i> 환상의 짝꿍 동물상</div>
+                        <div class="stat-value" id="resMatch">도도한 고양이상</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label"><i class="fa-solid fa-shirt"></i> 추천 스타일링</div>
+                        <div class="stat-value" id="resStyle">캐주얼 & 파스텔 룩</div>
+                    </div>
+                </div>
+
+                <div style="background: #FFFFFF; border-radius: 12px; padding: 1.5rem; text-align: left; border: 1px solid var(--border-color); margin-top: 1rem;">
+                    <h4 style="color: var(--primary-color); font-size: 1.1rem; margin-bottom: 0.5rem;"><i class="fa-solid fa-book-open"></i> 나의 동물상 상세 성격 특징</h4>
+                    <p id="resDesc" style="color: var(--text-sub); font-size: 0.95rem; margin-bottom: 1rem;">동물상 설명이 출력됩니다.</p>
+                    
+                    <h4 style="color: var(--accent-purple); font-size: 1.1rem; margin-bottom: 0.5rem;"><i class="fa-solid fa-lightbulb"></i> 매력을 극대화하는 뷰티 & 분위기 팁</h4>
+                    <p id="resTip" style="color: var(--text-sub); font-size: 0.95rem;">팁이 출력됩니다.</p>
+                </div>
+
+                <div class="control-panel">
+                    <button class="btn-action" onclick="restartTest()">
+                        <i class="fa-solid fa-rotate-right"></i> 다시 진단하기
+                    </button>
+                    <button class="btn-action btn-secondary" onclick="copyResult()">
+                        <i class="fa-solid fa-share-nodes"></i> 동물상 결과 복사하기
+                    </button>
+                </div>
             </div>
-            <h2 class="text-xl font-bold text-slate-800 mb-2">닮은 동물상 테스트 기능 준비 중</h2>
-            <p class="text-slate-500 text-sm max-w-md">여기에 해당 웹툴의 실행 화면 및 인터랙티브 기능 로직이 들어갑니다.</p>
-        </div>
+        </section>
 
+        <!-- SEO Content & Guide Section -->
+        <article class="card content-card">
+            <h2>닮은 동물상 테스트의 매력과 심리학적 의미</h2>
+            <p>
+                사람의 인상과 분위기를 동물에 비유하는 <strong>동물상 테스트</strong>는 대중문화 속에서 오랜 기간 큰 사랑을 받아온 엔터테인먼트 콘텐츠입니다. 
+                얼굴의 이목구비 비율과 풍기는 분위기(결)를 통해 자신의 시각적 매력 포인트를 유쾌하게 확인하고, 
+                타인에게 비치는 자신의 첫인상을 객관적이고 긍정적으로 재발견하는 재미를 선사합니다.
+            </p>
+
+            <div class="info-graphics">
+                <div class="graphic-item">
+                    <i class="fa-solid fa-face-smile"></i>
+                    <h4>첫인상 매력 극대화</h4>
+                    <p>자신만의 고유한 인상 포인트를 이해하고 어울리는 표정을 연출합니다.</p>
+                </div>
+                <div class="graphic-item">
+                    <i class="fa-solid fa-shirt"></i>
+                    <h4>맞춤형 스타일링</h4>
+                    <p>동물상 스타일에 맞는 헤어스타일과 패션을 통해 호감도를 높입니다.</p>
+                </div>
+                <div class="graphic-item">
+                    <i class="fa-solid fa-comments"></i>
+                    <h4>즐거운 소통 매개체</h4>
+                    <p>친구, 연인과 결과를 공유하며 서로의 매력을 유쾌하게 나눌 수 있습니다.</p>
+                </div>
+            </div>
+
+            <h3>대표적인 4대 동물상 유형별 특징</h3>
+            <ul style="padding-left: 1.5rem; color: var(--text-sub); margin-bottom: 1rem;">
+                <li><strong>강아지상:</strong> 선하고 동글동글한 눈매로 주변을 무해하고 따뜻하게 만드는 호감형의 정석</li>
+                <li><strong>고양이상:</strong> 또렷하고 시크한 눈꼬리로 세련되고 지적인 매력을 풍기는 트렌디형</li>
+                <li><strong>토끼상:</strong> 맑고 초롱초롱한 눈빛과 상큼발랄한 애교로 활력을 불어넣는 비타민형</li>
+                <li><strong>여우상:</strong> 매혹적이고 신비로운 분위기로 사람들의 이목을 사로잡는 분위기 메이커형</li>
+            </ul>
+
+            <h3>자주 묻는 질문 (FAQ)</h3>
+            <p><strong>Q. 결과는 어떤 방식으로 산출되나요?</strong><br>
+            A. 입력하신 이름의 수리학적 해시값과 선택하신 눈매 및 분위기 키워드를 조합하여 가장 어울리는 동물상 서사를 도출합니다.</p>
+            <p><strong>Q. 매번 결과가 달라지나요?</strong><br>
+            A. 동일한 이름과 선택 항목을 입력하시면 언제나 일관된 동물상 결과가 유지됩니다.</p>
+        </article>
     </main>
 
     <!-- Footer -->
-    <footer class="bg-white border-t border-slate-200 py-8 mt-auto">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-            <p>© misopick.kr - 모든 서비스는 무료로 제공됩니다.</p>
-            <a href="index.html" class="hover:text-slate-800 transition">메인으로 돌아가기</a>
+    <footer>
+        <div class="footer-container">
+            <div class="footer-col">
+                <h4>닮은 동물상 테스트</h4>
+                <p style="font-size: 0.85rem;">분위기 키워드와 매력 포인트를 조합하여 나와 닮은 동물상과 스타일링 팁을 제공하는 감성 유틸리티입니다.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">misopick.kr 홈</a></li>
+                    <li><a href="animal-lookalike.html">닮은 동물상 테스트</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>약관 및 정책</h4>
+                <ul>
+                    <li><a href="../privacy.html"><i class="fa-solid fa-user-shield"></i> 개인정보처리방침</a></li>
+                </ul>
+            </div>
         </div>
+        <div class="copyright">&copy; 2026 Utility Web. All rights reserved.</div>
     </footer>
 
+    <!-- JavaScript -->
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            lucide.createIcons();
-        });
+        const animalDatabase = [
+            {
+                emoji: "🐶",
+                name: "다정다감 멍뭉이 (강아지상)",
+                sub: "주변을 환하게 밝히는 해피 바이러스 소유자",
+                charm: "98 / 100 ST",
+                popular: "상위 3% 복덩이",
+                match: "도도한 고양이상",
+                style: "캐주얼 & 파스텔 룩",
+                desc: "웃을 때 눈꼬리가 부드럽게 휘어지며, 사람들에게 편안함과 무해한 호감을 주는 최고의 대인관계 친화형 매력을 지니고 있습니다.",
+                tip: "내추럴한 헤어스타일과 따뜻한 미소가 당신의 치명적인 매력을 배가시켜 줍니다."
+            },
+            {
+                emoji: "🐱",
+                name: "시크 매력 앙숙이 (고양이상)",
+                sub: "모두의 이목을 사로잡는 트렌디한 도도함",
+                charm: "96 / 100 ST",
+                popular: "상위 2% 심쿵 유발자",
+                match: "다정다감 강아지상",
+                style: "모던 시크 & 블랙 톤",
+                desc: "또렷한 이목구비와 살짝 올라간 눈매에서 오는 도도함이 일품입니다. 겉보기엔 차가워 보이지만 알고 보면 츤데레 매력의 소유자입니다.",
+                tip: "깔끔하고 세련된 아이메이크업이나 자켓 스타일링이 세련미를 극대화합니다."
+            },
+            {
+                emoji: "🐰",
+                name: "상큼발랄 토끼상",
+                sub: "보기만 해도 기분이 좋아지는 비타민 에너지",
+                charm: "95 / 100 ST",
+                popular: "상위 4% 과즙미 폭발",
+                match: "듬직한 곰상",
+                style: "스트릿 캐주얼 & 니트 룩",
+                desc: "초롱초롱한 눈망울과 밝은 미소가 특징이며, 언제나 밝은 에너지를 발산하여 주변 사람들을 미소짓게 만드는 마성의 매력이 있습니다.",
+                tip: "밝은 컬러의 스타일링과 상큼한 립 메이커가 생기 넘치는 이미지를 강조해 줍니다."
+            },
+            {
+                emoji: "🦊",
+                name: "매혹적인 천생 여우상",
+                sub: "대체 불가능한 분위기를 지닌 신비로운 매력자",
+                charm: "99 / 100 ST",
+                popular: "상위 1% 치명적 아이콘",
+                match: "순둥한 햄스터상",
+                style: "유니크 & 세련된 원피스/슈트",
+                desc: "눈빛 하나로 분위기를 압도하는 깊은 아우라가 있습니다. 지적이면서도 트렌디한 감각이 뛰어나 어디서나 주목받는 주인공입니다.",
+                tip: "포인트를 주는 액세서리와 은은한 향수가 당신의 신비로운 매력을 더해줍니다."
+            },
+            {
+                emoji: "🐻",
+                name: "포근하고 듬직한 곰상",
+                sub: "어디서나 기댈 수 있는 든든한 안식처",
+                charm: "94 / 100 ST",
+                popular: "상위 5% 안심 매력",
+                match: "상큼발랄 토끼상",
+                style: "오버핏 셔츠 & 포근한 룩",
+                desc: "푸근하고 여유로운 성품을 지녀 주변 사람들에게 엄청난 신뢰감을 줍니다. 함께 있으면 마음이 편안해지는 힐링 그 자체입니다.",
+                tip: "단정하고 깔끔한 정돈된 스타일이 듬직한 신뢰감을 한층 더 높여줍니다."
+            },
+            {
+                emoji: "🐹",
+                name: "귀염뽀짝 햄스터상",
+                sub: "보고 있으면 절로 미소가 지어지는 마성의 귀여움",
+                charm: "97 / 100 ST",
+                popular: "상위 3% 보호본능 유발자",
+                match: "매혹적인 여우상",
+                style: "귀여운 맨투맨 & 레이어드 룩",
+                desc: "오밀조밀한 이목구비와 앙증맞은 매력으로 남녀노소 불문하고 엄청난 사랑을 받는 복덩이 스타일입니다.",
+                tip: "파스텔톤의 부드러운 의상과 사랑스러운 리액션이 최고의 무기입니다."
+            }
+        ];
+
+        function generateHash(str) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                hash = str.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            return Math.abs(hash);
+        }
+
+        function analyzeAnimal() {
+            const nameInput = document.getElementById('userName').value.trim();
+            if (!nameInput) {
+                alert("성함 또는 닉네임을 입력해 주세요!");
+                return;
+            }
+
+            const eye = document.getElementById('eyeType').value;
+            const vibe = document.getElementById('vibeType').value;
+
+            document.getElementById('inputContainer').style.display = 'none';
+            document.getElementById('resultContainer').style.display = 'block';
+
+            const combinedKey = `${nameInput}_${eye}_${vibe}`;
+            const hash = generateHash(combinedKey);
+            const animal = animalDatabase[hash % animalDatabase.length];
+
+            document.getElementById('resEmoji').innerText = animal.emoji;
+            document.getElementById('resUserName').innerText = `${nameInput} 님의 닮은 동물상`;
+            document.getElementById('resAnimalName').innerText = animal.name;
+            document.getElementById('resSubTitle').innerText = `"${animal.sub}"`;
+            document.getElementById('resCharm').innerText = animal.charm;
+            document.getElementById('resPopular').innerText = animal.popular;
+            document.getElementById('resMatch').innerText = animal.match;
+            document.getElementById('resStyle').innerText = animal.style;
+            document.getElementById('resDesc').innerText = animal.desc;
+            document.getElementById('resTip').innerText = animal.tip;
+
+            confetti({
+                particleCount: 100,
+                spread: 80,
+                colors: ['#EC4899', '#F472B6', '#C084FC', '#FBBF24'],
+                origin: { y: 0.6 }
+            });
+        }
+
+        function restartTest() {
+            document.getElementById('inputContainer').style.display = 'block';
+            document.getElementById('resultContainer').style.display = 'none';
+            document.getElementById('userName').value = '';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function copyResult() {
+            const name = document.getElementById('userName').value.trim() || "사용자";
+            const animal = document.getElementById('resAnimalName').innerText;
+            const sub = document.getElementById('resSubTitle').innerText;
+            const text = `[닮은 동물상 테스트 결과]\n${name} 님의 닮은 동물: [${animal}]\n${sub}\nhttps://misopick.kr/animal-lookalike.html`;
+
+            navigator.clipboard.writeText(text).then(() => {
+                alert("동물상 테스트 결과가 클립보드에 복사되었습니다!");
+            }).catch(() => {
+                alert("복사에 실패했습니다.");
+            });
+        }
     </script>
 </body>
 </html>

@@ -3,92 +3,579 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>청력 주파수 테스트 - misopick.kr</title>
-    <meta name="description" content="Hz별 사운드 재생을 통한 가청 주파수 검사">
+    <title>청력 주파수 테스트 - 나만의 가청 영역 및 귀 나이 측정</title>
+    <meta name="description" content="Hz별 고주파/저주파 사운드로 가청 주파수를 검사하세요! 나의 귀 나이와 청력 상태를 실시간 오디오 파형과 함께 정밀하게 확인해 보세요.">
     
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            50: '#f0f9ff',
-                            100: '#e0f2fe',
-                            500: '#0284c7',
-                            600: '#0284c7',
-                            700: '#0369a1',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google AdSense Script -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2888840483385554" crossorigin="anonymous"></script>
+
+    <!-- FontAwesome 아이콘 CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;600;700;900&family=JetBrains+Mono:wght@500;800&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
     <style>
-        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
-        body { font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif; }
+        :root {
+            --primary-color: #8B5CF6;
+            --primary-hover: #7C3AED;
+            --accent-cyan: #06B6D4;
+            --accent-pink: #EC4899;
+            --bg-color: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --text-main: #0F172A;
+            --text-sub: #475569;
+            --border-color: #E2E8F0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* 헤더 */
+        header {
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(139, 92, 246, 0.08);
+        }
+
+        .header-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .top-link {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            text-decoration: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            background-color: #EDE9FE;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .top-link:hover {
+            background-color: var(--primary-color);
+            color: #FFFFFF;
+        }
+
+        /* 메인 컨테이너 */
+        main {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            flex: 1;
+            width: 100%;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+        }
+
+        /* 스테이지 카드 */
+        .stage-card {
+            text-align: center;
+            background: radial-gradient(circle at 50% 20%, #F5F3FF 0%, #EDE9FE 100%);
+            border: 2px solid #DDD6FE;
+            position: relative;
+        }
+
+        /* 시각화 파형 캔버스 박스 */
+        .visualizer-box {
+            background: #0F172A;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border: 2px solid var(--primary-color);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.25);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100px;
+            border-radius: 8px;
+        }
+
+        .hz-display {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: #A78BFA;
+            font-family: 'JetBrains Mono', monospace;
+            margin-top: 0.8rem;
+            text-shadow: 0 0 12px rgba(167, 139, 250, 0.6);
+        }
+
+        .hz-sub {
+            color: #94A3B8;
+            font-size: 0.95rem;
+        }
+
+        /* 주파수 프리셋 프리셋 버튼 뷰 */
+        .hz-preset-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+            gap: 0.8rem;
+            margin: 1.5rem 0;
+        }
+
+        .hz-btn {
+            background: #FFFFFF;
+            border: 2px solid #C4B5FD;
+            padding: 0.8rem 0.5rem;
+            border-radius: 12px;
+            font-weight: 800;
+            color: var(--primary-hover);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .hz-btn:hover, .hz-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+        }
+
+        /* 오디오 컨트롤 영역 */
+        .control-panel {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1.5rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-play {
+            background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%);
+            color: white;
+            border: none;
+            padding: 0.9rem 2.5rem;
+            border-radius: 30px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .btn-play:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+        }
+
+        .volume-box {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: #FFFFFF;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            border: 1px solid #DDD6FE;
+        }
+
+        /* 결과 박스 모달 */
+        .result-box {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            border-radius: 16px;
+            background: #FFFFFF;
+            border: 2px solid var(--primary-color);
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.2);
+            display: none;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-rank {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--primary-hover);
+        }
+
+        /* SEO 컨텐츠 카드 */
+        .content-card h2 {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #EDE9FE;
+            padding-bottom: 0.5rem;
+        }
+
+        .content-card h3 {
+            font-size: 1.2rem;
+            margin: 1.5rem 0 0.5rem 0;
+            color: var(--text-main);
+        }
+
+        .content-card p {
+            color: var(--text-sub);
+            margin-bottom: 1rem;
+        }
+
+        .info-graphics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .graphic-item {
+            background-color: #F8FAFC;
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .graphic-item i {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        /* 푸터 */
+        footer {
+            background-color: #0F172A;
+            color: #94A3B8;
+            padding: 3rem 1rem 1.5rem 1rem;
+            margin-top: auto;
+        }
+
+        .footer-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #1E293B;
+        }
+
+        .footer-col h4 { color: white; margin-bottom: 1rem; font-size: 1.1rem; }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 0.5rem; }
+        .footer-col a { color: #94A3B8; text-decoration: none; transition: color 0.2s; }
+        .footer-col a:hover { color: white; }
+        .copyright { text-align: center; padding-top: 1.5rem; font-size: 0.875rem; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 flex flex-col min-h-screen">
+<body>
 
-    <!-- Header Navigation -->
-    <header class="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <a href="index.html" class="flex items-center space-x-2">
-                <div class="w-9 h-9 rounded-xl bg-brand-600 flex items-center justify-center text-white font-black text-lg shadow-sm">M</div>
-                <span class="text-xl font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <a href="hearing-test.html" class="logo">
+                <i class="fa-solid fa-volume-high"></i> 청력 주파수 테스트
             </a>
-            <a href="index.html" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg border border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-100 transition">
-                <i data-lucide="arrow-left" class="w-4 h-4"></i>
-                <span>전체 툴 보기</span>
-            </a>
+            <a href="index.html" class="top-link"><i class="fa-solid fa-house"></i> misopick.kr</a>
         </div>
     </header>
 
-    <!-- Main Content Container -->
-    <main class="flex-grow max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        
-        <!-- Tool Title Card -->
-        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm mb-6">
-            <div class="flex items-center space-x-4 mb-4">
-                <div class="w-12 h-12 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center">
-                    <i data-lucide="volume-2" class="w-6 h-6"></i>
+    <!-- Main -->
+    <main>
+        <section class="card stage-card">
+            <h2 style="font-size: 1.6rem; font-weight: 800; color: #6D28D9;">
+                <i class="fa-solid fa-headphones"></i> Hz별 가청 주파수 및 귀 나이 검사
+            </h2>
+            <p style="color: var(--text-sub); font-size: 0.95rem; margin-top: 0.3rem;">
+                이어폰이나 헤드폰을 착용하신 후 적절한 볼륨에서 주파수 사운드가 들리는지 확인해 보세요!
+            </p>
+
+            <!-- 오디오 파형 시각화 화면 -->
+            <div class="visualizer-box">
+                <canvas id="waveCanvas"></canvas>
+                <div class="hz-display" id="hzValue">8000 Hz</div>
+                <div class="hz-sub" id="hzDesc">주변 고주파 및 귀 나이 테스트 단계</div>
+            </div>
+
+            <!-- Hz 선택 프리셋 -->
+            <div class="hz-preset-grid">
+                <button class="hz-btn" onclick="selectHz(250, '전형적인 저음역대 소리')">250 Hz</button>
+                <button class="hz-btn" onclick="selectHz(1000, '일상 대화 표준 음역대')">1000 Hz</button>
+                <button class="hz-btn" onclick="selectHz(4000, '고음역대 감도 점검')">4000 Hz</button>
+                <button class="hz-btn active" onclick="selectHz(8000, '청력 감소 초기 감지 구간')">8000 Hz</button>
+                <button class="hz-btn" onclick="selectHz(12000, '10~20대 가청 주파수대')">12000 Hz</button>
+                <button class="hz-btn" onclick="selectHz(15000, '청소년 및 어린이 가능 영역')">15000 Hz</button>
+                <button class="hz-btn" onclick="selectHz(17400, '초고주파 모스큐토 사운드')">17400 Hz</button>
+            </div>
+
+            <!-- 플레이 및 볼륨 컨트롤 -->
+            <div class="control-panel">
+                <button class="btn-play" id="btnToggle" onclick="toggleAudio()">
+                    <i class="fa-solid fa-play" id="playIcon"></i> 사운드 재생하기
+                </button>
+                
+                <div class="volume-box">
+                    <i class="fa-solid fa-volume-low" style="color: var(--primary-color);"></i>
+                    <input type="range" id="volumeSlider" min="0" max="1" step="0.05" value="0.1" oninput="changeVolume(this.value)" style="accent-color: var(--primary-color); cursor: pointer;">
                 </div>
-                <div>
-                    <span class="text-xs font-bold text-slate-400 block">TOOL #15</span>
-                    <h1 class="text-2xl sm:text-3xl font-black text-slate-900">청력 주파수 테스트</h1>
+
+                <button class="hz-btn" style="background:#8B5CF6; color:white; border:none;" onclick="diagnoseAge()">
+                    <i class="fa-solid fa-stethoscope"></i> 들림 확인 (귀 나이 판정)
+                </button>
+            </div>
+
+            <!-- 결과 창 -->
+            <div class="result-box" id="resultBox">
+                <div style="font-size: 0.9rem; font-weight: 700; color: var(--text-sub);">[ 가청 주파수 진단 결과 ]</div>
+                <div class="result-rank" id="resultRank">🎧 예상 귀 나이: 20대 후반</div>
+                <p id="resultDesc" style="color: var(--text-sub); font-size: 0.95rem; margin-top: 0.5rem;">
+                    8,000Hz 이상의 고주파를 명확하게 청취할 수 있는 수치입니다.
+                </p>
+            </div>
+        </section>
+
+        <!-- SEO Content & Guide Section -->
+        <article class="card content-card">
+            <h2>인간의 가청 주파수(Audible Frequency) 범위란?</h2>
+            <p>
+                사람의 귀가 들을 수 있는 소리의 진동수 범위는 일반적으로 <strong>20Hz ~ 20,000Hz (20kHz)</strong>입니다. 
+                나이가 들거나 이어폰의 오남용, 소음 노출에 의해 달팽이관 내 유세포가 손상되면 높은 주파수의 고음부터 점차 청력이 감소하는 현상이 나타납니다.
+            </p>
+
+            <div class="info-graphics">
+                <div class="graphic-item">
+                    <i class="fa-solid fa-ear-listen"></i>
+                    <h4>연령별 청력 한계</h4>
+                    <p>나이가 들수록 12,000Hz 이상의 고주파를 들을 수 있는 능력부터 점차 감퇴합니다.</p>
+                </div>
+                <div class="graphic-item">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <h4>소음성 난청 예방</h4>
+                    <p>높은 주파수가 들리지 않는다면 소음성 난청의 초기 신호일 수 있으므로 정밀 검진이 필요합니다.</p>
+                </div>
+                <div class="graphic-item">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <h4>안전한 청취 가이드</h4>
+                    <p>이어폰 볼륨은 최대치의 60% 이하로 유지하고 1시간 청취 후 10분 휴식을 취하세요.</p>
                 </div>
             </div>
-            <p class="text-slate-600 text-sm sm:text-base leading-relaxed">Hz별 사운드 재생을 통한 가청 주파수 검사</p>
-        </div>
 
-        <!-- Tool Workspace Area -->
-        <div class="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-sm min-h-[400px] flex flex-col items-center justify-center text-center">
-            <!-- TODO: 실제 로직 개발 영역 -->
-            <div class="p-4 bg-slate-100 rounded-2xl mb-4">
-                <i data-lucide="volume-2" class="w-12 h-12 text-slate-400 mx-auto"></i>
-            </div>
-            <h2 class="text-xl font-bold text-slate-800 mb-2">청력 주파수 테스트 기능 준비 중</h2>
-            <p class="text-slate-500 text-sm max-w-md">여기에 해당 웹툴의 실행 화면 및 인터랙티브 기능 로직이 들어갑니다.</p>
-        </div>
+            <h3>연령대별 가청 주파수 참고 기준</h3>
+            <ul style="padding-left: 1.5rem; color: var(--text-sub); margin-bottom: 1rem;">
+                <li><strong>17,400 Hz 이상:</strong> 10대 및 20대 초반의 매우 건강한 청력 상태</li>
+                <li><strong>15,000 Hz 이상:</strong> 20대 ~ 30대 일반적인 성인의 정상 가청 영역</li>
+                <li><strong>12,000 Hz 이상:</strong> 40대 전후 성인의 표준 가청 범위</li>
+                <li><strong>8,000 Hz 이하:</strong> 50대 이상 또는 소음 노출에 의한 청력 감퇴 주의 상태</li>
+            </ul>
 
+            <h3>자주 묻는 질문 (FAQ)</h3>
+            <p><strong>Q. 기기나 이어폰에 따라 테스트 결과가 달라질 수 있나요?</strong><br>
+            A. 네! 스마트폰, 스피커, 이어폰 제품의 유닛 스펙에 따라 재생 가능한 고주파 대역폭의 한계가 존재하므로 정밀 측정용 이어폰을 권장합니다.</p>
+            <p><strong>Q. 소리가 들리지 않을 때 볼륨을 갑자기 올려도 되나요?</strong><br>
+            A. 들리지 않는다고 볼륨을 급격히 높이면 귀에 부담을 줄 수 있으므로 잔잔한 스피커 소리 수준으로 고정 후 테스트하세요.</p>
+        </article>
     </main>
 
     <!-- Footer -->
-    <footer class="bg-white border-t border-slate-200 py-8 mt-auto">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-            <p>© misopick.kr - 모든 서비스는 무료로 제공됩니다.</p>
-            <a href="index.html" class="hover:text-slate-800 transition">메인으로 돌아가기</a>
+    <footer>
+        <div class="footer-container">
+            <div class="footer-col">
+                <h4>청력 주파수 테스트</h4>
+                <p style="font-size: 0.85rem;">Hz별 오디오 파형 재생을 통해 가청 주파수를 측정하는 유틸리티입니다.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">misopick.kr 홈</a></li>
+                    <li><a href="hearing-test.html">청력 주파수 테스트</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>약관 및 정책</h4>
+                <ul>
+                    <li><a href="../privacy.html"><i class="fa-solid fa-user-shield"></i> 개인정보처리방침</a></li>
+                </ul>
+            </div>
         </div>
+        <div class="copyright">&copy; 2026 Utility Web. All rights reserved.</div>
     </footer>
 
+    <!-- JavaScript -->
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            lucide.createIcons();
-        });
+        let audioCtx = null;
+        let oscillator = null;
+        let gainNode = null;
+        let isPlaying = false;
+        let currentHz = 8000;
+
+        const canvas = document.getElementById('waveCanvas');
+        const canvasCtx = canvas.getContext('2d');
+
+        function initAudio() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                audioCtx = new AudioContext();
+            }
+        }
+
+        function selectHz(freq, desc) {
+            currentHz = freq;
+            document.getElementById('hzValue').innerText = `${freq} Hz`;
+            document.getElementById('hzDesc').innerText = desc;
+
+            // 버튼 스타일 업데이트
+            document.querySelectorAll('.hz-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.innerText.includes(freq)) btn.classList.add('active');
+            });
+
+            if (isPlaying) {
+                oscillator.frequency.setValueAtTime(currentHz, audioCtx.currentTime);
+            }
+        }
+
+        function toggleAudio() {
+            initAudio();
+            const btn = document.getElementById('btnToggle');
+            const icon = document.getElementById('playIcon');
+
+            if (!isPlaying) {
+                oscillator = audioCtx.createOscillator();
+                gainNode = audioCtx.createGain();
+
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(currentHz, audioCtx.currentTime);
+
+                const vol = document.getElementById('volumeSlider').value;
+                gainNode.gain.setValueAtTime(vol, audioCtx.currentTime);
+
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+
+                oscillator.start();
+                isPlaying = true;
+
+                btn.style.background = 'linear-gradient(135deg, #EF4444 0%, #B91C1C 100%)';
+                btn.innerHTML = `<i class="fa-solid fa-stop"></i> 사운드 정지하기`;
+                drawWave();
+            } else {
+                stopAudio();
+            }
+        }
+
+        function stopAudio() {
+            if (oscillator) {
+                oscillator.stop();
+                oscillator.disconnect();
+            }
+            isPlaying = false;
+            const btn = document.getElementById('btnToggle');
+            btn.style.background = 'linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%)';
+            btn.innerHTML = `<i class="fa-solid fa-play"></i> 사운드 재생하기`;
+        }
+
+        function changeVolume(val) {
+            if (gainNode && isPlaying) {
+                gainNode.gain.setValueAtTime(val, audioCtx.currentTime);
+            }
+        }
+
+        function drawWave() {
+            if (!isPlaying) {
+                canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+                return;
+            }
+
+            requestAnimationFrame(drawWave);
+            canvasCtx.fillStyle = '#0F172A';
+            canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
+
+            canvasCtx.beginPath();
+            canvasCtx.lineWidth = 2;
+            canvasCtx.strokeStyle = '#A78BFA';
+
+            const time = Date.now() * 0.005;
+            for (let x = 0; x < canvas.width; x++) {
+                const y = canvas.height / 2 + Math.sin(x * 0.05 + time) * 25;
+                if (x === 0) canvasCtx.moveTo(x, y);
+                else canvasCtx.lineTo(x, y);
+            }
+            canvasCtx.stroke();
+        }
+
+        function diagnoseAge() {
+            let rank = "";
+            let desc = "";
+
+            if (currentHz >= 17400) {
+                rank = "🎧 청력 나이: 10대 이하 수준";
+                desc = "초고주파까지 완벽히 감지하는 최상급 청력 상태입니다!";
+            } else if (currentHz >= 15000) {
+                rank = "🎧 청력 나이: 20대 초반 수준";
+                desc = "청소년 및 20대의 매우 건강한 가청 영역을 가지고 계십니다.";
+            } else if (currentHz >= 12000) {
+                rank = "🎧 청력 나이: 30대 ~ 40대 수준";
+                desc = "일반적인 성인 기준의 양호한 청력 영역대입니다.";
+            } else {
+                rank = "🎧 청력 나이: 50대 이상 수준";
+                desc = "고주파 감도 수준이 낮아졌습니다. 귀 건강 관리에 유의하세요.";
+            }
+
+            document.getElementById('resultRank').innerText = rank;
+            document.getElementById('resultDesc').innerText = desc;
+            document.getElementById('resultBox').style.display = 'block';
+
+            confetti({
+                particleCount: 70,
+                spread: 60,
+                colors: ['#8B5CF6', '#A78BFA', '#06B6D4'],
+                origin: { y: 0.65 }
+            });
+        }
+
+        window.onload = function() {
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+        };
     </script>
 </body>
 </html>

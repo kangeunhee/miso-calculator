@@ -3,92 +3,674 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>텍스트 암호화/복호화 - misopick.kr</title>
-    <meta name="description" content="비밀 메시지 암호문 변환 및 복원 툴">
+    <title>텍스트 암호화/복호화 툴 - AES-256 비밀 메시지 변환기</title>
+    <meta name="description" content="중요한 텍스트와 메시지를 AES-256 고성능 알고리즘으로 암호화 및 복호화하세요. 나만의 비밀키를 설정하여 안전하게 비밀 메모를 보관하고 전달할 수 있습니다.">
     
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            50: '#f0f9ff',
-                            100: '#e0f2fe',
-                            500: '#0284c7',
-                            600: '#0284c7',
-                            700: '#0369a1',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google AdSense Script -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2888840483385554" crossorigin="anonymous"></script>
+
+    <!-- FontAwesome 아이콘 CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;600;700;900&family=JetBrains+Mono:wght@500;800&display=swap" rel="stylesheet">
+    <!-- CryptoJS CDN (AES-256 지원) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+
     <style>
-        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
-        body { font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif; }
+        :root {
+            --primary-gradient: linear-gradient(135deg, #10B981 0%, #3B82F6 50%, #6366F1 100%);
+            --accent-green: #10B981;
+            --accent-blue: #3B82F6;
+            --bg-color: #0F172A;
+            --card-bg: #1E293B;
+            --text-main: #F8FAFC;
+            --text-sub: #94A3B8;
+            --border-color: #334155;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* 헤더 */
+        header {
+            background-color: rgba(30, 41, 59, 0.9);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .header-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .top-link {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #34D399;
+            text-decoration: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            background-color: rgba(16, 185, 129, 0.1);
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .top-link:hover {
+            background: var(--accent-green);
+            color: #FFFFFF;
+        }
+
+        /* 메인 컨테이너 */
+        main {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            flex: 1;
+            width: 100%;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .stage-card {
+            background: radial-gradient(circle at 50% 0%, #1E293B 0%, #0F172A 100%);
+            border: 2px solid #10B981;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        /* 탭 스위처 */
+        .tab-switcher {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .tab-btn {
+            background: #0B0F19;
+            border: 1px solid var(--border-color);
+            color: var(--text-sub);
+            padding: 0.7rem 1.8rem;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tab-btn.active {
+            border-color: #10B981;
+            color: #FFF;
+            background: rgba(16, 185, 129, 0.2);
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
+        }
+
+        /* 컨트롤 영역 */
+        .control-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            background: #0B0F19;
+            padding: 1.2rem;
+            border-radius: 14px;
+            border: 1px solid var(--border-color);
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .control-group label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-sub);
+        }
+
+        .select-input, .text-input {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            background: #1E293B;
+            color: #FFFFFF;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .select-input:focus, .text-input:focus {
+            border-color: #10B981;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+        }
+
+        /* 텍스트 박스 입출력 파트 */
+        .io-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .io-box {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .io-label {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #34D399;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .custom-textarea {
+            width: 100%;
+            height: 180px;
+            padding: 1rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            background: #0B0F19;
+            color: #FFFFFF;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            outline: none;
+            resize: vertical;
+            font-family: 'JetBrains Mono', monospace;
+            transition: all 0.2s;
+        }
+
+        .custom-textarea:focus {
+            border-color: #10B981;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
+        }
+
+        /* 액션 버튼 */
+        .btn-action-group {
+            display: flex;
+            gap: 0.8rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-main {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 0.9rem 2.2rem;
+            border-radius: 30px;
+            font-weight: 800;
+            font-size: 1.05rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-main:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
+        }
+
+        .btn-sub {
+            background: #334155;
+            color: white;
+            border: none;
+            padding: 0.9rem 1.4rem;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .btn-sub:hover {
+            background: #475569;
+        }
+
+        /* 토스트 알림 */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: rgba(16, 185, 129, 0.95);
+            color: white;
+            padding: 0.8rem 1.8rem;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* SEO 컨텐츠 카드 */
+        .content-card h2 {
+            font-size: 1.5rem;
+            color: #34D399;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #334155;
+            padding-bottom: 0.5rem;
+        }
+
+        .content-card h3 {
+            font-size: 1.2rem;
+            margin: 1.5rem 0 0.5rem 0;
+            color: #FFFFFF;
+        }
+
+        .content-card p {
+            color: var(--text-sub);
+            margin-bottom: 1rem;
+        }
+
+        .info-graphics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .graphic-item {
+            background-color: #0F172A;
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .graphic-item i {
+            font-size: 2.5rem;
+            color: #10B981;
+            margin-bottom: 1rem;
+        }
+
+        /* 푸터 */
+        footer {
+            background-color: #0B0F19;
+            color: #64748B;
+            padding: 3rem 1rem 1.5rem 1rem;
+            margin-top: auto;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .footer-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #1E293B;
+        }
+
+        .footer-col h4 { color: white; margin-bottom: 1rem; font-size: 1.1rem; }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 0.5rem; }
+        .footer-col a { color: #64748B; text-decoration: none; transition: color 0.2s; }
+        .footer-col a:hover { color: white; }
+        .copyright { text-align: center; padding-top: 1.5rem; font-size: 0.875rem; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 flex flex-col min-h-screen">
+<body>
 
-    <!-- Header Navigation -->
-    <header class="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <a href="index.html" class="flex items-center space-x-2">
-                <div class="w-9 h-9 rounded-xl bg-brand-600 flex items-center justify-center text-white font-black text-lg shadow-sm">M</div>
-                <span class="text-xl font-black tracking-tight text-slate-900">misopick<span class="text-brand-600">.kr</span></span>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <a href="text-encryptor.html" class="logo">
+                <i class="fa-solid fa-user-shield"></i> 텍스트 암호화/복호화
             </a>
-            <a href="index.html" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg border border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-100 transition">
-                <i data-lucide="arrow-left" class="w-4 h-4"></i>
-                <span>전체 툴 보기</span>
-            </a>
+            <a href="index.html" class="top-link"><i class="fa-solid fa-house"></i> misopick.kr</a>
         </div>
     </header>
 
-    <!-- Main Content Container -->
-    <main class="flex-grow max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        
-        <!-- Tool Title Card -->
-        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm mb-6">
-            <div class="flex items-center space-x-4 mb-4">
-                <div class="w-12 h-12 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center">
-                    <i data-lucide="lock" class="w-6 h-6"></i>
+    <!-- Main -->
+    <main>
+        <section class="card stage-card">
+            <h2 style="font-size: 1.6rem; font-weight: 800; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-align: center;">
+                🔒 AES-256 비밀 메시지 암호화 / 복호화
+            </h2>
+            <p style="color: var(--text-sub); font-size: 0.95rem; text-align: center; margin-top: 0.3rem;">
+                중요한 메모나 비밀 메시지를 암호화하여 전달하거나, 암호문에서 원래 메시지를 복원하세요.
+            </p>
+
+            <!-- 암호화 / 복호화 탭 모드 -->
+            <div class="tab-switcher" style="margin-top: 1.5rem;">
+                <button class="tab-btn active" id="tabEncrypt" onclick="switchMode('encrypt')">
+                    <i class="fa-solid fa-lock"></i> 암호화 (Encrypt)
+                </button>
+                <button class="tab-btn" id="tabDecrypt" onclick="switchMode('decrypt')">
+                    <i class="fa-solid fa-key"></i> 복호화 (Decrypt)
+                </button>
+            </div>
+
+            <!-- 옵션 선택 및 비밀키 입력 -->
+            <div class="control-row">
+                <div class="control-group">
+                    <label><i class="fa-solid fa-shield-halved"></i> 암호화 알고리즘</label>
+                    <select id="algoSelect" class="select-input">
+                        <option value="AES">AES-256 (권장 - 비밀키 기반)</option>
+                        <option value="Base64">Base64 (인코딩/디코딩)</option>
+                        <option value="Caesar">Caesar Cipher (시저 암호화)</option>
+                    </select>
                 </div>
-                <div>
-                    <span class="text-xs font-bold text-slate-400 block">TOOL #38</span>
-                    <h1 class="text-2xl sm:text-3xl font-black text-slate-900">텍스트 암호화/복호화</h1>
+                <div class="control-group" id="passphraseGroup">
+                    <label style="display:flex; justify-content:space-between;">
+                        <span><i class="fa-solid fa-key"></i> 비밀키 (Passphrase)</span>
+                        <span style="cursor:pointer; color:#10B981;" onclick="togglePassVisibility()"><i class="fa-solid fa-eye" id="passEyeIcon"></i></span>
+                    </label>
+                    <input type="password" id="secretKey" class="text-input" placeholder="비밀키를 입력하세요 (예: mySecret123!)">
                 </div>
             </div>
-            <p class="text-slate-600 text-sm sm:text-base leading-relaxed">비밀 메시지 암호문 변환 및 복원 툴</p>
-        </div>
 
-        <!-- Tool Workspace Area -->
-        <div class="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-sm min-h-[400px] flex flex-col items-center justify-center text-center">
-            <!-- TODO: 실제 로직 개발 영역 -->
-            <div class="p-4 bg-slate-100 rounded-2xl mb-4">
-                <i data-lucide="lock" class="w-12 h-12 text-slate-400 mx-auto"></i>
+            <!-- 텍스트 입출력 영역 -->
+            <div class="io-grid">
+                <div class="io-box">
+                    <div class="io-label">
+                        <span id="inputBoxLabel"><i class="fa-solid fa-file-pen"></i> 원본 텍스트 입력</span>
+                        <span style="font-size: 0.8rem; color: var(--text-sub);" id="inputLength">0자</span>
+                    </div>
+                    <textarea id="inputText" class="custom-textarea" placeholder="암호화할 원문 텍스트를 입력하세요..." oninput="updateCharCount()"></textarea>
+                </div>
+
+                <div class="io-box">
+                    <div class="io-label">
+                        <span id="outputBoxLabel"><i class="fa-solid fa-lock"></i> 변환 결과 (암호문)</span>
+                        <button class="btn-sub" style="padding: 0.2rem 0.6rem; font-size:0.75rem;" onclick="copyResult()">
+                            <i class="fa-solid fa-copy"></i> 복사
+                        </button>
+                    </div>
+                    <textarea id="outputText" class="custom-textarea" readonly placeholder="변환된 결과가 이곳에 표시됩니다..."></textarea>
+                </div>
             </div>
-            <h2 class="text-xl font-bold text-slate-800 mb-2">텍스트 암호화/복호화 기능 준비 중</h2>
-            <p class="text-slate-500 text-sm max-w-md">여기에 해당 웹툴의 실행 화면 및 인터랙티브 기능 로직이 들어갑니다.</p>
-        </div>
 
+            <!-- 실행 버튼 파트 -->
+            <div class="btn-action-group">
+                <button class="btn-main" id="btnExecute" onclick="processText()">
+                    <i class="fa-solid fa-bolt"></i> 암호화 실행하기
+                </button>
+                <button class="btn-sub" onclick="clearAll()">
+                    <i class="fa-solid fa-rotate-left"></i> 초기화
+                </button>
+            </div>
+        </section>
+
+        <!-- SEO Content & Guide Section -->
+        <article class="card content-card">
+            <h2>텍스트 암호화/복호화 활용 가이드</h2>
+            <p>
+                <strong>텍스트 암호화(Text Encryption)</strong>는 소중한 개인 정보, 비밀번호, 금융 메모, 보안 메시지를 다른 사람이 알아보지 못하도록 난독화된 문자열로 변환하는 기술입니다. 
+                본 툴은 표준 보안 방식인 <strong>AES-256 (Advanced Encryption Standard)</strong>을 지원하여 강력한 보안성을 보장합니다.
+            </p>
+
+            <div class="info-graphics">
+                <div class="graphic-item">
+                    <i class="fa-solid fa-user-lock"></i>
+                    <h4>강력한 AES-256 보안</h4>
+                    <p>미국 정부 표준 알고리즘으로 본인만의 비밀키가 없으면 복원 불가능.</p>
+                </div>
+                <div class="graphic-item">
+                    <i class="fa-solid fa-laptop-code"></i>
+                    <h4>클라이언트 사이드 처리</h4>
+                    <p>입력한 메시지와 비밀키는 서버로 전송되지 않고 브라우저 내에서 즉시 암호화.</p>
+                </div>
+                <div class="graphic-item">
+                    <i class="fa-solid fa-share-nodes"></i>
+                    <h4>안전한 비밀 전달</h4>
+                    <p>암호문과 비밀키를 별도의 경로로 전달하여 메신저 해킹 피해 예방.</p>
+                </div>
+            </div>
+
+            <h3>지원 알고리즘 방식</h3>
+            <ul style="padding-left: 1.5rem; color: var(--text-sub); margin-bottom: 1rem;">
+                <li><strong>AES-256:</strong> 가장 널리 쓰이는 대칭키 암호화 방식으로, 동일한 비밀키(Passphrase)가 있어야만 복호화할 수 있습니다.</li>
+                <li><strong>Base64:</strong> 이진 데이터를 텍스트로 인코딩/디코딩하는 방식으로, 데이터 송수신 안정성에 유용합니다.</li>
+                <li><strong>Caesar Cipher (시저 암호):</strong> 알파벳 글자를 일정 간격만큼 이동시키는 고전적인 암호화 방식입니다.</li>
+            </ul>
+
+            <h3>자주 묻는 질문 (FAQ)</h3>
+            <p><strong>Q. 비밀키를 잊어버리면 어떻게 되나요?</strong><br>
+            A. AES-256 암호화 알고리즘 특성상 비밀키를 분실한 경우 원문을 복원할 수 있는 방법이 절대 존재하지 않습니다. 반드시 비밀키를 기억해 두세요.</p>
+            <p><strong>Q. 내가 입력한 내용이 서버에 저장되나요?</strong><br>
+            A. 절대 저장되지 않습니다! 모든 연산은 사용자의 웹 브라우저 메모리 내 자바스크립트로 동작하므로 외부 전송이 발생하지 않습니다.</p>
+        </article>
     </main>
 
+    <!-- 토스트 알림 -->
+    <div class="toast" id="toastMsg">
+        <i class="fa-solid fa-circle-check"></i> 결과가 클립보드에 복사되었습니다!
+    </div>
+
     <!-- Footer -->
-    <footer class="bg-white border-t border-slate-200 py-8 mt-auto">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-            <p>© misopick.kr - 모든 서비스는 무료로 제공됩니다.</p>
-            <a href="index.html" class="hover:text-slate-800 transition">메인으로 돌아가기</a>
+    <footer>
+        <div class="footer-container">
+            <div class="footer-col">
+                <h4>텍스트 암호화/복호화</h4>
+                <p style="font-size: 0.85rem;">비밀 메시지와 중요 메모를 AES-256 알고리즘으로 안전하게 암호화하는 유틸리티입니다.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">misopick.kr 홈</a></li>
+                    <li><a href="text-encryptor.html">텍스트 암호화기</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>약관 및 정책</h4>
+                <ul>
+                    <li><a href="../privacy.html"><i class="fa-solid fa-user-shield"></i> 개인정보처리방침</a></li>
+                </ul>
+            </div>
         </div>
+        <div class="copyright">&copy; 2026 Utility Web. All rights reserved.</div>
     </footer>
 
+    <!-- JavaScript -->
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            lucide.createIcons();
-        });
+        let currentMode = 'encrypt'; // 'encrypt' 또는 'decrypt'
+
+        // 모드 전환
+        function switchMode(mode) {
+            currentMode = mode;
+            const btnEnc = document.getElementById('tabEncrypt');
+            const btnDec = document.getElementById('tabDecrypt');
+            const btnExec = document.getElementById('btnExecute');
+
+            const inLabel = document.getElementById('inputBoxLabel');
+            const outLabel = document.getElementById('outputBoxLabel');
+
+            if (mode === 'encrypt') {
+                btnEnc.classList.add('active');
+                btnDec.classList.remove('active');
+                btnExec.innerHTML = `<i class="fa-solid fa-bolt"></i> 암호화 실행하기`;
+                inLabel.innerHTML = `<i class="fa-solid fa-file-pen"></i> 원본 텍스트 입력`;
+                outLabel.innerHTML = `<i class="fa-solid fa-lock"></i> 변환 결과 (암호문)`;
+                document.getElementById('inputText').placeholder = "암호화할 원문 텍스트를 입력하세요...";
+            } else {
+                btnDec.classList.add('active');
+                btnEnc.classList.remove('active');
+                btnExec.innerHTML = `<i class="fa-solid fa-key"></i> 복호화 실행하기`;
+                inLabel.innerHTML = `<i class="fa-solid fa-lock"></i> 암호문 텍스트 입력`;
+                outLabel.innerHTML = `<i class="fa-solid fa-file-pen"></i> 복원 결과 (원문)`;
+                document.getElementById('inputText').placeholder = "복호화할 암호문 텍스트를 입력하세요...";
+            }
+            processText();
+        }
+
+        // 비밀키 가시성 토글
+        function togglePassVisibility() {
+            const passInput = document.getElementById('secretKey');
+            const icon = document.getElementById('passEyeIcon');
+            if (passInput.type === 'password') {
+                passInput.type = 'text';
+                icon.className = 'fa-solid fa-eye-slash';
+            } else {
+                passInput.type = 'password';
+                icon.className = 'fa-solid fa-eye';
+            }
+        }
+
+        // 실행
+        function processText() {
+            const algo = document.getElementById('algoSelect').value;
+            const key = document.getElementById('secretKey').value;
+            const input = document.getElementById('inputText').value;
+            const outputArea = document.getElementById('outputText');
+
+            if (!input.trim()) {
+                outputArea.value = '';
+                return;
+            }
+
+            try {
+                if (currentMode === 'encrypt') {
+                    // 암호화
+                    if (algo === 'AES') {
+                        if (!key) {
+                            outputArea.value = "⚠️️ AES 암호화를 위해 비밀키를 입력해주세요.";
+                            return;
+                        }
+                        const encrypted = CryptoJS.AES.encrypt(input, key).toString();
+                        outputArea.value = encrypted;
+                    } else if (algo === 'Base64') {
+                        const encoded = CryptoJS.enc.Utf8.parse(input);
+                        outputArea.value = CryptoJS.enc.Base64.stringify(encoded);
+                    } else if (algo === 'Caesar') {
+                        outputArea.value = caesarCipher(input, 3);
+                    }
+                } else {
+                    // 복호화
+                    if (algo === 'AES') {
+                        if (!key) {
+                            outputArea.value = "⚠️ AES 복호화를 위해 비밀키를 입력해주세요.";
+                            return;
+                        }
+                        const decrypted = CryptoJS.AES.decrypt(input, key);
+                        const originalText = decrypted.toString(CryptoJS.enc.Utf8);
+                        if (!originalText) {
+                            outputArea.value = "❌ 복호화 실패: 비밀키가 일치하지 않거나 올바른 암호문이 아닙니다.";
+                        } else {
+                            outputArea.value = originalText;
+                        }
+                    } else if (algo === 'Base64') {
+                        try {
+                            const decoded = CryptoJS.enc.Base64.parse(input);
+                            outputArea.value = decoded.toString(CryptoJS.enc.Utf8);
+                        } catch (e) {
+                            outputArea.value = "❌ 올바른 Base64 형식이 아닙니다.";
+                        }
+                    } else if (algo === 'Caesar') {
+                        outputArea.value = caesarCipher(input, -3);
+                    }
+                }
+            } catch (err) {
+                outputArea.value = "❌ 오류가 발생했습니다. 입력값과 옵션을 확인해 주세요.";
+            }
+        }
+
+        // 시저 암호 구현
+        function caesarCipher(str, shift) {
+            return str.replace(/[a-zA-Z]/g, function (c) {
+                const base = c < 'a' ? 65 : 97;
+                return String.fromCharCode((c.charCodeAt(0) - base + shift + 26) % 26 + base);
+            });
+        }
+
+        // 글자 수 카운터
+        function updateCharCount() {
+            const count = document.getElementById('inputText').value.length;
+            document.getElementById('inputLength').innerText = `${count}자`;
+            processText();
+        }
+
+        // 초기화
+        function clearAll() {
+            document.getElementById('inputText').value = '';
+            document.getElementById('outputText').value = '';
+            document.getElementById('secretKey').value = '';
+            updateCharCount();
+        }
+
+        // 복사 및 토스트
+        function copyResult() {
+            const resultText = document.getElementById('outputText').value;
+            if (!resultText) return;
+
+            navigator.clipboard.writeText(resultText).then(() => {
+                showToast("결과가 클립보드에 복사되었습니다!");
+            }).catch(() => {
+                alert("복사에 실패했습니다.");
+            });
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toastMsg');
+            toast.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${msg}`;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
+        }
     </script>
 </body>
 </html>
