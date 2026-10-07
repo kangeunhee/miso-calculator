@@ -43,62 +43,7 @@
     <priority>0.8</priority>
   </url>
   
-  <url>
-    <loc>https://www.misopick.kr/pay/salary-increase.html</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.misopick.kr/pay/tenure.html</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.misopick.kr/pay/weekly-holiday-pay.html</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.misopick.kr/pay/severance-pay.html</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.misopick.kr/pay/unemployment-benefit.html</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.misopick.kr/pay/hourly-wage.html</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.misopick.kr/pay/take-home-pay.html</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.misopick.kr/pay/work-hours.html</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.misopick.kr/pay/maternity-leave-pay.html</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.misopick.kr/pay/annual-leave-pay.html</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.misopick.kr/pay/night-shift-pay.html</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.misopick.kr/pay/holiday-work-pay.html</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.misopick.kr/pay/parental-leave-pay.html</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.misopick.kr/pay/freelancer-tax.html</loc>
-    <priority>0.8</priority>
-  </url>
+  
   <url>
     <loc>https://www.misopick.kr/stock/average-price.html</loc>
     <priority>0.8</priority>
