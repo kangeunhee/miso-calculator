@@ -6,7 +6,7 @@
     <title>Miso Calculator - 스마트 금융 & 세금 계산기 대시보드</title>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2888840483385554"
      crossorigin="anonymous"></script>
-    <meta name="description" content="예적금 이자, 대출 상환, 연봉 실수령액, 부동산 취득세, 주식 양도소득세 등 복잡한 금융 계산을 정확하게 도와주는 무료 스마트 금융 계산기 모음입니다.">
+    <meta name="description" content="예적금 이자, 대출 상환, 연봉 실수령액, 주식 양도소득세 등 복잡한 금융 계산을 정확하게 도와주는 무료 스마트 금융 계산기 모음입니다.">
     <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
  
     <style>
@@ -644,15 +644,6 @@
                 </div>
 
                 <div class="info-card">
-                    <h3>🏠 부동산 취득세 및 중개수수료</h3>
-                    <p>부동산 거래 시 매매가 외에도 각종 부대비용을 사전에 산정해 두어야 합니다.</p>
-                    <ul>
-                        <li><strong>취득세:</strong> 주택 수, 전용면적, 조정대상지역 여부에 따라 최소 1%에서 최대 12%까지 차등 적용됩니다.</li>
-                        <li><strong>중개보수 요율:</strong> 거래 금액별 요율 상한선 범위 내에서 협의 가능하며, 부가가치세(10%)가 별도 부과될 수 있습니다.</li>
-                    </ul>
-                </div>
-
-                <div class="info-card">
                     <h3>🛡️ 절세 계좌 (연금저축 / IRP)</h3>
                     <p>노후 준비와 연말정산 절세를 동시에 달성할 수 있는 자산 관리 수단입니다.</p>
                     <ul>
@@ -719,28 +710,14 @@
             { title: "자동차세 계산", category: "세금", desc: "배기량, 차종, 연식에 따른 자동차세와 지방교육세를 계산합니다.", popular: false, isNew: false, url: "./tax/automobile-tax.html" },
             { title: "상속세 계산", category: "세금", desc: "상속 재산에 대한 상속세를 기본공제와 누진세율을 반영하여 계산합니다.", popular: false, isNew: false, url: "./tax/inheritance-tax.html" },
             { title: "종합소득세 예상 계산", category: "세금", desc: "사업소득 및 기타소득에 대한 소득공제, 누진세율 적용 후 예상 종합소득세를 산출합니다.", popular: false, isNew: true, url: "./tax/global-income-tax.html" },
-            { title: "연말정산 환급액/추징액 예상 계산", category: "세금", desc: "신용카드, 의료비, 교육비, 기부금 공제 항목을 반영하여 연말정산 기납부 세액의 정산액을 계산합니다.", popular: true, isNew: true, url: "./tax/year-end-tax-settlement.html" },
-
-            // 부동산
-            { title: "전월세 전환율 계산", category: "부동산", desc: "전세금과 월세를 법정 전환율 또는 이자율 기준으로 상호 전환합니다.", popular: false, isNew: false, url: "./realEstate/jeonse-to-charter-rate.html" },
-            { title: "중개수수료 계산", category: "부동산", desc: "부동산 매매, 전세, 월세 거래 시 법정 중개수수료 상한액을 계산합니다.", popular: false, isNew: false, url: "./realEstate/brokerage-fee.html" },
-            { title: "월세 계산", category: "부동산", desc: "월세, 관리비, 보증금 대출 이자를 포함한 실제 주거 비용을 계산합니다.", popular: false, isNew: false, url: "./realEstate/monthly-rent.html" },
-            { title: "LTV 계산", category: "부동산", desc: "담보 금액과 LTV 비율로 최대 대출 가능 금액을 계산합니다.", popular: false, isNew: false, url: "./realEstate/ltv.html" },
-            { title: "취득세 계산", category: "부동산", desc: "부동산 취득 시 취득세, 지방교육세, 농어촌특별세를 계산합니다.", popular: false, isNew: false, url: "./realEstate/acquisition-tax.html" },
-            { title: "양도소득세 계산", category: "부동산", desc: "부동산 양도 시 양도소득세와 실수령액을 계산합니다.", popular: false, isNew: false, url: "./realEstate/capital-gains-tax.html" },
-            { title: "청약 가점 계산", category: "부동산", desc: "무주택기간, 부양가족, 청약통장 기준 가점 계산", popular: false, isNew: false, url: "./realEstate/subscription-points.html" },
-            { title: "임대수익률 계산", category: "부동산", desc: "매매가 대비 월세 수익률을 계산합니다.", popular: false, isNew: false, url: "./realEstate/rental-yield.html" },
-            { title: "전세가율 계산", category: "부동산", desc: "매매가 대비 전세가 비율을 계산합니다.", popular: false, isNew: false, url: "./realEstate/jeonse-rate.html" },
-            { title: "등기비용 계산", category: "부동산", desc: "부동산 매매 시 소유권이전등기에 필요한 비용을 계산합니다.", popular: false, isNew: false, url: "./realEstate/registration-cost.html" },
-            { title: "종부세(종합부동산세) 계산", category: "부동산", desc: "주택 수 및 공시가격 합계액 기준 종합부동산세와 지방세를 계산합니다.", popular: false, isNew: true, url: "./realEstate/comprehensive-real-estate-tax.html" },
-            { title: "재산세 계산", category: "부동산", desc: "보유 주택/토지의 공정시장가액비율 및 과세표준 기준 재산세를 산출합니다.", popular: false, isNew: true, url: "./realEstate/property-tax.html" }
+            { title: "연말정산 환급액/추징액 예상 계산", category: "세금", desc: "신용카드, 의료비, 교육비, 기부금 공제 항목을 반영하여 연말정산 기납부 세액의 정산액을 계산합니다.", popular: true, isNew: true, url: "./tax/year-end-tax-settlement.html" }
         ];
 
         // 가나다 순 기본 정렬
         const calculators = [...rawCalculators].sort((a, b) => a.title.localeCompare(b.title, 'ko-KR'));
 
-        // 실제 존재하는 카테고리만 등록
-        const categories = ["전체", "예금·적금", "임금", "주식", "세금", "부동산"];
+        // 부동산 카테고리 제외한 실제 존재하는 카테고리만 등록
+        const categories = ["전체", "예금·적금", "임금", "주식", "세금"];
         let currentCategory = "전체";
 
         let tabMenu, calculatorContainer, searchInput, popularFilter, newFilter, noResults, currentCategoryTitle;
