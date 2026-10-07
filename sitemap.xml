@@ -593,10 +593,7 @@
     <loc>https://misopick.kr/any/hearing-test.html</loc>
     <priority>0.8</priority>
   </url>
-    <url>
-    <loc></loc>
-    <priority>0.8</priority>
-  </url>
+   
     <url>
     <loc>https://misopick.kr/any/keyboard-test.html</loc>
     <priority>0.8</priority>
