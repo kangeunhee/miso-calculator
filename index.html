@@ -408,7 +408,7 @@
             display: none;
         }
 
-        /* 4. 애드센스 승인용 고품질 금융 정보 가이드 섹션 */
+        /* 4. 금융 정보 가이드 섹션 */
         .info-section {
             margin-top: 56px;
             background-color: #ffffff;
@@ -596,7 +596,7 @@
         <div id="calculatorContainer"></div>
         <div class="no-results" id="noResults">검색 조건에 맞는 계산기가 없습니다.</div>
 
-        <!-- 애드센스 승인용 고품질 콘텐츠 섹션 -->
+        <!-- 콘텐츠 정보 섹션 -->
         <section class="info-section">
             <div class="info-header">
                 <h2>💡 스마트 금융 가이드 & 올바른 계산기 활용법</h2>
@@ -638,7 +638,7 @@
                     <h3>📈 주식 및 투자 세금 공제</h3>
                     <p>주식 및 암호화폐 투자 수익 산정 시 매매 수수료와 관련 과세 체계를 고려해야 합니다.</p>
                     <ul>
-                        <li><strong>해외주식 양도소득세:</strong> 연간 매매 차익에서 기본 공제 250만 원을 차감한 후 22%(지방세 포함)가 과세됩니다.</li>
+                        <li><strong>해외주식 양도소득세:</strong> 연간 매매 차익 발생 시 기본 공제 250만 원을 차감한 후 22%(지방세 포함)가 과세됩니다.</li>
                         <li><strong>배당소득세:</strong> 국내 주식 배당금은 15.4%가 원천징수되며, 금융소득 2,000만 원 초과 시 종합과세 대상이 됩니다.</li>
                     </ul>
                 </div>
@@ -673,82 +673,77 @@
     <footer>
         <div class="footer-inner">
             <p>© 2026 Miso Calculator. All rights reserved.</p>
-            <p>본 사이트에서 제공하는 금융 및 세금 계산 수치는 참조용이며, 정확한 법적·금융적 효력을 갖지 않습니다. </p>
+            <p>본 사이트에서 제공하는 금융 및 세금 계산 수치는 참조용이며, 정확한 법적·금융적 효력을 갖지 않습니다.</p>
             <p style="margin-top: 8px;"><a href="./privacy.html" style="color: var(--text-muted); text-decoration: underline;">개인정보처리방침</a></p>
         </div>
     </footer>
-<script>
-    const rawCalculators = [
-    // 예금·적금
-    { title: "예금 이자 계산", category: "예금·적금", desc: "목돈을 한번 넣으면 단리, 복리에 따라 이자를 계산합니다.", popular: false, isNew: false, url: "./calc/deposit.html" },
-    { title: "적금 이자 계산", category: "예금·적금", desc: "매월 일정 금액을 넣으면 단리, 복리에 따라 이자를 계산합니다.", popular: false, isNew: false, url: "./calc/savings.html" },
-    { title: "예적금 비교 계산", category: "예금·적금", desc: "여러 예금과 적금 상품을 한 번에 비교해보세요.", popular: false, isNew: false, url: "./calc/compare-savings.html" },
-    { title: "복리 이자 계산", category: "예금·적금", desc: "원금에 대해 연복리 또는 월복리 방식을 적용하여 이자를 계산합니다.", popular: false, isNew: false, url: "./calc/compound-interest.html" },
-    { title: "목표금액 달성 계산", category: "예금·적금", desc: "목표 금액에 도달하기 위해 매월 얼마씩 저축해야 하는지 계산합니다.", popular: false, isNew: false, url: "./calc/target-amount.html" },
-    { title: "청년미래적금 계산", category: "예금·적금", desc: "청년미래적금 정부기여금과 비과세 이자를 포함한 만기 수령액을 계산합니다.", popular: false, isNew: false, url: "./calc/youth-savings.html" },
-    { title: "예적금 풍차돌리기 계산", category: "예금·적금", desc: "매월 새로운 적금/예금에 가입하여 풍차돌리기 저축 시 매월 수령하는 이자와 총 자산을 시뮬레이션합니다.", popular: true, isNew: true, url: "./calc/pinwheel-savings.html" },
-    { title: "파킹통장/CMA 이자 계산", category: "예금·적금", desc: "수시입출금 파킹통장 및 CMA 계좌의 일할 계산 이자 및 월 이자 수령액을 계산합니다.", popular: true, isNew: true, url: "./calc/parking-cma.html" },
 
-    // 임금
-    { title: "연봉 인상률 계산", category: "임금", desc: "전년도 vs 올해 연봉 비교, 인상률/인상액 계산", popular: true, isNew: false, url: "./pay/salary-increase.html" },
-    { title: "근속기간 계산", category: "임금", desc: "입사일과 퇴사일을 입력하여 근속기간(년/월/일)을 계산합니다.", popular: true, isNew: false, url: "./pay/tenure.html" },
-    { title: "주휴수당 계산", category: "임금", desc: "주당 근무한 시간을 기준으로 주휴수당을 계산합니다.", popular: false, isNew: false, url: "./pay/weekly-holiday-pay.html" },
-    { title: "퇴직금 계산", category: "임금", desc: "근무했던 기간에 따라 퇴직금을 계산합니다.", popular: false, isNew: false, url: "./pay/severance-pay.html" },
-    { title: "실업급여 계산", category: "임금", desc: "퇴직 후 실업급여를 받을 수 있는지 계산합니다.", popular: false, isNew: false, url: "./pay/unemployment-benefit.html" },
-    { title: "시급 계산", category: "임금", desc: "시급을 통해 주급과 월급을 계산합니다.", popular: false, isNew: false, url: "./pay/hourly-wage.html" },
-    { title: "급여 실수령액 계산", category: "임금", desc: "세전 급여에서 세금을 제외한 실수령액을 계산합니다.", popular: false, isNew: false, url: "./pay/take-home-pay.html" },
-    { title: "근무시간 계산", category: "임금", desc: "근무시간을 통해 주급과 월급을 계산합니다.", popular: false, isNew: false, url: "./pay/work-hours.html" },
-    { title: "출산전후휴가 급여 계산", category: "임금", desc: "출산전후휴가 기간 동안 받을 수 있는 급여를 계산합니다.", popular: false, isNew: false, url: "./pay/maternity-leave-pay.html" },
-    { title: "연차수당 계산", category: "임금", desc: "미사용 연차에 대한 연차수당을 계산합니다.", popular: false, isNew: false, url: "./pay/annual-leave-pay.html" },
-    { title: "야근수당 계산", category: "임금", desc: "야간근로(22시~06시) 가산수당을 계산합니다.", popular: false, isNew: false, url: "./pay/night-shift-pay.html" },
-    { title: "휴일근무수당 계산", category: "임금", desc: "휴일근로 가산수당을 계산합니다.", popular: false, isNew: false, url: "./pay/holiday-work-pay.html" },
-    { title: "육아휴직급여 계산", category: "임금", desc: "육아휴직 기간 동안 받을 수 있는 급여와 6+6 부모 육아휴직제 혜택을 계산합니다.", popular: false, isNew: false, url: "./pay/parental-leave-pay.html" },
-    { title: "프리랜서 3.3% 실수령 계산", category: "임금", desc: "사업소득(3.3%) 원천징수를 적용한 프리랜서 세후 실수령액 및 연말정산 환급 예상액을 계산합니다.", popular: true, isNew: true, url: "./pay/freelancer-tax.html" },
+    <script>
+        const rawCalculators = [
+            // 예금·적금
+            { title: "예금 이자 계산", category: "예금·적금", desc: "목돈을 한번 넣으면 단리, 복리에 따라 이자를 계산합니다.", popular: false, isNew: false, url: "./calc/deposit.html" },
+            { title: "적금 이자 계산", category: "예금·적금", desc: "매월 일정 금액을 넣으면 단리, 복리에 따라 이자를 계산합니다.", popular: false, isNew: false, url: "./calc/savings.html" },
+            { title: "예적금 비교 계산", category: "예금·적금", desc: "여러 예금과 적금 상품을 한 번에 비교해보세요.", popular: false, isNew: false, url: "./calc/compare-savings.html" },
+            { title: "복리 이자 계산", category: "예금·적금", desc: "원금에 대해 연복리 또는 월복리 방식을 적용하여 이자를 계산합니다.", popular: false, isNew: false, url: "./calc/compound-interest.html" },
+            { title: "목표금액 달성 계산", category: "예금·적금", desc: "목표 금액에 도달하기 위해 매월 얼마씩 저축해야 하는지 계산합니다.", popular: false, isNew: false, url: "./calc/target-amount.html" },
+            { title: "청년미래적금 계산", category: "예금·적금", desc: "청년미래적금 정부기여금과 비과세 이자를 포함한 만기 수령액을 계산합니다.", popular: false, isNew: false, url: "./calc/youth-savings.html" },
+            { title: "예적금 풍차돌리기 계산", category: "예금·적금", desc: "매월 새로운 적금/예금에 가입하여 풍차돌리기 저축 시 매월 수령하는 이자와 총 자산을 시뮬레이션합니다.", popular: true, isNew: true, url: "./calc/pinwheel-savings.html" },
+            { title: "파킹통장/CMA 이자 계산", category: "예금·적금", desc: "수시입출금 파킹통장 및 CMA 계좌의 일할 계산 이자 및 월 이자 수령액을 계산합니다.", popular: true, isNew: true, url: "./calc/parking-cma.html" },
 
-    // 주식
-    { title: "평단가 계산", category: "주식", desc: "주식의 평단가를 계산합니다.", popular: false, isNew: false, url: "./stock/average-price.html" },
-    { title: "주식 배당금 실수령액 계산", category: "주식", desc: "국내외 주식 배당금에 대한 배당소득세(15.4% 또는 미국 15%) 차감 후 실수령액을 계산합니다.", popular: true, isNew: true, url: "./stock/stock-dividend.html" },
-    { title: "해외주식 양도소득세 계산", category: "주식", desc: "해외주식 매매 차익 발생 시 기본 공제 250만 원 적용 후 양도소득세(22%)를 계산합니다.", popular: true, isNew: true, url: "./stock/foreign-stock-tax.html" },
-    { title: "암호화폐/주식 수익률 및 손익 계산", category: "주식", desc: "매수가, 매도가, 수수료를 입력하여 목표 수익률 및 총 평가 손익을 계산합니다.", popular: false, isNew: true, url: "./stock/crypto-stock-return.html" },
+            // 임금
+            { title: "연봉 인상률 계산", category: "임금", desc: "전년도 vs 올해 연봉 비교, 인상률/인상액 계산", popular: true, isNew: false, url: "./pay/salary-increase.html" },
+            { title: "근속기간 계산", category: "임금", desc: "입사일과 퇴사일을 입력하여 근속기간(년/월/일)을 계산합니다.", popular: true, isNew: false, url: "./pay/tenure.html" },
+            { title: "주휴수당 계산", category: "임금", desc: "주당 근무한 시간을 기준으로 주휴수당을 계산합니다.", popular: false, isNew: false, url: "./pay/weekly-holiday-pay.html" },
+            { title: "퇴직금 계산", category: "임금", desc: "근무했던 기간에 따라 퇴직금을 계산합니다.", popular: false, isNew: false, url: "./pay/severance-pay.html" },
+            { title: "실업급여 계산", category: "임금", desc: "퇴직 후 실업급여를 받을 수 있는지 계산합니다.", popular: false, isNew: false, url: "./pay/unemployment-benefit.html" },
+            { title: "시급 계산", category: "임금", desc: "시급을 통해 주급과 월급을 계산합니다.", popular: false, isNew: false, url: "./pay/hourly-wage.html" },
+            { title: "급여 실수령액 계산", category: "임금", desc: "세전 급여에서 세금을 제외한 실수령액을 계산합니다.", popular: false, isNew: false, url: "./pay/take-home-pay.html" },
+            { title: "근무시간 계산", category: "임금", desc: "근무시간을 통해 주급과 월급을 계산합니다.", popular: false, isNew: false, url: "./pay/work-hours.html" },
+            { title: "출산전후휴가 급여 계산", category: "임금", desc: "출산전후휴가 기간 동안 받을 수 있는 급여를 계산합니다.", popular: false, isNew: false, url: "./pay/maternity-leave-pay.html" },
+            { title: "연차수당 계산", category: "임금", desc: "미사용 연차에 대한 연차수당을 계산합니다.", popular: false, isNew: false, url: "./pay/annual-leave-pay.html" },
+            { title: "야근수당 계산", category: "임금", desc: "야간근로(22시~06시) 가산수당을 계산합니다.", popular: false, isNew: false, url: "./pay/night-shift-pay.html" },
+            { title: "휴일근무수당 계산", category: "임금", desc: "휴일근로 가산수당을 계산합니다.", popular: false, isNew: false, url: "./pay/holiday-work-pay.html" },
+            { title: "육아휴직급여 계산", category: "임금", desc: "육아휴직 기간 동안 받을 수 있는 급여와 6+6 부모 육아휴직제 혜택을 계산합니다.", popular: false, isNew: false, url: "./pay/parental-leave-pay.html" },
+            { title: "프리랜서 3.3% 실수령 계산", category: "임금", desc: "사업소득(3.3%) 원천징수를 적용한 프리랜서 세후 실수령액 및 연말정산 환급 예상액을 계산합니다.", popular: true, isNew: true, url: "./pay/freelancer-tax.html" },
 
-    // 세금
-    { title: "연금저축 세액공제 계산", category: "세금", desc: "연금저축/IRP 납입액에 대한 세액공제 금액과 절세 효과를 계산합니다.", popular: false, isNew: false, url: "./tax/pension-tax-deduction.html" },
-    { title: "금융소득종합과세 계산", category: "세금", desc: "이자·배당소득 2,000만원 기준으로 분리와세와 종합과세 예상 세액을 비교합니다.", popular: false, isNew: false, url: "./tax/financial-income-tax.html" },
-    { title: "증여세 계산", category: "세금", desc: "현금 증여 시 관계별 공제와 누진세율을 반영한 증여세를 계산합니다.", popular: false, isNew: false, url: "./tax/gift-tax.html" },
-    { title: "자동차세 계산", category: "세금", desc: "배기량, 차종, 연식에 따른 자동차세와 지방교육세를 계산합니다.", popular: false, isNew: false, url: "./tax/automobile-tax.html" },
-    { title: "상속세 계산", category: "세금", desc: "상속 재산에 대한 상속세를 기본공제와 누진세율을 반영하여 계산합니다.", popular: false, isNew: false, url: "./tax/inheritance-tax.html" },
-    { title: "종합소득세 예상 계산", category: "세금", desc: "사업소득 및 기타소득에 대한 소득공제, 누진세율 적용 후 예상 종합소득세를 산출합니다.", popular: false, isNew: true, url: "./tax/global-income-tax.html" },
-    { title: "연말정산 환급액/추징액 예상 계산", category: "세금", desc: "신용카드, 의료비, 교육비, 기부금 공제 항목을 반영하여 연말정산 기납부 세액의 정산액을 계산합니다.", popular: true, isNew: true, url: "./tax/year-end-tax-settlement.html" },
+            // 주식
+            { title: "평단가 계산", category: "주식", desc: "주식의 평단가를 계산합니다.", popular: false, isNew: false, url: "./stock/average-price.html" },
+            { title: "주식 배당금 실수령액 계산", category: "주식", desc: "국내외 주식 배당금에 대한 배당소득세(15.4% 또는 미국 15%) 차감 후 실수령액을 계산합니다.", popular: true, isNew: true, url: "./stock/stock-dividend.html" },
+            { title: "해외주식 양도소득세 계산", category: "주식", desc: "해외주식 매매 차익 발생 시 기본 공제 250만 원 적용 후 양도소득세(22%)를 계산합니다.", popular: true, isNew: true, url: "./stock/foreign-stock-tax.html" },
+            { title: "암호화폐/주식 수익률 및 손익 계산", category: "주식", desc: "매수가, 매도가, 수수료를 입력하여 목표 수익률 및 총 평가 손익을 계산합니다.", popular: false, isNew: true, url: "./stock/crypto-stock-return.html" },
 
-    // 부동산
-    { title: "전월세 전환율 계산", category: "부동산", desc: "전세금과 월세를 법정 전환율 또는 이자율 기준으로 상호 전환합니다.", popular: false, isNew: false, url: "./realEstate/jeonse-to-charter-rate.html" },
-    { title: "중개수수료 계산", category: "부동산", desc: "부동산 매매, 전세, 월세 거래 시 법정 중개수수료 상한액을 계산합니다.", popular: false, isNew: false, url: "./realEstate/brokerage-fee.html" },
-    { title: "월세 계산", category: "부동산", desc: "월세, 관리비, 보증금 대출 이자를 포함한 실제 주거 비용을 계산합니다.", popular: false, isNew: false, url: "./realEstate/monthly-rent.html" },
-    { title: "LTV 계산", category: "부동산", desc: "담보 금액과 LTV 비율로 최대 대출 가능 금액을 계산합니다.", popular: false, isNew: false, url: "./realEstate/ltv.html" },
-    { title: "취득세 계산", category: "부동산", desc: "부동산 취득 시 취득세, 지방교육세, 농어촌특별세를 계산합니다.", popular: false, isNew: false, url: "./realEstate/acquisition-tax.html" },
-    { title: "양도소득세 계산", category: "부동산", desc: "부동산 양도 시 양도소득세와 실수령액을 계산합니다.", popular: false, isNew: false, url: "./realEstate/capital-gains-tax.html" },
-    { title: "청약 가점 계산", category: "부동산", desc: "무주택기간, 부양가족, 청약통장 기준 가점 계산", popular: false, isNew: false, url: "./realEstate/subscription-points.html" },
-    { title: "임대수익률 계산", category: "부동산", desc: "매매가 대비 월세 수익률을 계산합니다.", popular: false, isNew: false, url: "./realEstate/rental-yield.html" },
-    { title: "전세가율 계산", category: "부동산", desc: "매매가 대비 전세가 비율을 계산합니다.", popular: false, isNew: false, url: "./realEstate/jeonse-rate.html" },
-    { title: "등기비용 계산", category: "부동산", desc: "부동산 매매 시 소유권이전등기에 필요한 비용을 계산합니다.", popular: false, isNew: false, url: "./realEstate/registration-cost.html" },
-    { title: "종부세(종합부동산세) 계산", category: "부동산", desc: "주택 수 및 공시가격 합계액 기준 종합부동산세와 지방세를 계산합니다.", popular: false, isNew: true, url: "./realEstate/comprehensive-real-estate-tax.html" },
-    { title: "재산세 계산", category: "부동산", desc: "보유 주택/토지의 공정시장가액비율 및 과세표준 기준 재산세를 산출합니다.", popular: false, isNew: true, url: "./realEstate/property-tax.html" },
-  ];
+            // 세금
+            { title: "연금저축 세액공제 계산", category: "세금", desc: "연금저축/IRP 납입액에 대한 세액공제 금액과 절세 효과를 계산합니다.", popular: false, isNew: false, url: "./tax/pension-tax-deduction.html" },
+            { title: "금융소득종합과세 계산", category: "세금", desc: "이자·배당소득 2,000만원 기준으로 분리와세와 종합과세 예상 세액을 비교합니다.", popular: false, isNew: false, url: "./tax/financial-income-tax.html" },
+            { title: "증여세 계산", category: "세금", desc: "현금 증여 시 관계별 공제와 누진세율을 반영한 증여세를 계산합니다.", popular: false, isNew: false, url: "./tax/gift-tax.html" },
+            { title: "자동차세 계산", category: "세금", desc: "배기량, 차종, 연식에 따른 자동차세와 지방교육세를 계산합니다.", popular: false, isNew: false, url: "./tax/automobile-tax.html" },
+            { title: "상속세 계산", category: "세금", desc: "상속 재산에 대한 상속세를 기본공제와 누진세율을 반영하여 계산합니다.", popular: false, isNew: false, url: "./tax/inheritance-tax.html" },
+            { title: "종합소득세 예상 계산", category: "세금", desc: "사업소득 및 기타소득에 대한 소득공제, 누진세율 적용 후 예상 종합소득세를 산출합니다.", popular: false, isNew: true, url: "./tax/global-income-tax.html" },
+            { title: "연말정산 환급액/추징액 예상 계산", category: "세금", desc: "신용카드, 의료비, 교육비, 기부금 공제 항목을 반영하여 연말정산 기납부 세액의 정산액을 계산합니다.", popular: true, isNew: true, url: "./tax/year-end-tax-settlement.html" },
 
-        // 각 카테고리 내의 계산기 항목들을 가나다/알파벳 순으로 정렬
+            // 부동산
+            { title: "전월세 전환율 계산", category: "부동산", desc: "전세금과 월세를 법정 전환율 또는 이자율 기준으로 상호 전환합니다.", popular: false, isNew: false, url: "./realEstate/jeonse-to-charter-rate.html" },
+            { title: "중개수수료 계산", category: "부동산", desc: "부동산 매매, 전세, 월세 거래 시 법정 중개수수료 상한액을 계산합니다.", popular: false, isNew: false, url: "./realEstate/brokerage-fee.html" },
+            { title: "월세 계산", category: "부동산", desc: "월세, 관리비, 보증금 대출 이자를 포함한 실제 주거 비용을 계산합니다.", popular: false, isNew: false, url: "./realEstate/monthly-rent.html" },
+            { title: "LTV 계산", category: "부동산", desc: "담보 금액과 LTV 비율로 최대 대출 가능 금액을 계산합니다.", popular: false, isNew: false, url: "./realEstate/ltv.html" },
+            { title: "취득세 계산", category: "부동산", desc: "부동산 취득 시 취득세, 지방교육세, 농어촌특별세를 계산합니다.", popular: false, isNew: false, url: "./realEstate/acquisition-tax.html" },
+            { title: "양도소득세 계산", category: "부동산", desc: "부동산 양도 시 양도소득세와 실수령액을 계산합니다.", popular: false, isNew: false, url: "./realEstate/capital-gains-tax.html" },
+            { title: "청약 가점 계산", category: "부동산", desc: "무주택기간, 부양가족, 청약통장 기준 가점 계산", popular: false, isNew: false, url: "./realEstate/subscription-points.html" },
+            { title: "임대수익률 계산", category: "부동산", desc: "매매가 대비 월세 수익률을 계산합니다.", popular: false, isNew: false, url: "./realEstate/rental-yield.html" },
+            { title: "전세가율 계산", category: "부동산", desc: "매매가 대비 전세가 비율을 계산합니다.", popular: false, isNew: false, url: "./realEstate/jeonse-rate.html" },
+            { title: "등기비용 계산", category: "부동산", desc: "부동산 매매 시 소유권이전등기에 필요한 비용을 계산합니다.", popular: false, isNew: false, url: "./realEstate/registration-cost.html" },
+            { title: "종부세(종합부동산세) 계산", category: "부동산", desc: "주택 수 및 공시가격 합계액 기준 종합부동산세와 지방세를 계산합니다.", popular: false, isNew: true, url: "./realEstate/comprehensive-real-estate-tax.html" },
+            { title: "재산세 계산", category: "부동산", desc: "보유 주택/토지의 공정시장가액비율 및 과세표준 기준 재산세를 산출합니다.", popular: false, isNew: true, url: "./realEstate/property-tax.html" }
+        ];
+
+        // 가나다 순 기본 정렬
         const calculators = [...rawCalculators].sort((a, b) => a.title.localeCompare(b.title, 'ko-KR'));
 
-        // '연금', '생활', '부동산' 카테고리를 가장 오른쪽에 배치
-        const categories = ["전체", "예금·적금", "대출", "임금", "주식", "세금", "연금", "생활", "부동산"];
+        // 실제 존재하는 카테고리만 등록
+        const categories = ["전체", "예금·적금", "임금", "주식", "세금", "부동산"];
         let currentCategory = "전체";
 
-        const tabMenu = document.getElementById("tabMenu");
-        const calculatorContainer = document.getElementById("calculatorContainer");
-        const searchInput = document.getElementById("searchInput");
-        const popularFilter = document.getElementById("popularFilter");
-        const newFilter = document.getElementById("newFilter");
-        const noResults = document.getElementById("noResults");
-        const currentCategoryTitle = document.getElementById("currentCategoryTitle");
+        let tabMenu, calculatorContainer, searchInput, popularFilter, newFilter, noResults, currentCategoryTitle;
 
         function initTabs() {
             tabMenu.innerHTML = categories.map(cat => {
@@ -863,12 +858,23 @@
             }
         }
 
-        searchInput.addEventListener("input", renderCalculators);
-        popularFilter.addEventListener("change", renderCalculators);
-        newFilter.addEventListener("change", renderCalculators);
+        // 페이지 로드 후 실행
+        document.addEventListener("DOMContentLoaded", () => {
+            tabMenu = document.getElementById("tabMenu");
+            calculatorContainer = document.getElementById("calculatorContainer");
+            searchInput = document.getElementById("searchInput");
+            popularFilter = document.getElementById("popularFilter");
+            newFilter = document.getElementById("newFilter");
+            noResults = document.getElementById("noResults");
+            currentCategoryTitle = document.getElementById("currentCategoryTitle");
 
-        initTabs();
-        renderCalculators();
+            searchInput.addEventListener("input", renderCalculators);
+            popularFilter.addEventListener("change", renderCalculators);
+            newFilter.addEventListener("change", renderCalculators);
+
+            initTabs();
+            renderCalculators();
+        });
     </script>
 </body>
 </html>
