@@ -42,46 +42,7 @@
     <loc>https://www.misopick.kr/calc/parking-cma.html</loc>
     <priority>0.8</priority>
   </url>
-  <url>
-    <loc>https://www.misopick.kr/loan/jeonse-loan.html</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.misopick.kr/loan/minus-bankbook.html</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.misopick.kr/loan/loan-interest.html</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.misopick.kr/loan/mortgage.html</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.misopick.kr/loan/loan-refinance.html</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.misopick.kr/loan/prepayment-fee.html</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.misopick.kr/loan/dsr.html</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.misopick.kr/loan/dti.html</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.misopick.kr/loan/card-installment.html</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.misopick.kr/loan/revolving.html</loc>
-    <priority>0.8</priority>
-  </url>
+  
   <url>
     <loc>https://www.misopick.kr/pay/salary-increase.html</loc>
     <priority>0.8</priority>
