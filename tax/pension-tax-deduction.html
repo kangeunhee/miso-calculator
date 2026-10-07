@@ -4,8 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Miso Calculator - 연금저축 세액공제 계산기</title>
-   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2888840483385554"
-     crossorigin="anonymous"></script>
   <style>
   :root {
             --primary: #4b5563;        /* 메인 회색 (Gray-600) */
@@ -291,6 +289,7 @@
                 max-height: none;
             }
         }
+
     /* 메인 카드 컨테이너 */
     .container {
       max-width: 720px;
@@ -410,17 +409,7 @@
       padding-top: 8px;
     }
 
-    /* 애드센스 광고 슬롯 */
-    .ad-slot {
-      margin: 24px 0;
-      text-align: center;
-      background: #fafafa;
-      border: 1px dashed var(--border);
-      padding: 10px;
-      border-radius: 8px;
-    }
-
-    /* 백과사전 상세 설명 (계산기 하단 배치) */
+    /* 백과사전 및 예시 상세 설명 영역 */
     .wiki-box {
       background-color: var(--primary-light);
       border-left: 4px solid var(--primary);
@@ -447,6 +436,43 @@
       font-weight: bold;
       display: inline-block;
       margin-top: 6px;
+    }
+
+    /* 실제 계산 예시 박스 스타일 */
+    .example-box {
+      background-color: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 30px;
+      margin-bottom: 24px;
+    }
+
+    .example-box h3 {
+      margin-top: 0;
+      font-size: 17px;
+      color: var(--primary-hover);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+    }
+
+    .example-card {
+      background-color: var(--bg-gray);
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin-top: 12px;
+    }
+
+    .example-card h4 {
+      margin: 0 0 6px 0;
+      font-size: 15px;
+      color: var(--text-dark);
+    }
+
+    .example-card p {
+      margin: 4px 0;
+      font-size: 14px;
+      color: var(--text-muted);
     }
 
     /* FAQ 아코디언 스타일 */
@@ -481,12 +507,6 @@
       background-color: var(--primary-light);
     }
 
-    .faq-icon {
-      font-size: 18px;
-      color: var(--primary);
-      font-weight: bold;
-    }
-
     .faq-item.open .faq-icon::before {
       content: "-";
     }
@@ -505,7 +525,6 @@
       line-height: 1.6;
     }
 
-    /* 기본적으로 아코디언 항목이 모두 펼쳐진 상태 유지 */
     .faq-item.open .faq-answer {
       display: block;
     }
@@ -529,106 +548,102 @@
       color: var(--text-muted);
       text-decoration: underline;
     }
-
-  
-  
   </style>
 </head>
 <body>
 
   <!-- 회색 테마 헤더 영역 -->
-<header class="site-header">
-        <div class="header-inner">
-            <!-- 브랜드 로고 -->
-            <a href="../index.html" class="brand">
-                <div class="brand-icon" aria-hidden="true">TX</div>
-                <span>Miso Tax</span>
-            </a>
+  <header class="site-header">
+    <div class="header-inner">
+      <!-- 브랜드 로고 -->
+      <a href="../index.html" class="brand">
+        <div class="brand-icon" aria-hidden="true">TX</div>
+        <span>Miso Tax</span>
+      </a>
 
-            <!-- 모바일 전용 햄버거 버튼 -->
-            <button type="button" class="btn-hamburger" id="hamburgerBtn" aria-label="메뉴 열기" aria-expanded="false">
-                <span class="hamburger-bar"></span>
-                <span class="hamburger-bar"></span>
-                <span class="hamburger-bar"></span>
+      <!-- 모바일 전용 햄버거 버튼 -->
+      <button type="button" class="btn-hamburger" id="hamburgerBtn" aria-label="메뉴 열기" aria-expanded="false">
+        <span class="hamburger-bar"></span>
+        <span class="hamburger-bar"></span>
+        <span class="hamburger-bar"></span>
+      </button>
+
+      <!-- 네비게이션 & 전체 목록 그룹 -->
+      <div class="nav-right-group" id="navGroup">
+        <nav class="main-nav" aria-label="주요 세금 계산기 메뉴">
+          <a href="./year-end-tax-settlement.html" class="nav-item">연말정산</a>
+          <a href="./global-income-tax.html" class="nav-item">종합소득세</a>
+          <a href="./pension-tax-deduction.html" class="nav-item">연금저축공제</a>
+          <a href="./pension-tax-deduction.html" class="nav-item active">연금저축 세액공제 계산</a>
+
+          <!-- 세금 계산기 전체 드롭다운 -->
+          <div class="dropdown" id="taxCalcDropdown">
+            <button type="button" class="nav-item dropdown-btn" id="dropdownToggleBtn" aria-expanded="false">
+              <span>전체 세금 계산기</span>
+              <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M6 9l6 6 6-6"/>
+              </svg>
             </button>
-
-            <!-- 네비게이션 & 전체 목록 그룹 -->
-            <div class="nav-right-group" id="navGroup">
-                <nav class="main-nav" aria-label="주요 세금 계산기 메뉴">
-                    <!-- 상단 주요 노출 세금 계산기 (예시) -->
-                    <a href="./year-end-tax-settlement.html" class="nav-item">연말정산</a>
-                    <a href="./global-income-tax.html" class="nav-item">종합소득세</a>
-                    <a href="./pension-tax-deduction.html" class="nav-item">연금저축공제</a>
-                    <a href="./pension-tax-deduction.html" class="nav-item active">연금저축 세액공제 계산</a>
-
-                    <!-- 세금 계산기 전체 드롭다운 (7개 항목 모두 포함) -->
-                    <div class="dropdown" id="taxCalcDropdown">
-                        <button type="button" class="nav-item dropdown-btn" id="dropdownToggleBtn" aria-expanded="false">
-                            <span>전체 세금 계산기</span>
-                            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                                <path d="M6 9l6 6 6-6"/>
-                            </svg>
-                        </button>
-                        <div class="dropdown-menu">
-                            <a href="./pension-tax-deduction.html" class="dropdown-item">
-                                <div class="title-wrap">
-                                    <span class="title">연금저축 세액공제 계산</span>
-                                </div>
-                                <span class="desc">연금저축/IRP 납입액 세액공제 및 절세 효과 계산</span>
-                            </a>
-                            <a href="./financial-income-tax.html" class="dropdown-item">
-                                <div class="title-wrap">
-                                    <span class="title">금융소득종합과세 계산</span>
-                                </div>
-                                <span class="desc">이자·배당소득 2,000만원 기준 분리/종합과세 비교</span>
-                            </a>
-                            <a href="./gift-tax.html" class="dropdown-item">
-                                <div class="title-wrap">
-                                    <span class="title">증여세 계산</span>
-                                </div>
-                                <span class="desc">현금 증여 시 관계별 공제 및 누진세율 반영</span>
-                            </a>
-                            <a href="./automobile-tax.html" class="dropdown-item">
-                                <div class="title-wrap">
-                                    <span class="title">자동차세 계산</span>
-                                </div>
-                                <span class="desc">배기량, 차종, 연식에 따른 자동차세 및 교육세 계산</span>
-                            </a>
-                            <a href="./inheritance-tax.html" class="dropdown-item">
-                                <div class="title-wrap">
-                                    <span class="title">상속세 계산</span>
-                                </div>
-                                <span class="desc">상속 재산 기본공제 및 누진세율 반영 상속세 산출</span>
-                            </a>
-                            <a href="./global-income-tax.html" class="dropdown-item">
-                                <div class="title-wrap">
-                                    <span class="title">종합소득세 예상 계산</span>
-                                    <span class="badge new">NEW</span>
-                                </div>
-                                <span class="desc">사업소득 등 소득공제 및 누진세율 적용 예상 세액</span>
-                            </a>
-                            <a href="./year-end-tax-settlement.html" class="dropdown-item">
-                                <div class="title-wrap">
-                                    <span class="title">연말정산 환급액/추징액 예상</span>
-                                    <span class="badge new">NEW</span>
-                                </div>
-                                <span class="desc">신용카드, 의료비 등 공제 항목 기납부 세액 정산</span>
-                            </a>
-                        </div>
-                    </div>
-                </nav>
-
-                <a href="../index.html" class="btn-list-back">전체 목록</a>
+            <div class="dropdown-menu">
+              <a href="./pension-tax-deduction.html" class="dropdown-item">
+                <div class="title-wrap">
+                  <span class="title">연금저축 세액공제 계산</span>
+                </div>
+                <span class="desc">연금저축/IRP 납입액 세액공제 및 절세 효과 계산</span>
+              </a>
+              <a href="./financial-income-tax.html" class="dropdown-item">
+                <div class="title-wrap">
+                  <span class="title">금융소득종합과세 계산</span>
+                </div>
+                <span class="desc">이자·배당소득 2,000만원 기준 분리/종합과세 비교</span>
+              </a>
+              <a href="./gift-tax.html" class="dropdown-item">
+                <div class="title-wrap">
+                  <span class="title">증여세 계산</span>
+                </div>
+                <span class="desc">현금 증여 시 관계별 공제 및 누진세율 반영</span>
+              </a>
+              <a href="./automobile-tax.html" class="dropdown-item">
+                <div class="title-wrap">
+                  <span class="title">자동차세 계산</span>
+                </div>
+                <span class="desc">배기량, 차종, 연식에 따른 자동차세 및 교육세 계산</span>
+              </a>
+              <a href="./inheritance-tax.html" class="dropdown-item">
+                <div class="title-wrap">
+                  <span class="title">상속세 계산</span>
+                </div>
+                <span class="desc">상속 재산 기본공제 및 누진세율 반영 상속세 산출</span>
+              </a>
+              <a href="./global-income-tax.html" class="dropdown-item">
+                <div class="title-wrap">
+                  <span class="title">종합소득세 예상 계산</span>
+                  <span class="badge new">NEW</span>
+                </div>
+                <span class="desc">사업소득 등 소득공제 및 누진세율 적용 예상 세액</span>
+              </a>
+              <a href="./year-end-tax-settlement.html" class="dropdown-item">
+                <div class="title-wrap">
+                  <span class="title">연말정산 환급액/추징액 예상</span>
+                  <span class="badge new">NEW</span>
+                </div>
+                <span class="desc">신용카드, 의료비 등 공제 항목 기납부 세액 정산</span>
+              </a>
             </div>
-        </div>
-    </header>
+          </div>
+        </nav>
+
+        <a href="../index.html" class="btn-list-back">전체 목록</a>
+      </div>
+    </div>
+  </header>
 
   <!-- 메인 컨텐츠 Card -->
   <main class="container">
     <div class="category-tag">세금 계산기</div>
     <h1>연금저축 세액공제 계산기</h1>
 
-    <!-- 1. 최상단 배치: 계산 입력 폼 -->
+    <!-- 1. 계산 입력 폼 -->
     <form id="calcForm">
       <div class="form-group">
         <label for="incomeType">소득 구간 선택</label>
@@ -678,22 +693,37 @@
       </div>
     </div>
 
-    <!-- 상단 애드센스 광고 영역 -->
-    <div class="ad-slot">
-      <ins class="adsbygoogle"
-           style="display:block"
-           data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
-           data-ad-slot="1234567890"
-           data-ad-format="auto"
-           data-full-width-responsive="true"></ins>
-      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-    </div>
+    <!-- 2. 실제 계산 예시 및 시나리오 섹션 -->
+    <section class="example-box">
+      <h3>💡 연금저축 & IRP 세액공제 실제 계산 예시</h3>
+      
+      <div class="example-card">
+        <h4>[예시 1] 총급여 5,500만 원 이하 직장인 (16.5% 적용)</h4>
+        <p>• <strong>납입 조건:</strong> 연금저축 600만 원 + IRP 300만 원 납입 (합산 900만 원)</p>
+        <p>• <strong>계산 과정:</strong> 900만 원 × 16.5% (지방소득세 포함)</p>
+        <p>• <strong>최종 환급액:</strong> <strong>1,485,000원</strong> 환급 (매년 연말정산 시 돌려받는 금액)</p>
+      </div>
 
-    <!-- 2. 계산기 하단으로 이동한 상세 백과사전 설명 영역 -->
+      <div class="example-card">
+        <h4>[예시 2] 총급여 5,500만 원 초과 직장인 (13.2% 적용)</h4>
+        <p>• <strong>납입 조건:</strong> 연금저축만 단독으로 600만 원 납입</p>
+        <p>• <strong>계산 과정:</strong> 600만 원 × 13.2% (지방소득세 포함)</p>
+        <p>• <strong>최종 환급액:</strong> <strong>792,000원</strong> 환급</p>
+      </div>
+
+      <div class="example-card">
+        <h4>[예시 3] 한도 초과 납입 시 (예: 연금저축 800만 원 납입)</h4>
+        <p>• <strong>납입 조건:</strong> 연금저축 단독 800만 원 납입 (연금저축 한도 600만 원 초과)</p>
+        <p>• <strong>계산 과정:</strong> 인정되는 금액은 최대 600만 원까지만 적용 (나머지 200만 원은 다음 해로 이월 가능)</p>
+        <p>• <strong>최종 환급액:</strong> (5,500만 원 이하 기준) 600만 원 × 16.5% = <strong>990,000원</strong> 환급</p>
+      </div>
+    </section>
+
+    <!-- 3. 상세 백과사전 설명 영역 -->
     <section class="wiki-box">
       <p>
         <strong>연금저축 및 세액공제(Tax Credit)의 법적·경제적 개념</strong><br>
-        <strong>위키백과 및 네이버 지식백과 참조:</strong> **세액공제(Tax Credit)**란 산출된 세액에서 일정 금액을 직접 차감해 주는 제도를 말하며, 소득금액에서 차감하는 소득공제와 구별됩니다. **연금저축**은 노후 대비 및 절세를 목적으로 가입하는 금융 상품으로, 연금저축펀드·연금저축보험·개인형 퇴직연금(IRP) 등이 포함됩니다.
+        <strong>위키백과 및 네이버 지식백과 참조:</strong> <strong>세액공제(Tax Credit)</strong>란 산출된 세액에서 일정 금액을 직접 차감해 주는 제도를 말하며, 소득금액에서 차감하는 소득공제와 구별됩니다. <strong>연금저축</strong>은 노후 대비 및 절세를 목적으로 가입하는 금융 상품으로, 연금저축펀드·연금저축보험·개인형 퇴직연금(IRP) 등이 포함됩니다.
       </p>
       <p>
         <strong>세액공제 한도 및 공제율 적용 기준:</strong><br>
@@ -706,18 +736,7 @@
       <span class="wiki-source">※ 출처: 위키백과(연금저축, 세액공제), 네이버 지식백과(두산백과, 연말정산 세액공제)</span>
     </section>
 
-    <!-- 하단 애드센스 광고 영역 -->
-    <div class="ad-slot">
-      <ins class="adsbygoogle"
-           style="display:block"
-           data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
-           data-ad-slot="0987654321"
-           data-ad-format="auto"
-           data-full-width-responsive="true"></ins>
-      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-    </div>
-
-    <!-- FAQ 목록 (모두 열린 상태) -->
+    <!-- FAQ 목록 -->
     <h2>자주 묻는 질문 (FAQ)</h2>
     <div class="faq-list">
       <div class="faq-item open">
@@ -752,7 +771,7 @@
     </div>
   </main>
 
-  <!-- 푸터 영역 (회색 테마) -->
+  <!-- 푸터 영역 -->
   <footer>
     <p>© 2026 Miso Calculator. All rights reserved.</p>
     <p>본 계산기는 입력된 소득 구간 및 납입액을 바탕으로 개략적인 세액공제 절세 예상액을 산출하며, 세법 개정 및 개인별 최종 결정세액에 따라 실제 환급액과 차이가 발생할 수 있습니다.</p>
@@ -761,69 +780,33 @@
 
   <script>
     // 햄버거 메뉴 토글
-        const hamburgerBtn = document.getElementById('hamburgerBtn');
-        const navGroup = document.getElementById('navGroup');
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const navGroup = document.getElementById('navGroup');
 
-        hamburgerBtn.addEventListener('click', () => {
-            const isOpen = navGroup.classList.toggle('is-open');
-            hamburgerBtn.setAttribute('aria-expanded', isOpen);
-        });
+    hamburgerBtn.addEventListener('click', () => {
+        const isOpen = navGroup.classList.toggle('is-open');
+        hamburgerBtn.setAttribute('aria-expanded', isOpen);
+    });
 
-        // PC/모바일 공통 드롭다운 토글 제어
-        const taxCalcDropdown = document.getElementById('taxCalcDropdown');
-        const dropdownToggleBtn = document.getElementById('dropdownToggleBtn');
+    // PC/모바일 공통 드롭다운 토글 제어
+    const taxCalcDropdown = document.getElementById('taxCalcDropdown');
+    const dropdownToggleBtn = document.getElementById('dropdownToggleBtn');
 
-        dropdownToggleBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            taxCalcDropdown.classList.toggle('is-open');
-            const isOpen = taxCalcDropdown.classList.contains('is-open');
-            dropdownToggleBtn.setAttribute('aria-expanded', isOpen);
-        });
+    dropdownToggleBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        taxCalcDropdown.classList.toggle('is-open');
+        const isOpen = taxCalcDropdown.classList.contains('is-open');
+        dropdownToggleBtn.setAttribute('aria-expanded', isOpen);
+    });
 
-        // 화면 바깥 클릭 시 드롭다운 닫기
-        window.addEventListener('click', () => {
-            taxCalcDropdown.classList.remove('is-open');
-            dropdownToggleBtn.setAttribute('aria-expanded', 'false');
-        });
+    // 화면 바깥 클릭 시 드롭다운 닫기
+    window.addEventListener('click', () => {
+        taxCalcDropdown.classList.remove('is-open');
+        dropdownToggleBtn.setAttribute('aria-expanded', 'false');
+    });
+
     document.addEventListener('DOMContentLoaded', () => {
-      // 1. 세금 계산기 드롭다운 토글
-      const taxDropdown = document.getElementById('taxCalcDropdown');
-      const taxToggleBtn = document.getElementById('taxDropdownToggleBtn');
-
-      if (taxToggleBtn && taxDropdown) {
-        taxToggleBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const isOpen = taxDropdown.classList.toggle('is-open');
-          taxToggleBtn.setAttribute('aria-expanded', isOpen);
-        });
-
-        document.addEventListener('click', (e) => {
-          if (!taxDropdown.contains(e.target)) {
-            taxDropdown.classList.remove('is-open');
-            taxToggleBtn.setAttribute('aria-expanded', 'false');
-          }
-        });
-
-        document.addEventListener('keydown', (e) => {
-          if (e.key === 'Escape') {
-            taxDropdown.classList.remove('is-open');
-            taxToggleBtn.setAttribute('aria-expanded', 'false');
-          }
-        });
-      }
-
-      // 2. 모바일 햄버거 토글
-      const hamburgerBtn = document.getElementById('hamburgerBtn');
-      const navGroup = document.getElementById('navGroup');
-
-      if (hamburgerBtn && navGroup) {
-        hamburgerBtn.addEventListener('click', () => {
-          const isOpen = navGroup.classList.toggle('is-open');
-          hamburgerBtn.setAttribute('aria-expanded', isOpen);
-        });
-      }
-
-      // 3. FAQ 아코디언 토글 (기본 Open 상태 유지 및 클릭 시 토글)
+      // FAQ 아코디언 토글
       const faqQuestions = document.querySelectorAll('.faq-question');
       faqQuestions.forEach(btn => {
         btn.addEventListener('click', () => {
@@ -832,7 +815,7 @@
         });
       });
 
-      // 4. 연금저축 세액공제 계산 로직
+      // 연금저축 세액공제 계산 로직
       const calcForm = document.getElementById('calcForm');
       const resultContainer = document.getElementById('resultContainer');
 
