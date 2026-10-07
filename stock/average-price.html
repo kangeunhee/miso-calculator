@@ -4,17 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Miso Calculator - 주식 평단가 계산기</title>
-   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2888840483385554"
-     crossorigin="anonymous"></script>
   <style>
     :root {
-      --primary: #059669;         /* 대표 메인 그린 */
-      --primary-hover: #047857;   /* 버튼/링크 호버 색상 */
-      --primary-light: #ecfdf5;   /* 연한 그린 배경/하이라이트 */
-      --text-dark: #064e3b;       /* 진한 그린 텍스트 */
-      --text-muted: #047857;      /* 보조 텍스트 색상 */
-      --border: #a7f3d0;         /* 그린 톤 테두리 선 */
-      --bg-green: #f0fdf4;       /* 페이지 전체 메인 배경색 */
+      --primary: #059669;          /* 대표 메인 그린 */
+      --primary-hover: #047857;    /* 버튼/링크 호버 색상 */
+      --primary-light: #ecfdf5;    /* 연한 그린 배경/하이라이트 */
+      --text-dark: #064e3b;        /* 진한 그린 텍스트 */
+      --text-muted: #047857;       /* 보조 텍스트 색상 */
+      --border: #a7f3d0;          /* 그린 톤 테두리 선 */
+      --bg-green: #f0fdf4;        /* 페이지 전체 메인 배경색 */
       --bg-white: #ffffff;
     }
 
@@ -271,15 +269,15 @@
     .wiki-box {
       background-color: var(--primary-light);
       border-left: 4px solid var(--primary);
-      padding: 16px;
+      padding: 18px;
       border-radius: 0 8px 8px 0;
       margin-bottom: 24px;
       font-size: 14.5px;
-      line-height: 1.7;
+      line-height: 1.75;
     }
 
     .wiki-box p {
-      margin: 0 0 10px 0;
+      margin: 0 0 12px 0;
       color: var(--text-dark);
     }
 
@@ -293,6 +291,39 @@
       font-weight: bold;
       display: inline-block;
       margin-top: 6px;
+    }
+
+    /* 확장 가이드 박스 */
+    .guide-box {
+      background-color: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px;
+      margin-top: 30px;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .guide-box h3 {
+      font-size: 16px;
+      color: var(--primary);
+      margin-top: 0;
+      margin-bottom: 10px;
+      border-bottom: 1px dashed var(--border);
+      padding-bottom: 6px;
+    }
+
+    .guide-box ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    .guide-box li {
+      margin-bottom: 8px;
+    }
+
+    .guide-box li:last-child {
+      margin-bottom: 0;
     }
 
     /* 계산기 섹션 스타일 */
@@ -486,16 +517,6 @@
       display: block;
     }
 
-    /* 애드센스 광고 영역 */
-    .ad-slot {
-      margin: 24px 0;
-      text-align: center;
-      background: #fafafa;
-      border: 1px dashed #a7f3d0;
-      padding: 10px;
-      border-radius: 8px;
-    }
-
     footer {
       border-top: 1px solid var(--border);
       padding: 30px 20px;
@@ -587,43 +608,11 @@
         <nav class="main-nav" aria-label="주요 계산기 메뉴">
           <a href="./crypto-stock-return.html" class="nav-item">암호화폐/주식 수익률 및 손익 계산기</a>
           <a href="./stock-dividend.html" class="nav-item">주식 배당금 실수령액 계산기</a>
-          <a href="./average-price.html" class="nav-item">주식 평단가 계산기</a>
+          <a href="./average-price.html" class="nav-item active">주식 평단가 계산기</a>
           <a href="./foreign-stock-tax.html" class="nav-item">해외주식 양도소득세 계산기</a>
 
-           <div class="dropdown" id="stockCalcDropdown">
-          <!--  <button type="button" class="nav-item dropdown-btn" id="stockDropdownToggleBtn" aria-expanded="false">
-              <span> 기타 계산기</span>
-              <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <path d="M6 9l6 6 6-6"/>
-              </svg>
-            </button>
-
-            <div class="dropdown-menu">
-              <a href="./stock/average-price.html" class="dropdown-item">
-                <div class="title-wrap">
-                  <span class="title">평단가 계산</span>
-                </div>
-                <span class="desc">주식의 평단가를 계산합니다.</span>
-              </a>
-              <a href="./stock/stock-dividend.html" class="dropdown-item">
-                <div class="title-wrap">
-                  <span class="title">주식 배당금 실수령액 계산</span>
-                </div>
-                <span class="desc">배당소득세를 차감한 배당 실수령액을 계산합니다.</span>
-              </a>
-              <a href="./stock/foreign-stock-tax.html" class="dropdown-item">
-                <div class="title-wrap">
-                  <span class="title">해외주식 양도소득세 계산</span>
-                </div>
-                <span class="desc">기본공제 250만 원 적용 후 양도소득세를 계산합니다.</span>
-              </a>
-              <a href="./stock/crypto-stock-return.html" class="dropdown-item">
-                <div class="title-wrap">
-                  <span class="title">수익률 및 손익 계산</span>
-                </div>
-                <span class="desc">목표 수익률 및 총 평가 손익을 계산합니다.</span>
-              </a> -->
-            </div>
+          <div class="dropdown" id="stockCalcDropdown">
+            <div class="dropdown-menu"></div>
           </div>
         </nav>
 
@@ -637,31 +626,23 @@
     <div class="category-tag">주식 계산기</div>
     <h1>주식 평단가 계산기</h1>
 
-    <!-- 백과사전 상세 설명 영역 -->
+    <!-- 백과사전 및 개념 상세 설명 영역 -->
     <section class="wiki-box">
       <p>
-        <strong>주식 평단가(평균단가)의 법적·금융적 정의</strong><br>
-        <strong>위키백과 및 네이버 지식백과 참조:</strong> 평단가(Average Unit Price)란 한 종목의 주식을 여러 차례 나누어 매수(분할매수)했을 때 보유한 주식 1주당 산출되는 **가중평균 매수단가**를 의미합니다. 투자자가 추가 매수(물타기 또는 불타기)를 진행할 때 현재 자신의 평균 매입 단가를 확인하고 평가 손익을 정확히 파악하기 위한 필수 지표입니다.
+        <strong>주식 평단가(평균단가)의 개념과 개요</strong><br>
+        평단가(Average Unit Price)란 한 종목의 주식을 서로 다른 시점과 가격에 여러 번 나누어 매수(분할매수)했을 때 보유한 주식 1주당 산출되는 **가중평균 매수단가**를 의미합니다. 단순히 구매 가격들의 산술평균이 아니라, 각 매수 시점마다 구매한 **주식 수량(가중치)**을 정확히 반영하여 계산해야 합니다.
       </p>
       <p>
-        <strong>가중평균을 이용한 평단가 계산식:</strong><br>
-        평단가는 단순히 매수 가격의 평균이 아니며, 매수할 때마다 매수한 주식 수량(가중치)을 반영하여 계산합니다.<br>
+        <strong>가중평균을 이용한 수학적 계산식:</strong><br>
         <code>총 매수 금액 = Σ(차수별 매수가격 × 차수별 매수수량)</code><br>
         <code>최종 평단가 = 총 매수 금액 ÷ 총 매수 수량</code>
       </p>
-      <span class="wiki-source">※ 출처: 위키백과(가중평균), 네이버 지식백과(두산백과, 주식매매 및 이동평균법)</span>
+      <p>
+        <strong>주식 평단가 관리의 중요성:</strong><br>
+        분할매수는 주가 변동성 위험을 분산시키는 가장 강력한 투자 전략 중 하나입니다. 하락장에서 주식을 추가 매수하는 '물타기'나 상승장에서 추가 매수하는 '불타기'를 진행할 때, 본 계산기를 활용하면 현재 나의 목표 본전 가격 및 손익분기점을 명확히 파악할 수 있어 이성적인 매매 매수·매도 타이밍을 잡는 데 도움을 줍니다.
+      </p>
+      <span class="wiki-source">※ 출처: 위키백과(가중평균), 네이버 지식백과(두산백과, 주식매매 및 이동평균법) 참조</span>
     </section>
-
-    <!-- 상단 애드센스 광고 영역 -->
-    <div class="ad-slot">
-      <ins class="adsbygoogle"
-           style="display:block"
-           data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
-           data-ad-slot="1234567890"
-           data-ad-format="auto"
-           data-full-width-responsive="true"></ins>
-      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-    </div>
 
     <!-- 계산 입력 폼 -->
     <form id="calcForm">
@@ -721,18 +702,17 @@
       </div>
     </div>
 
-    <!-- 하단 애드센스 광고 영역 -->
-    <div class="ad-slot">
-      <ins class="adsbygoogle"
-           style="display:block"
-           data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
-           data-ad-slot="0987654321"
-           data-ad-format="auto"
-           data-full-width-responsive="true"></ins>
-      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-    </div>
+    <!-- 추가적인 투자 가이드 및 전략 섹션 -->
+    <section class="guide-box">
+      <h3>💡 주식 평단가 낮추기(물타기) 전략 핵심 포인트</h3>
+      <ul>
+        <li><strong>비중 조절의 중요성:</strong> 평단가를 크게 낮추기 위해서는 기존 보유 수량 대비 충분한 수량을 추가 매수해야 합니다. 보유 주식 수량이 많을수록 평단가를 1원 낮추는 데 필요한 자금이 비례하여 커집니다.</li>
+        <li><strong>분할 매수 계획 수립:</strong> 주가가 하락할 때마다 무작정 물타기를 시도하면 현금이 조기에 소진될 수 있습니다. 차트 분석이나 기업 가치 분석을 통해 주요 지지선에서 체계적으로 분할 매수하는 것이 좋습니다.</li>
+        <li><strong>불타기(상승 시 추가매수) 시 평단가 상승:</strong> 상승 추세인 주식을 추매할 경우 평단가는 오르지만 총 수익금 액수는 극대화될 수 있습니다. 단, 평단가가 올라감에 따라 조정 시 리스크가 커지므로 주의가 필요합니다.</li>
+      </ul>
+    </section>
 
-    <!-- FAQ 목록 (요청에 따라 모두 열린 상태: class="open") -->
+    <!-- FAQ 목록 -->
     <h2>자주 묻는 질문 (FAQ)</h2>
     <div class="faq-list">
       <div class="faq-item open">
@@ -751,7 +731,7 @@
           <span class="faq-icon"></span>
         </button>
         <div class="faq-answer">
-          실제 증권사 MTS/HTS 계좌 상에서는 주식 매수 시 발생한 증권사 수수료 및 매도 시 발생하는 유관기관 수수료, 매도세금 등이 반영되어 매수 단가가 미세하게 오를 수 있습니다. 정확한 수익률 산출을 위해서는 수수료를 포함하여 계산하는 것이 좋습니다.
+          실제 증권사 MTS/HTS 계좌 상에서는 주식 매수 시 발생한 증권사 수수료 및 매도 시 발생하는 유관기관 수수료, 매도세금 등이 반영되어 매수 단가가 미세하게 오를 수 있습니다. 정확한 손익분기점을 파악하려면 유관기관 제비용 및 매수 수수료를 포함하여 계산하는 것이 좋습니다.
         </div>
       </div>
 
@@ -761,7 +741,27 @@
           <span class="faq-icon"></span>
         </button>
         <div class="faq-answer">
-          아닙니다. 보유 주식의 일부를 매도하더라도 나머지 잔여 주식의 **평단가는 변하지 않습니다.** 일부 매도 시에는 기존 평단가를 기준으로 실현 손익만 정산됩니다 (이동평균법 기준).
+          아닙니다. 보유 주식의 일부를 매도하더라도 남아있는 잔여 주식의 **평단가는 변하지 않습니다.** 국내 및 해외 대부분의 증권사는 이동평균법을 적용하므로, 일부 매도 시에는 기존 평단가를 기준으로 실현 손익만 정산될 뿐 매수 단가 자체는 유지됩니다.
+        </div>
+      </div>
+
+      <div class="faq-item open">
+        <button type="button" class="faq-question">
+          <span>미국주식(달러화) 계산에도 사용할 수 있나요?</span>
+          <span class="faq-icon"></span>
+        </button>
+        <div class="faq-answer">
+          네, 본 계산기는 통화 단위와 상관없이 가중평균을 산출하는 방식이 동일합니다. 원화 대신 달러($) 단가와 수량을 입력하시면 최종 예상 달러 평단가를 정확히 계산하실 수 있습니다.
+        </div>
+      </div>
+
+      <div class="faq-item open">
+        <button type="button" class="faq-question">
+          <span>무상증자나 주식배당을 받았을 때는 평단가가 어떻게 되나요?</span>
+          <span class="faq-icon"></span>
+        </button>
+        <div class="faq-answer">
+          무상증자나 주식배당으로 새 주식을 지급받는 경우 매수 금액 지출 없이 주식 수량만 늘어나게 되므로 최종 평단가는 자동으로 낮아지게 됩니다. (매수가격 0원으로 차수를 추가하여 계산해보실 수 있습니다.)
         </div>
       </div>
     </div>
