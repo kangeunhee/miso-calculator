@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>정기적금 이자 계산기 - 적금 만기 수령액 및 세후 이자 계산 | Miso Calculator</title>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2888840483385554"
-     crossorigin="anonymous"></script>
     <meta name="description" content="매월 적립하는 정기적금의 세전·세후 이자, 이자소득세(15.4%), 단리 및 월복리 만기 수령액을 정확하게 시뮬레이션해 주는 무료 금융 계산기입니다.">
     <link rel="stylesheet" href="../style.css">
 </head>
@@ -13,20 +11,17 @@
     <!-- 고도화된 상단 헤더 -->
     <header class="site-header">
         <div class="header-inner">
-            <!-- 브랜드 로고 -->
             <a href="../index.html" class="brand">
                 <div class="brand-icon" aria-hidden="true">MC</div>
                 <span>Miso Calculator</span>
             </a>
 
-            <!-- 모바일 전용 햄버거 버튼 -->
             <button type="button" class="btn-hamburger" id="hamburgerBtn" aria-label="메뉴 열기" aria-expanded="false">
                 <span class="hamburger-bar"></span>
                 <span class="hamburger-bar"></span>
                 <span class="hamburger-bar"></span>
             </button>
 
-            <!-- 네비게이션 & 전체 목록 그룹 -->
             <div class="nav-right-group" id="navGroup">
                 <nav class="main-nav" aria-label="주요 계산기 메뉴">
                     <a href="./target-amount.html" class="nav-item">목표금액 달성</a>
@@ -260,10 +255,8 @@
             let grossInterest = 0;
 
             if (!isCompound) {
-                // 단리 적금 이자 공식: 매월적립액 * 연이율 * n(n+1) / (2 * 12)
                 grossInterest = monthly * r * (months * (months + 1)) / (2 * 12);
             } else {
-                // 월복리 적금 이자 공식
                 let current = 0;
                 const monthlyRate = r / 12;
                 for (let i = 0; i < months; i++) {
@@ -287,7 +280,6 @@
             document.getElementById('resTotal').innerText = formatNum(total);
         }
 
-        // 초기 실행
         calculateSavings();
     </script>
 </body>
